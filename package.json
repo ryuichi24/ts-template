@@ -23,6 +23,9 @@
     "add-module:empty:esm": "hitotsu add -t empty",
     "add-module:empty:common": "hitotsu add -t empty -cjs",
     "clean": "cle clean . --entries node_modules,.turbo,dist,release",
+    "uml:start": "pnpm --filter=@ts-template/uml start",
+    "uml:down": "pnpm --filter=@ts-template/uml down",
+    "uml:stop": "pnpm --filter=@ts-template/uml stop",
     "postinstall": "pnpm build"
   },
   "keywords": [],
