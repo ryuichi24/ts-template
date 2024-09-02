@@ -1,0 +1,8 @@
+{
+  "display": "@ts-template/js-utils ESM",
+  "extends": "@ts-template/tsconfig/node.lib",
+  "compilerOptions": {
+    "outDir": "./dist"
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@ts-template/desktop-builder",
+  "version": "1.0.0",
+  "author": "Ryuichi Nishi",
+  "description": "",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build:publish": "tsx ./scripts/build.ts --publish",
+    "build:local": "tsx ./scripts/build.ts"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@ts-template/tsconfig": "workspace:*",
+    "@ts-template/util": "workspace:*",
+    "@ts-template/file-system": "workspace:*",
+    "@ts-template/esm-helper": "workspace:*",
+    "commander": "^12.1.0",
+    "electron-builder": "^24.13.3",
+    "tsx": "^4.19.0",
+    "@types/node": "^20.11.20"
+  },
+  "dependencies": {
+    "@ts-template/desktop-main": "workspace:*",
+    "@ts-template/desktop-renderer": "workspace:*",
+    "@ts-template/background-server": "workspace:*"
+  }
+}

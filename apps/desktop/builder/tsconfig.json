@@ -1,0 +1,7 @@
+{
+  "extends": "@ts-template/tsconfig/node",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["scripts"]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "ts-template",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "turbo run build",
+    "build:apps": "turbo run build --filter=\\{\"./apps/**/*\"\\}",
+    "build:packages": "turbo run build --filter=\\{\"./packages/**/*\"\\}",
+    "build:desktop:publish": "turbo run @ts-template/desktop-builder#build:publish",
+    "build:desktop:local": "turbo run @ts-template/desktop-builder#build:local",
+    "dev:desktop": "turbo run dev --filter=\\{\"./apps/desktop/**/*\"\\}",
+    "dev:desktop:renderer": "turbo run dev --filter=\\{\"./apps/desktop/renderer/**/*\"\\}",
+    "dev:node": "turbo run dev --filter=\\{\"./dev/playground/node/**/*\"\\}",
+    "dev:ts-node": "turbo run dev --filter=\\{\"./dev/playground/ts-node/**/*\"\\}",
+    "dev:react": "turbo run dev --filter=\\{\"./dev/playground/react/**/*\"\\}",
+    "dev:ts-react": "turbo run dev --filter=\\{\"./dev/playground/ts-react/**/*\"\\}",
+    "add-module:app:esm": "hitotsu add -t app",
+    "add-module:app:common": "hitotsu add -t app -cjs",
+    "add-module:cli:esm": "hitotsu add -t cli",
+    "add-module:cli:common": "hitotsu add -t cli -cjs",
+    "add-module:lib:esm": "hitotsu add -t lib",
+    "add-module:lib:common": "hitotsu add -t lib -cjs",
+    "add-module:empty:esm": "hitotsu add -t empty",
+    "add-module:empty:common": "hitotsu add -t empty -cjs",
+    "clean": "cle clean . --entries node_modules,.turbo,dist,release",
+    "postinstall": "pnpm build"
+  },
+  "keywords": [],
+  "author": "Ryuichi Nishi",
+  "license": "MIT",
+  "devDependencies": {
+    "dotenv-cli": "^7.4.2",
+    "turbo": "^2.0.14",
+    "@ts-template/hitotsu": "workspace:*",
+    "@ts-template/cle": "workspace:*"
+  },
+  "packageManager": "pnpm@9.2.0",
+  "engines": {
+    "pnpm": ">=9.2.0",
+    "npm": "use pnpm!!!!!",
+    "yarn": "use pnpm!!!!!"
+  },
+  "publishMeta": {
+    "appId": "com.ryuichi24.ts-template",
+    "appName": "ts-template",
+    "copyright": "Copyright © 2024 com.ryuichi24",
+    "provider": {
+      "github": {
+        "owner": "ryuichi24",
+        "repositoryName": "ts-template",
+        "private": false
+      }
+    }
+  }
+}

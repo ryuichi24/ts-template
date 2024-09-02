@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [],
+  "tasks": {
+    "lint": {},
+    "format": {},
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "@ts-template/desktop-builder#build:publish": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "@ts-template/desktop-builder#build:local": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@ts-template/playground-ts-node",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm build && concurrently \"pnpm tsc:watch\" \"pnpm node:watch\"",
+    "build": "tsc",
+    "node:watch": "node --watch dist/index.js",
+    "tsc:watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@ts-template/tsconfig": "workspace:*",
+    "@types/node": "^20.11.20",
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3",
+    "@ts-template/util": "workspace:*",
+    "@ts-template/type-util": "workspace:*"
+  }
+}
