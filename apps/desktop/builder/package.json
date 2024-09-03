@@ -7,22 +7,25 @@
   "private": true,
   "scripts": {
     "build:publish": "tsx ./scripts/build.ts --publish",
-    "build:local": "tsx ./scripts/build.ts"
+    "build:local": "tsx ./scripts/build.ts",
+    "rebuild:electron": "tsx ./scripts/rebuild.ts",
+    "postinstall": "pnpm rebuild:electron"
   },
   "type": "module",
   "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "@ts-template/esm-helper": "workspace:*",
+    "@ts-template/file-system": "workspace:*",
     "@ts-template/tsconfig": "workspace:*",
     "@ts-template/util": "workspace:*",
-    "@ts-template/file-system": "workspace:*",
-    "@ts-template/esm-helper": "workspace:*",
+    "@types/node": "^20.11.20",
     "commander": "^12.1.0",
     "electron-builder": "^24.13.3",
-    "tsx": "^4.19.0",
-    "@types/node": "^20.11.20"
+    "tsx": "^4.19.0"
   },
   "dependencies": {
+    "@ts-template/background-server": "workspace:*",
     "@ts-template/desktop-main": "workspace:*",
-    "@ts-template/desktop-renderer": "workspace:*",
-    "@ts-template/background-server": "workspace:*"
+    "@ts-template/desktop-renderer": "workspace:*"
   }
 }

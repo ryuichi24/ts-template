@@ -15,14 +15,18 @@
   },
   "type": "module",
   "devDependencies": {
-    "@ts-template/tsconfig": "workspace:*",
-    "@ts-template/fjs": "workspace:*",
     "@ts-template/esm-helper": "workspace:*",
+    "@ts-template/fjs": "workspace:*",
     "@ts-template/process-event-emitter": "workspace:*",
-    "typescript": "^5.3.3",
+    "@ts-template/tsconfig": "workspace:*",
     "@types/node": "^20.11.20",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "electron": "^28.2.7"
+    "electron": "^28.2.7",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "electron-log": "^5.1.7",
+    "electron-updater": "^6.2.1"
   }
 }
