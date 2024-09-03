@@ -100,3 +100,29 @@ In practice, it's generally recommended to avoid enabling nodeIntegration unless
 
 - https://developer.mamezou-tech.com/blogs/2023/12/06/electron-esm-support-available/
 - https://www.electronjs.org/docs/latest/tutorial/esm#preload-scripts
+
+# ESM and Common js in typescript
+
+`module` options decides which module system the typescript codes must be transpiled.
+
+`commonjs` literally means the codes must be converted into common js.
+
+```json
+{
+  "module": "commonjs"
+}
+```
+
+`NodeNext` options picks the newest javascript module system, which is ESM, but besides this configuration, you must add `"type": "module"` in the `package.json` file.
+
+```json:tsconfig.json
+{
+  "module": "NodeNext"
+}
+```
+
+```json:package.json
+{
+  "type": "module"
+}
+```

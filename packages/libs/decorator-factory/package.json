@@ -2,6 +2,7 @@
   "name": "@ts-template/decorator-factory",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "build": "pnpm build:esm & pnpm build:cjs",
     "build:esm": "tsc -p tsconfig.json && fjs make ./dist/esm/package.json -c '{\"type\":\"module\"}'",
