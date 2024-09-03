@@ -79,6 +79,16 @@
         "types": "./dist/cjs/package-json/index.d.ts",
         "default": "./dist/cjs/package-json/index.js"
       }
+    },
+    "./text": {
+      "import": {
+        "types": "./dist/esm/text/index.d.ts",
+        "default": "./dist/esm/text/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/text/index.d.ts",
+        "default": "./dist/cjs/text/index.js"
+      }
     }
   }
 }
