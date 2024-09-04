@@ -7,7 +7,8 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "env": ["TST_*"]
     },
     "build": {
       "dependsOn": ["^build"],

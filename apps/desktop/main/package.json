@@ -6,11 +6,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "pnpm build && cross-env NODE_ENV=development concurrently \"pnpm tsc:watch\" \"pnpm electron:watch\"",
+    "dev": "pnpm build && cross-env NODE_ENV=development pnpm electron:start",
     "build": "pnpm build:tsc && pnpm build:rename-preload",
     "build:tsc": "tsc",
     "build:rename-preload": "fjs rename ./dist/preload.js ./dist/preload.mjs",
-    "electron:watch": "electron --watch dist/index.js",
+    "electron:start": "electron dist/index.js",
     "tsc:watch": "tsc --watch"
   },
   "type": "module",
