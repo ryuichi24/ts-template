@@ -14,6 +14,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "@ts-template/desktop-builder#rebuild:electron": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
     "@ts-template/desktop-builder#build:publish": {
       "cache": false,
       "dependsOn": ["^build"]

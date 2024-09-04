@@ -230,10 +230,6 @@ importers:
         specifier: ^5.4.5
         version: 5.5.4
 
-  packages/libs/decorator-factory/dist/cjs: {}
-
-  packages/libs/decorator-factory/dist/esm: {}
-
   packages/libs/esm-helper:
     dependencies:
       '@ts-template/tsconfig':
@@ -271,10 +267,6 @@ importers:
         specifier: ^5.4.5
         version: 5.5.4
 
-  packages/libs/file-system/dist/cjs: {}
-
-  packages/libs/file-system/dist/esm: {}
-
   packages/libs/process-event-emitter:
     devDependencies:
       '@ts-template/fjs':
@@ -293,10 +285,6 @@ importers:
         specifier: ^5.3.3
         version: 5.5.4
 
-  packages/libs/process-event-emitter/dist/cjs: {}
-
-  packages/libs/process-event-emitter/dist/esm: {}
-
   packages/libs/seed-script-generator:
     devDependencies:
       '@ts-template/fjs':
@@ -312,10 +300,6 @@ importers:
         specifier: ^5.4.5
         version: 5.5.4
 
-  packages/libs/seed-script-generator/dist/cjs: {}
-
-  packages/libs/seed-script-generator/dist/esm: {}
-
   packages/libs/type-util:
     devDependencies:
       '@ts-template/fjs':
@@ -327,8 +311,6 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.5.4
-
-  packages/libs/type-util/dist/cjs: {}
 
   packages/libs/util:
     devDependencies:
@@ -347,10 +329,6 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.5.4
-
-  packages/libs/util/dist/cjs: {}
-
-  packages/libs/util/dist/esm: {}
 
   packages/tools/cle:
     dependencies:

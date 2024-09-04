@@ -28,7 +28,8 @@
     "uml:start": "pnpm --filter=@ts-template/uml start",
     "uml:down": "pnpm --filter=@ts-template/uml down",
     "uml:stop": "pnpm --filter=@ts-template/uml stop",
-    "postinstall": "pnpm build"
+    "postinstall": "pnpm build && pnpm rebuild:electron",
+    "rebuild:electron": "turbo run @ts-template/desktop-builder#rebuild:electron"
   },
   "keywords": [],
   "author": "Ryuichi Nishi",

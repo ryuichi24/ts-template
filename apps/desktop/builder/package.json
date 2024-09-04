@@ -8,8 +8,7 @@
   "scripts": {
     "build:publish": "tsx ./scripts/build.ts --publish",
     "build:local": "tsx ./scripts/build.ts",
-    "rebuild:electron": "tsx ./scripts/rebuild.ts",
-    "postinstall": "pnpm rebuild:electron"
+    "rebuild:electron": "tsx ./scripts/rebuild.ts"
   },
   "type": "module",
   "devDependencies": {
