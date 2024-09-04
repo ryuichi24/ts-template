@@ -4,3 +4,4 @@ export * from "./ExcludeFuncProp.js";
 export * from "./ExtractProps.js";
 export * from "./PartialPick.js";
 export * from "./MapFrom.js";
+export * from "./NonNullableProps.js";
