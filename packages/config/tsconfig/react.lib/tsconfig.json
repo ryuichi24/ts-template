@@ -2,6 +2,7 @@
   "display": "React lib",
   "extends": "../react/tsconfig.json",
   "compilerOptions": {
-    "noEmit": false
+    "noEmit": false,
+    "declaration": true
   }
 }
