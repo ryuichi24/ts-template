@@ -30,7 +30,7 @@ async function main() {
       // https://developer.mamezou-tech.com/blogs/2022/08/03/electron-renderer-process-sandboxed/
       sandbox: false,
       preload: preloadScriptPath,
-      additionalArguments: [],
+      additionalArguments: ["MAIN_PROCESS_ARG:hello from main process", "MAIN_PROCESS_ARG:12345"],
     },
   });
 
