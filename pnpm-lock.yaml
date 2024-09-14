@@ -131,7 +131,11 @@ importers:
         specifier: ^5.1.4
         version: 5.4.1(@types/node@20.14.15)
 
-  dev/playground/node: {}
+  dev/playground/node:
+    dependencies:
+      '@ts-template/esc':
+        specifier: workspace:*
+        version: link:../../../packages/tools/esc
 
   dev/playground/react:
     dependencies:
@@ -217,9 +221,9 @@ importers:
 
   packages/libs/decorator-factory:
     devDependencies:
-      '@ts-template/fjs':
+      '@ts-template/tsbuild':
         specifier: workspace:*
-        version: link:../../tools/fjs
+        version: link:../../tools/tsbuild
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../config/tsconfig
@@ -248,9 +252,9 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
     devDependencies:
-      '@ts-template/fjs':
+      '@ts-template/tsbuild':
         specifier: workspace:*
-        version: link:../../tools/fjs
+        version: link:../../tools/tsbuild
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../config/tsconfig
@@ -269,9 +273,9 @@ importers:
 
   packages/libs/process-event-emitter:
     devDependencies:
-      '@ts-template/fjs':
+      '@ts-template/tsbuild':
         specifier: workspace:*
-        version: link:../../tools/fjs
+        version: link:../../tools/tsbuild
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../config/tsconfig
@@ -287,9 +291,9 @@ importers:
 
   packages/libs/seed-script-generator:
     devDependencies:
-      '@ts-template/fjs':
+      '@ts-template/tsbuild':
         specifier: workspace:*
-        version: link:../../tools/fjs
+        version: link:../../tools/tsbuild
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../config/tsconfig
@@ -302,9 +306,9 @@ importers:
 
   packages/libs/type-util:
     devDependencies:
-      '@ts-template/fjs':
+      '@ts-template/tsbuild':
         specifier: workspace:*
-        version: link:../../tools/fjs
+        version: link:../../tools/tsbuild
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../config/tsconfig
@@ -314,9 +318,9 @@ importers:
 
   packages/libs/util:
     devDependencies:
-      '@ts-template/fjs':
+      '@ts-template/tsbuild':
         specifier: workspace:*
-        version: link:../../tools/fjs
+        version: link:../../tools/tsbuild
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../config/tsconfig
@@ -339,6 +343,12 @@ importers:
         specifier: ^12.1.0
         version: 12.1.0
 
+  packages/tools/esc:
+    dependencies:
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+
   packages/tools/fjs:
     dependencies:
       commander:
@@ -353,6 +363,22 @@ importers:
       commander:
         specifier: ^12.1.0
         version: 12.1.0
+
+  packages/tools/tsbuild:
+    dependencies:
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+    devDependencies:
+      '@ts-template/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
+      '@types/node':
+        specifier: ^20.11.20
+        version: 20.14.15
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.2
 
   packages/tools/uml: {}
 
@@ -2476,6 +2502,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@5.6.2:
+    resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
@@ -3445,7 +3476,7 @@ snapshots:
   config-file-ts@0.2.6:
     dependencies:
       glob: 10.4.5
-      typescript: 5.5.4
+      typescript: 5.6.2
 
   console-control-strings@1.1.0: {}
 
@@ -4813,6 +4844,8 @@ snapshots:
     optional: true
 
   typescript@5.5.4: {}
+
+  typescript@5.6.2: {}
 
   undici-types@5.26.5: {}
 

@@ -4,15 +4,15 @@
   "description": "",
   "scripts": {
     "build": "pnpm build:esm & pnpm build:cjs",
-    "build:esm": "tsc -p tsconfig.json && fjs make ./dist/esm/package.json -c '{\"type\":\"module\"}'",
-    "build:cjs": "tsc -p tsconfig.cjs.json && fjs make ./dist/cjs/package.json -c '{\"type\":\"commonjs\"}'"
+    "build:esm": "tsb tsconfig.json -t esm",
+    "build:cjs": "tsb tsconfig.cjs.json -t cjs"
   },
   "private": true,
   "author": "Ryuichi Nishi",
   "license": "MIT",
   "devDependencies": {
     "@ts-template/tsconfig": "workspace:*",
-    "@ts-template/fjs": "workspace:*",
+    "@ts-template/tsbuild": "workspace:*",
     "typescript": "^5.4.5"
   },
   "main": "./dist/cjs/index.js",

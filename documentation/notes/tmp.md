@@ -29,12 +29,12 @@ pnpm add <dependency name> --workspace-root # or pnpm add <dependency name> -w
   // omitted...
   "scripts": {
     "build": "pnpm build:esm & pnpm build:cjs",
-    "build:esm": "tsc -p tsconfig.json && fjs make ./dist/esm/package.json -c '{\"type\":\"module\"}'",
-    "build:cjs": "tsc -p tsconfig.cjs.json && fjs make ./dist/cjs/package.json -c '{\"type\":\"commonjs\"}'"
+    "build:esm": "tsb tsconfig.json -t esm",
+    "build:cjs": "tsb tsconfig.cjs.json -t cjs"
   },
   "devDependencies": {
     "@ts-template/tsconfig": "workspace:*",
-    "@ts-template/fjs": "workspace:*",
+    "@ts-template/tsbuild": "workspace:*",
     "typescript": "^5.4.5"
   },
   // need to set the following properties for multiple module systems.
