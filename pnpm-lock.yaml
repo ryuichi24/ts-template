@@ -131,11 +131,7 @@ importers:
         specifier: ^5.1.4
         version: 5.4.1(@types/node@20.14.15)
 
-  dev/playground/node:
-    dependencies:
-      '@ts-template/esc':
-        specifier: workspace:*
-        version: link:../../../packages/tools/esc
+  dev/playground/node: {}
 
   dev/playground/react:
     dependencies:
@@ -339,12 +335,6 @@ importers:
       '@ts-template/file-system':
         specifier: workspace:*
         version: link:../../libs/file-system
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
-
-  packages/tools/esc:
-    dependencies:
       commander:
         specifier: ^12.1.0
         version: 12.1.0
