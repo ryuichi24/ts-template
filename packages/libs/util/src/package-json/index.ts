@@ -1,4 +1,5 @@
 import fs from "fs";
+import { Json } from "../common/json.js";
 
 export namespace PackageJSON {
   export type Props = {
@@ -31,16 +32,9 @@ export namespace PackageJSON {
   };
 }
 
-export class PackageJSON {
-  private _props: Partial<PackageJSON.Props> = {
-    version: "1.0.0",
-    description: "",
-    license: "MIT",
-    private: true,
-  };
-
+export class PackageJSON extends Json<Partial<PackageJSON.Props>> {
   constructor(props: Partial<PackageJSON.Props>) {
-    this._props = { ...this._props, ...props };
+    super({ ...props, version: "1.0.0", description: "", license: "MIT", private: true });
   }
 
   public get publishMeta() {
@@ -96,15 +90,6 @@ export class PackageJSON {
       this._props.bin = {};
     }
     this._props.bin[command] = binPath;
-  }
-
-  public toObj(): Partial<PackageJSON.Props> {
-    return this._props;
-  }
-
-  public toJson(): string {
-    const json = JSON.stringify(this.toObj(), null, 2);
-    return json;
   }
 }
 
