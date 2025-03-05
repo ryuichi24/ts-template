@@ -1,0 +1,13 @@
+{
+  "extends": "@ts-template/tsconfig/react",
+  "include": [
+    "src",
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  }
+}
