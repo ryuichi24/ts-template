@@ -1,0 +1,8 @@
+{
+  "display": "ts-template/js-utils CJS",
+  "extends": "@ts-template/tsconfig/node.lib.cjs",
+  "compilerOptions": {
+    "outDir": "./dist/cjs"
+  },
+  "include": ["src"]
+}
