@@ -26,6 +26,15 @@ async function main() {
 
     await _app.waitForReady();
 
+    /**
+     * Check if the app is already running or not and quit if it is
+     */
+    let isSingleInstance = app.requestSingleInstanceLock();
+    if (!isSingleInstance) {
+        global.systemQuitState = "APPROVED";
+        app.quit();
+        return;
+    }
 
     // NOTE: while the main module type is ESM but `require` can be used since esbuild adds a script making a custom `require`
     const rendererFilePath = _app.isInDebugMode()
