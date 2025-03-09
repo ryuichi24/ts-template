@@ -12,6 +12,7 @@
     "NODE_ENV",
     "TST_*"
   ],
+  // "tasks" are script items in each "package.json" file
   "tasks": {
     "dev": {
       "cache": false,
@@ -32,6 +33,24 @@
       ],
       "outputs": [
         "dist/**"
+      ]
+    },
+    "release:public": {
+      "cache": true,
+      "dependsOn": [
+        "build"
+      ],
+      "outputs": [
+        "release/**"
+      ]
+    },
+    "release:local": {
+      "cache": true,
+      "dependsOn": [
+        "build"
+      ],
+      "outputs": [
+        "release/**"
       ]
     },
     // https://turbo.build/repo/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-ran-in-parallel

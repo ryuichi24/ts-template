@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "pnpm build && cross-env NODE_ENV=development pnpm electron:start",
+    "dev": "cross-env NODE_ENV=development pnpm electron:start",
     "build": "node scripts/build-prod.mjs",
     "electron:start": "electron dist/index.js"
   },
@@ -14,7 +14,7 @@
     "@ts-template/tsconfig": "workspace:*",
     "@types/node": "^22.13.8",
     "cross-env": "^7.0.3",
-    "electron": "^34.3.0",
+    "electron": "^34.3.1",
     "electron-squirrel-startup": "^1.0.1",
     "esbuild": "^0.25.0",
     "typescript": "^5.8.2"
