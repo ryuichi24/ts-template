@@ -1,17 +1,44 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  // https://turbo.build/repo/docs/reference/configuration#ui
+  "ui": "tui",
+  // https://turbo.build/repo/docs/reference/configuration#envmode
+  "envMode": "strict",
   "globalDependencies": [],
+  // https://turbo.build/repo/docs/reference/configuration#globalenv
+  "globalEnv": [],
+  // https://turbo.build/repo/docs/reference/configuration#globalpassthroughenv
+  "globalPassThroughEnv": [
+    "NODE_ENV",
+    "TST_*"
+  ],
   "tasks": {
     "dev": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^build"],
-      "env": ["NODE_ENV", "TST_*"]
+      "dependsOn": [
+        "build"
+      ]
     },
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"],
-      "env": ["NODE_ENV", "TST_*"]
+      "cache": true,
+      "dependsOn": [
+        "^build"
+      ],
+      // https://turbo.build/repo/docs/reference/configuration#turbo_default
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    },
+    // https://turbo.build/repo/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-ran-in-parallel
+    "transit": {
+      "dependsOn": [
+        "^transit"
+      ]
     }
   }
 }
