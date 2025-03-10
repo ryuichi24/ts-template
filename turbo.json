@@ -12,7 +12,7 @@
     "NODE_ENV",
     "TST_*"
   ],
-  // "tasks" are script items in each "package.json" file
+  // "tasks" are script items in a "package.json" file of each workspace
   "tasks": {
     "dev": {
       "cache": false,
