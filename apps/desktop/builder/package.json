@@ -5,8 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "release:public": "cross-env TST_ELECTRON_PUBLISH=1 tsx ./scripts/aggregate-artifacts.ts && tsx ./scripts/build.ts",
-    "release:local": "tsx ./scripts/aggregate-artifacts.ts && tsx ./scripts/build.ts",
+    "release": "tsx ./scripts/aggregate-artifacts.ts && tsx ./scripts/build.ts",
     "electron:node": "cross-env ELECTRON_RUN_AS_NODE=1 && electron --version",
     "encode:base64": "node -e \"const fs = require('fs'); const path = require('path'); const filePath = process.argv[1]; if (!filePath) { console.error('Please provide a file path.'); process.exit(1); } const fileContents = fs.readFileSync(path.resolve(filePath)); const encodedContents = fileContents.toString('base64'); fs.writeFileSync('encoded_p12.txt', encodedContents); console.log('.p12 file encoded in base64 and saved to encoded_p12.txt');\""
   },

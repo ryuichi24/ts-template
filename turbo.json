@@ -6,11 +6,12 @@
   "envMode": "strict",
   "globalDependencies": [],
   // https://turbo.build/repo/docs/reference/configuration#globalenv
-  "globalEnv": [],
+  "globalEnv": [
+    "TST_*"
+  ],
   // https://turbo.build/repo/docs/reference/configuration#globalpassthroughenv
   "globalPassThroughEnv": [
-    "NODE_ENV",
-    "TST_*"
+    "NODE_ENV"
   ],
   // "tasks" are script items in a "package.json" file of each workspace
   "tasks": {
@@ -35,17 +36,11 @@
         "dist/**"
       ]
     },
-    "release:public": {
+    "release": {
       "cache": true,
-      "dependsOn": [
-        "build"
+      "env": [
+        "GITHUB_RELEASE_TOKEN"
       ],
-      "outputs": [
-        "release/**"
-      ]
-    },
-    "release:local": {
-      "cache": true,
       "dependsOn": [
         "build"
       ],

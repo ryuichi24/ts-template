@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export namespace App {
     export type Props = {};
@@ -6,5 +6,13 @@ export namespace App {
 
 export const App: React.FC<App.Props> = (props) => {
     const { } = props;
-    return (<div>App</div>);
+    const [appVersion, setAppVersion] = useState<string>()
+    const [appVersionFromAutoUpdater, setAppVersionAutoUpdater] = useState<string>()
+    useEffect(() => {
+        window.IPC.appVersionRequested().then(({ appVersion, appVersionFromAutoUpdater }) => {
+            setAppVersion(appVersion)
+            setAppVersionAutoUpdater(appVersionFromAutoUpdater)
+        })
+    }, [])
+    return (<div>App version: {appVersion} & App version (auto updater): {appVersionFromAutoUpdater} </div>);
 }

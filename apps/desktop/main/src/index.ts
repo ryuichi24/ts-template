@@ -1,9 +1,11 @@
 import fs from "fs";
 import path from "path";
-import { app } from "electron";
+import { app, ipcMain } from "electron";
 import { Application } from "./util/Application.js";
 import { AppTray } from "./util/AppTray.js";
 import { AppWindow } from "./util/AppWindow.js";
+import electronUpdaterPkg from "electron-updater";
+const { autoUpdater } = electronUpdaterPkg;
 
 if (require("electron-squirrel-startup")) app.quit();
 
@@ -35,6 +37,13 @@ async function main() {
         app.quit();
         return;
     }
+
+    // register IPC event handlers
+    ipcMain.handle("IPC:app-version-requested", async () => {
+        const appVersion = app.getVersion();
+        const appVersionFromAutoUpdater = autoUpdater.currentVersion
+        return { appVersion, appVersionFromAutoUpdater }
+    })
 
     // NOTE: while the main module type is ESM but `require` can be used since esbuild adds a script making a custom `require`
     const rendererFilePath = _app.isInDebugMode()

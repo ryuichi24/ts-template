@@ -1,5 +1,8 @@
 {
   "extends": "@ts-template/tsconfig/node",
+  "compilerOptions": {
+    "composite": true
+  },
   "include": [
     "vite.config.ts"
   ]

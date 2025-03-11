@@ -6,15 +6,16 @@
         "dev": "pnpm dev:desktop",
         "dev:desktop": "turbo run dev --filter=\\{\"./apps/desktop/**/*\"\\}",
         "build": "turbo run build",
-        "release:desktop:public": "turbo run release:public --filter=\\{\"./apps/desktop/**/*\"\\}",
-        "release:desktop:local": "turbo run release:local --filter=\\{\"./apps/desktop/**/*\"\\}",
+        "release:desktop": "dotenv -e ./.env -c local -- turbo run release --filter=\\{\"./apps/desktop/**/*\"\\}",
         "clean": "cle clean . --entries node_modules,.turbo,dist,release",
-        "postinstall": "pnpm build"
+        "gen:env": "node -e \"const path = require('path'); const src = path.resolve('./.env.example'); const dest = path.resolve('./.env.local'); require('@ts-template/file-system').cpFileIfNotExist(src, dest);\"",
+        "postinstall": "pnpm build && pnpm gen:env"
     },
     "keywords": [],
     "author": "ts-template",
     "devDependencies": {
         "@ts-template/cle": "workspace:*",
+        "@ts-template/file-system": "workspace:*",
         "concurrently": "^9.1.2",
         "cross-env": "^7.0.3",
         "dotenv-cli": "^8.0.0",

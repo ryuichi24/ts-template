@@ -11,6 +11,9 @@ importers:
       '@ts-template/cle':
         specifier: workspace:*
         version: link:packages/tools/cle
+      '@ts-template/file-system':
+        specifier: workspace:*
+        version: link:packages/libs/file-system
       concurrently:
         specifier: ^9.1.2
         version: 9.1.2
@@ -48,6 +51,8 @@ importers:
       tsx:
         specifier: ^4.19.3
         version: 4.19.3
+
+  apps/desktop/builder/release/app: {}
 
   apps/desktop/main:
     dependencies:

@@ -90,6 +90,22 @@ export function cpDirIfNotExist(from: string, to: string, options: { recursive?:
   fs.cpSync(from, to, options);
 }
 
+export function cpFile(from: string, to: string) {
+  fs.copyFileSync(from, to);
+}
+
+export function cpFileIfNotExist(from: string, to: string) {
+  if (!fileExist(from)) {
+    console.log(`The source file (${from}) does not exist.`);
+    return;
+  }
+  if (fileExist(to)) {
+    console.log(`The target file (${to}) already exists.`);
+    return;
+  }
+  cpFile(from, to);
+}
+
 export function removeDirIfExist(path: string) {
   if (!dirExist(path)) return;
   fs.rmSync(path, { recursive: true });

@@ -38,7 +38,7 @@ export namespace PackageJSON {
 
 export class PackageJSON {
     private _props: Partial<PackageJSON.Props> = {
-        version: "1.0.0",
+        version: "0.0.1",
         description: "",
         license: "MIT",
         private: true,

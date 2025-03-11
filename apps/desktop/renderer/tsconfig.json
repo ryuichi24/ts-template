@@ -1,11 +1,19 @@
 {
-    "files": [],
+    "extends": "@ts-template/tsconfig/react",
+    "include": [
+        "src",
+    ],
+    "compilerOptions": {
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        }
+    },
+    // dependencies
     "references": [
-        {
-            "path": "./tsconfig.app.json"
-        },
         {
             "path": "./tsconfig.vite.json"
         }
-    ]
+    ],
 }
