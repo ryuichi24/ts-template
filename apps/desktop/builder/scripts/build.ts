@@ -30,7 +30,7 @@ let builderConfig: builder.Configuration = {
     asarUnpack: [
         "**\\*.{node,dll}",
     ],
-    npmRebuild: false,
+    npmRebuild: true,
     files: ["dist", "node_modules", "package.json"],
     electronVersion: "34.3.0",
     publish: [

@@ -11,6 +11,7 @@
   },
   "type": "module",
   "devDependencies": {
+    "@ts-template/desktop-background-server": "workspace:*",
     "@ts-template/tsconfig": "workspace:*",
     "@types/node": "^22.13.8",
     "cross-env": "^7.0.3",

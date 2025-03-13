@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { fork } from "child_process";
 import { app, ipcMain } from "electron";
 import { Application } from "./util/Application.js";
 import { AppTray } from "./util/AppTray.js";
@@ -27,6 +28,23 @@ async function main() {
     });
 
     await _app.waitForReady();
+
+    // bg server start
+    const serverFilePath =
+        _app.isInDebugMode() || _app.isInDevMode()
+            ? require.resolve("@ts-template/desktop-background-server/dist/index.js")
+            : path.resolve(__dirname, "..", "desktop-background-server", "index.js");
+    const childProcess = fork(serverFilePath, [], {
+        env: {
+            FORK: "1",
+            ELECTRON_USER_DATA_PATH: app.getPath("userData"),
+            ELECTRON_USER_RESOURCES_PATH: process.resourcesPath,
+            ELECTRON_APP_CONTENTS_PATH: path.resolve(process.resourcesPath, ".."),
+            NODE_ENV: process.env.NODE_ENV,
+            PATH: process.env.PATH,
+        },
+        stdio: "inherit",
+    });
 
     /**
      * Check if the app is already running or not and quit if it is

@@ -1,6 +1,7 @@
 import path from "path"
+import { execSync } from "child_process";
 import { makeDirIfNotExist, symlinkDirIfNotExist, makeFile, dirExist } from "@ts-template/file-system"
-import { readPackageJsonFile, PackageJSON } from "@ts-template/package-json-util"
+import { readPackageJsonFile, PackageJSON, isNativeModule } from "@ts-template/package-json-util"
 
 const contentPackageJSON = readPackageJsonFile("package.json")
 const packageJSON = new PackageJSON(contentPackageJSON)
@@ -20,6 +21,12 @@ makeDirIfNotExist(appDistDir)
 // NOTE: Create a directory for the project
 makeDirIfNotExist(path.join(appDistDir, projectName))
 
+const appPackageJson = new PackageJSON({
+    name: `${projectName.replace("@", "")}-desktop`,
+    type: "module",
+    main: `dist/${projectName}/desktop-main/index.js`,
+});
+
 submodules.forEach(subModule => {
     const subModuleDir = path.resolve("node_modules", subModule)
     const dest = path.resolve(appDistDir, subModule)
@@ -34,12 +41,25 @@ submodules.forEach(subModule => {
     if (dirExist(subModuleBinDir)) {
         symlinkDirIfNotExist(subModuleBinDir, dest)
     }
+
+    /**
+     * Scan dependencies of each sum module and add native modules to the app package.json if any
+     */
+    const subModulePackageJson = readPackageJsonFile(path.join(subModuleDir, "package.json"))
+    const subModulePackageJsonObj = new PackageJSON(subModulePackageJson).toObj();
+    Object.entries(subModulePackageJsonObj.dependencies ?? {}).forEach(([dep, depVersion]) => {
+        const depPackageJsonPath = path.join(subModuleDir, "node_modules", dep, "package.json")
+        const depPackageJson = readPackageJsonFile(depPackageJsonPath)
+        if (isNativeModule(depPackageJson)) {
+            appPackageJson.addDependency(dep, depVersion)
+        }
+    })
 })
 
-const appPackageJson = new PackageJSON({
-    name: `${projectName.replace("@", "")}-desktop`,
-    type: "module",
-    main: `dist/${projectName}/desktop-main/index.js`,
-});
-
 makeFile(path.join(appDir, "package.json"), { content: appPackageJson.toJson() });
+
+// Install dependencies for some native modules
+execSync("npm install --workspaces=false", {
+    cwd: appDir,
+    stdio: "inherit",
+});

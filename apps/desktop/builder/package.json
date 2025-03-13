@@ -5,12 +5,15 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "dev": "pnpm rebuild:electron",
     "release": "tsx ./scripts/aggregate-artifacts.ts && tsx ./scripts/build.ts",
     "electron:node": "cross-env ELECTRON_RUN_AS_NODE=1 && electron --version",
-    "encode:base64": "node -e \"const fs = require('fs'); const path = require('path'); const filePath = process.argv[1]; if (!filePath) { console.error('Please provide a file path.'); process.exit(1); } const fileContents = fs.readFileSync(path.resolve(filePath)); const encodedContents = fileContents.toString('base64'); fs.writeFileSync('encoded_p12.txt', encodedContents); console.log('.p12 file encoded in base64 and saved to encoded_p12.txt');\""
+    "encode:base64": "node -e \"const fs = require('fs'); const path = require('path'); const filePath = process.argv[1]; if (!filePath) { console.error('Please provide a file path.'); process.exit(1); } const fileContents = fs.readFileSync(path.resolve(filePath)); const encodedContents = fileContents.toString('base64'); fs.writeFileSync('encoded_p12.txt', encodedContents); console.log('.p12 file encoded in base64 and saved to encoded_p12.txt');\"",
+    "rebuild:electron": "tsx ./scripts/rebuild.ts"
   },
   "type": "module",
   "dependencies": {
+    "@ts-template/desktop-background-server": "workspace:*",
     "@ts-template/desktop-main": "workspace:*",
     "@ts-template/desktop-renderer": "workspace:*"
   },
@@ -18,6 +21,7 @@
     "@ts-template/file-system": "workspace:*",
     "@ts-template/package-json-util": "workspace:*",
     "@ts-template/tsconfig": "workspace:*",
+    "@electron/rebuild": "^3.7.1",
     "cross-env": "^7.0.3",
     "electron-builder": "^25.1.8",
     "tsx": "^4.19.3"

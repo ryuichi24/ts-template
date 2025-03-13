@@ -1,0 +1,23 @@
+{
+  "name": "@ts-template/desktop-background-server",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development node dist/index.js --watch",
+    "build": "node scripts/build-prod.mjs"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@ts-template/tsconfig": "workspace:*",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.13.8",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1"
+  }
+}
