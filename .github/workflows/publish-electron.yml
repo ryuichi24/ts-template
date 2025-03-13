@@ -1,0 +1,38 @@
+name: Publishing Electron
+
+on:
+  workflow_dispatch:
+    inputs:
+      appName:
+        description: "Electron app name"
+        required: true
+        default: "TSTemplate"
+
+jobs:
+  publish:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # macos-13 => intel, macos-14 => ARM see https://github.com/actions/runner-images
+        os: [macos-14, windows-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4 # docs https://pnpm.io/continuous-integration#github-actions
+        with:
+          version: 9.12.3
+        env:
+          TEST_VAR: "HELLO IS THIS WHAT YOU WANT?"
+
+      - name: Publish release for mac
+        if: matrix.os == 'macos-14'
+        run: |
+          echo "Can I see this?: $TEST_VAR"
