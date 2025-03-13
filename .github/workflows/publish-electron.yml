@@ -3,10 +3,31 @@ name: Publishing Electron
 on:
   workflow_dispatch:
     inputs:
-      appName:
+      is_private_release:
+        type: boolean
+        description: "Whether to publish to a private release Repository"
+        required: true
+        default: false
+      company_domain:
+        description: "Company Domain"
+        required: true
+        default: "ryu24.io"
+      app_name:
         description: "Electron app name"
         required: true
         default: "TSTemplate"
+      gh_release_repo_owner_name:
+        description: "Github Release Repository Owner Name"
+        required: true
+        default: "ryuichi24"
+      gh_release_repo_name:
+        description: "Github Release Repository Name"
+        required: true
+        default: "ts-template"
+      gh_release_channel:
+        description: "Github Release Channel"
+        required: true
+        default: "alpha"
 
 jobs:
   publish:
@@ -17,7 +38,15 @@ jobs:
         os: [macos-14, windows-latest, ubuntu-latest]
 
     env:
-      TEST_VAR: "This is a test"
+      TST_COMPANY_DOMAIN: ${{ github.event.inputs.company_domain }}
+      TST_ELECTRON_APP_NAME: ${{ github.event.inputs.app_name }}
+      TST_ELECTRON_GH_RELEASE_REPO_OWNER: ${{ github.event.inputs.gh_release_repo_owner_name }}
+      TST_ELECTRON_GH_RELEASE_REPO_NAME: ${{ github.event.inputs.gh_release_repo_name }}
+      TST_ELECTRON_PUBLISH: 1
+      TST_ELECTRON_GH_RELEASE_CHANNEL: ${{ github.event.inputs.gh_release_channel }}
+      # see: https://github.com/AndrewEQ/electron-builder/commit/abea7ed7f32dc64bd5a6cda826685fde0832b489
+      # write access token just to use to publish the installers to GitHub Releases
+      GITHUB_RELEASE_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
 
     steps:
       - name: Checkout
@@ -33,7 +62,29 @@ jobs:
         with:
           version: 9.2.0
 
+      - name: set up dynamic env vars
+        if: github.event.inputs.is_private_release
+        run: |
+          echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
+
       - name: Publish release for mac
         if: matrix.os == 'macos-14'
+        env:
+          # auto updates signing for mac app
+          # see for more info: https://www.electron.build/code-signing.html
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASS: ${{ secrets.APPLE_ID_PASS }}
+          # it is used to login apple ID without a password
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # use Xcode to generate a certificate
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          # export the private key of the generated certificate from key chain, and then this pass key is generated
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+        run: |
+          echo "Can I see this?: $GH_TOKEN"
+
+      - name: Publish releases for windows and linux
+        if: ${{ matrix.os == 'windows-latest' || matrix.os == 'ubuntu-latest' }}
         run: |
           echo "Can I see this?: $TEST_VAR"
