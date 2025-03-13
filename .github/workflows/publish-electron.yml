@@ -63,7 +63,7 @@ jobs:
           version: 9.2.0
 
       - name: set up dynamic env vars
-        if: github.event.inputs.is_private_release
+        if: ${{ github.event.inputs.is_private_release }}
         run: |
           echo "GH_TOKEN_DESU=hello" >> $GITHUB_ENV
 
