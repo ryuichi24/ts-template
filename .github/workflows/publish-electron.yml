@@ -67,6 +67,10 @@ jobs:
         run: |
           echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
 
+      - name: Install dependencies
+        run: |
+          pnpm install
+
       - name: Publish release for mac
         if: matrix.os == 'macos-14'
         env:
@@ -82,9 +86,9 @@ jobs:
           # export the private key of the generated certificate from key chain, and then this pass key is generated
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
         run: |
-          echo "Can I see this?: $GH_TOKEN"
+          pnpm release:desktop
 
       - name: Publish releases for windows and linux
         if: ${{ matrix.os == 'windows-latest' || matrix.os == 'ubuntu-latest' }}
         run: |
-          echo "Can I see this?: $TEST_VAR"
+          pnpm release:desktop
