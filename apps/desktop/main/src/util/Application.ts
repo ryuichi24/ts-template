@@ -134,6 +134,7 @@ export class Application {
     const appWindow = this._getAppWindow(appWindowKey);
     autoUpdater.allowPrerelease = true;
     autoUpdater.autoInstallOnAppQuit = false;
+    // https://www.electron.build/tutorials/release-using-channels.html
     autoUpdater.channel = "alpha";
     
     const globalAppWindowInstance = appWindow.getGlobalInstance();
