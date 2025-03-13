@@ -8,6 +8,6 @@ export { }
  */
 declare global {
   interface Window {
-    IPC: { appVersionRequested: () => Promise<{ appVersion: string, appVersionFromAutoUpdater: string }> };
+    IPC: { appVersionRequested: () => Promise<{ appVersion: string, appVersionFromAutoUpdater: { version: string, prerelease: string[] } }> };
   }
 }

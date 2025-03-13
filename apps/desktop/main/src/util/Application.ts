@@ -132,9 +132,11 @@ export class Application {
 
   public attachAutoUpdaterToAppWindow(appWindowKey: AppWindow.AppWindowKey) {
     const appWindow = this._getAppWindow(appWindowKey);
-    const globalAppWindowInstance = appWindow.getGlobalInstance();
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.allowPrerelease = true;
     autoUpdater.autoInstallOnAppQuit = false;
+    autoUpdater.channel = "alpha";
+    
+    const globalAppWindowInstance = appWindow.getGlobalInstance();
     autoUpdater.addListener("update-downloaded", (event) => {
       if (!globalAppWindowInstance) return;
 
@@ -152,6 +154,10 @@ export class Application {
           }
         });
     });
+
+    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      console.log(err);
+    })
   }
 
   public hideDock() {

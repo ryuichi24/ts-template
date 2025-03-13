@@ -39,7 +39,8 @@
     "release": {
       "cache": true,
       "env": [
-        "GITHUB_RELEASE_TOKEN"
+        "GITHUB_RELEASE_TOKEN",
+        "GH_TOKEN"
       ],
       "dependsOn": [
         "build"

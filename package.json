@@ -11,8 +11,6 @@
         "gen:env": "node -e \"const path = require('path'); const src = path.resolve('./.env.example'); const dest = path.resolve('./.env.local'); require('@ts-template/file-system').cpFileIfNotExist(src, dest);\"",
         "postinstall": "pnpm build && pnpm gen:env"
     },
-    "keywords": [],
-    "author": "ts-template",
     "devDependencies": {
         "@ts-template/cle": "workspace:*",
         "@ts-template/file-system": "workspace:*",
