@@ -16,6 +16,9 @@ jobs:
         # macos-13 => intel, macos-14 => ARM see https://github.com/actions/runner-images
         os: [macos-14, windows-latest, ubuntu-latest]
 
+    env:
+      TEST_VAR: "This is a test"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,8 +32,6 @@ jobs:
         uses: pnpm/action-setup@v4 # docs https://pnpm.io/continuous-integration#github-actions
         with:
           version: 9.2.0
-        env:
-          TEST_VAR: "HELLO IS THIS WHAT YOU WANT?"
 
       - name: Publish release for mac
         if: matrix.os == 'macos-14'
