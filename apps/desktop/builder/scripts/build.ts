@@ -74,6 +74,7 @@ let builderConfig: builder.Configuration = {
             // to use private repository
             private: envs.GH_TOKEN !== undefined,
             channel: envs.ELECTRON_GH_RELEASE_CHANNEL,
+            token: envs.GH_TOKEN,
         },
     ],
     directories: {

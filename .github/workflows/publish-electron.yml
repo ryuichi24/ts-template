@@ -28,6 +28,14 @@ on:
         description: "Github Release Channel"
         required: true
         default: "alpha"
+      updater_release_channel:
+        description: "Auto Updater Release Channel (temp)"
+        required: true
+        default: "alpha"
+      release_version:
+        description: "Release Version (temp)"
+        required: true
+        default: "0.0.1-alpha.1"
 
 jobs:
   publish:
@@ -47,6 +55,9 @@ jobs:
       # see: https://github.com/AndrewEQ/electron-builder/commit/abea7ed7f32dc64bd5a6cda826685fde0832b489
       # write access token just to use to publish the installers to GitHub Releases
       GITHUB_RELEASE_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+      # temp
+      TST_AUTO_UPDATER_RELEASE_CHANNEL: ${{ github.event.inputs.updater_release_channel }}
+      TST_ELECTRON_RELEASE_VERSION: ${{ github.event.inputs.release_version }}
 
     steps:
       - name: Checkout
@@ -58,14 +69,26 @@ jobs:
           node-version: "lts/*"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4 # docs https://pnpm.io/continuous-integration#github-actions
+        uses: pnpm/action-setup@v3 # docs https://pnpm.io/continuous-integration#github-actions
         with:
-          version: 9.2.0
+          version: 9.12.3
 
       - name: set up dynamic env vars
         if: ${{ github.event.inputs.is_private_release == 'true' }}
         run: |
           echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
+
+        # NOTE: necessary for rebuilding native modules, see https://github.com/actions/runner/issues/2958
+      - name: Install setuptools
+        if: ${{ matrix.os != 'windows-latest' && matrix.os != 'macos-14' }}
+        run: |
+          sudo -H pip install setuptools
+
+        # NOTE: installing "setuptools" will not fix the issue in "macos-14" runner, downgrade the python version which has "distutils" by default
+      - uses: actions/setup-python@v5
+        if: ${{ matrix.os == 'macos-14' }}
+        with:
+          python-versio: "3.11"
 
       - name: Install dependencies
         run: |
@@ -74,6 +97,7 @@ jobs:
       - name: Publish release for mac
         if: matrix.os == 'macos-14'
         env:
+          NODE_ENV: production
           # auto updates signing for mac app
           # see for more info: https://www.electron.build/code-signing.html
           APPLE_ID: ${{ secrets.APPLE_ID }}
@@ -89,6 +113,8 @@ jobs:
           pnpm release:desktop
 
       - name: Publish releases for windows and linux
+        env:
+          NODE_ENV: production
         if: ${{ matrix.os == 'windows-latest' || matrix.os == 'ubuntu-latest' }}
         run: |
           pnpm release:desktop

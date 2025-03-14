@@ -22,6 +22,7 @@ makeDirIfNotExist(appDistDir)
 makeDirIfNotExist(path.join(appDistDir, projectName))
 
 const appPackageJson = new PackageJSON({
+    version: process.env.TST_ELECTRON_RELEASE_VERSION as `${number}.${number}.${number}` ?? "0.0.1",
     name: `${projectName.replace("@", "")}-desktop`,
     type: "module",
     main: `dist/${projectName}/desktop-main/index.js`,

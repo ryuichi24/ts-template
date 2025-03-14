@@ -22,4 +22,8 @@ declare global {
      * This tracks the system being requested to quit by the OS or other ways other than clicking the close button
      */
     var systemQuitState: "NOT_PENDING" | "PENDING" | "APPROVED";
+    /**
+     * TEMP: This is a temporary flag to change the release channel dynamically for the auto-updater
+     */
+    var TST_AUTO_UPDATER_RELEASE_CHANNEL: string
 }

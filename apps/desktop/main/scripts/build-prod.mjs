@@ -1,6 +1,7 @@
 import * as esbuild from "esbuild";
 
 const appName = process.env.TST_RELEASE_APP_NAME ? `"${process.env.TST_RELEASE_APP_NAME}"` : `"TSTemplate"`
+const autoUpdaterReleaseChannel = process.env.TST_AUTO_UPDATER_RELEASE_CHANNEL ? `"${process.env.TST_AUTO_UPDATER_RELEASE_CHANNEL}"` : `"latest"`
 
 await esbuild.build({
   entryPoints: ["src/index.ts"],
@@ -17,6 +18,8 @@ await esbuild.build({
   minify: process.env.NODE_ENV === "production",
   define: {
     TST_RELEASE_APP_NAME: appName,
+    // TEMP: for testing auto-updater
+    TST_AUTO_UPDATER_RELEASE_CHANNEL: autoUpdaterReleaseChannel,
   },
 });
 

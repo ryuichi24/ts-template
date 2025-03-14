@@ -135,8 +135,8 @@ export class Application {
     autoUpdater.allowPrerelease = true;
     autoUpdater.autoInstallOnAppQuit = false;
     // https://www.electron.build/tutorials/release-using-channels.html
-    autoUpdater.channel = "alpha";
-    
+    autoUpdater.channel = TST_AUTO_UPDATER_RELEASE_CHANNEL
+
     const globalAppWindowInstance = appWindow.getGlobalInstance();
     autoUpdater.addListener("update-downloaded", (event) => {
       if (!globalAppWindowInstance) return;
