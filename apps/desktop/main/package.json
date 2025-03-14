@@ -6,13 +6,15 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development pnpm electron:start",
-    "build": "node scripts/build-prod.mjs",
-    "electron:start": "electron dist/index.js"
+    "build": "node scripts/build-prod.mjs & pnpm copy:assets",
+    "electron:start": "electron dist/index.js",
+    "copy:assets": "node -e \"const path = require('path'); const source = path.resolve('src', 'assets'); const dest = path.resolve('dist', 'assets'); const fileSystemUtl = require('@ts-template/file-system'); fileSystemUtl.symlinkDirIfNotExist(source, dest);\""
   },
   "type": "module",
   "devDependencies": {
     "@ts-template/desktop-background-server": "workspace:*",
     "@ts-template/tsconfig": "workspace:*",
+    "@ts-template/file-system": "workspace:*",
     "@types/node": "^22.13.8",
     "cross-env": "^7.0.3",
     "electron": "^34.3.1",

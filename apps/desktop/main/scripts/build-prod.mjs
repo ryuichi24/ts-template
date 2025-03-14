@@ -17,7 +17,7 @@ await esbuild.build({
   minify: process.env.NODE_ENV === "production",
   define: {
     TST_RELEASE_APP_NAME: appName,
-  }
+  },
 });
 
 await esbuild.build({

@@ -70,6 +70,9 @@ importers:
       '@ts-template/file-system':
         specifier: workspace:*
         version: link:../../../packages/libs/file-system
+      '@ts-template/node-js-ctx':
+        specifier: workspace:*
+        version: link:../../../packages/libs/node-js-ctx
       '@ts-template/package-json-util':
         specifier: workspace:*
         version: link:../../../packages/libs/package-json-util
@@ -86,6 +89,12 @@ importers:
         specifier: ^4.19.3
         version: 4.19.3
 
+  apps/desktop/builder/release/app:
+    dependencies:
+      better-sqlite3:
+        specifier: ^11.8.1
+        version: 11.8.1
+
   apps/desktop/main:
     dependencies:
       electron-log:
@@ -98,6 +107,9 @@ importers:
       '@ts-template/desktop-background-server':
         specifier: workspace:*
         version: link:../background-server
+      '@ts-template/file-system':
+        specifier: workspace:*
+        version: link:../../../packages/libs/file-system
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/configs/tsconfig

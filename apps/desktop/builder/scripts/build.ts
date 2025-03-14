@@ -1,4 +1,6 @@
+import path from "path"
 import builder from "electron-builder";
+import { NodeJSCtx } from "@ts-template/node-js-ctx"
 
 const envs = {
     COMPANY_DOMAIN: process.env.TST_COMPANY_DOMAIN ?? "example.com",
@@ -19,6 +21,19 @@ const envs = {
     },
     getCopyright() {
         return `Copyright © ${new Date().getFullYear()} ${this.getCompanyName()}`
+    },
+}
+
+const ctx = {
+    assetsDir: path.join(process.cwd(), "node_modules", "@ts-template", "desktop-main", "dist", "assets"),
+    getOSAssetsDir(os: "mac" | "linux" | "windows") {
+        return path.join(this.assetsDir, os)
+    },
+    getOSLogoFileExt(os: "mac" | "linux" | "windows") {
+        return os === "windows" ? "ico" : os === "mac" ? "icns" : os === "linux" ? "png" : "png"
+    },
+    getOSLogo(os: "mac" | "linux" | "windows") {
+        return path.join(this.getOSAssetsDir(os), "icons", "app", `logo.${this.getOSLogoFileExt(os)}`)
     }
 }
 
@@ -47,7 +62,68 @@ let builderConfig: builder.Configuration = {
         app: "release/app",
         output: "release/out",
     },
+    extraFiles: [],
 };
+
+const macConfig: builder.Configuration["mac"] = {
+    target: {
+        arch: ["arm64", "x64"],
+        target: "default",
+    },
+    icon: ctx.getOSLogo("mac")
+}
+
+const linuxConfig: builder.Configuration["linux"] = {
+    target: ["AppImage"],
+    icon: ctx.getOSLogo("linux"),
+}
+
+const windowsConfig: builder.Configuration["win"] = {
+    target: ["nsis"],
+    icon: ctx.getOSLogo("windows"),
+}
+
+if (NodeJSCtx.isMac) {
+    builderConfig = {
+        ...builderConfig, mac: macConfig,
+        // https://github.com/MichaelTr7/Electron-Builder-DMG-Tutorial
+        dmg: {
+            window: {
+                width: 544,
+                height: 408,
+            },
+            contents: [
+                {
+                    x: 130,
+                    y: 220,
+                },
+                {
+                    x: 410,
+                    y: 220,
+                    type: "link",
+                    path: "/Applications",
+                },
+            ],
+        },
+    }
+}
+
+if (NodeJSCtx.isLinux) {
+    builderConfig = { ...builderConfig, linux: linuxConfig }
+}
+
+if (NodeJSCtx.isWindows) {
+    builderConfig = {
+        ...builderConfig, win: windowsConfig, nsis: {
+            oneClick: true,
+            installerHeaderIcon: ctx.getOSLogo("windows"),
+            uninstallerIcon: ctx.getOSLogo("windows"),
+            uninstallDisplayName: `${envs.ELECTRON_APP_NAME} Uninstaller`,
+            allowToChangeInstallationDirectory: false,
+            deleteAppDataOnUninstall: true,
+        },
+    }
+}
 
 builder.build({
     publish: envs.ELECTRON_PUBLISH ? "always" : "never",

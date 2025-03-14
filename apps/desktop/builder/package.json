@@ -18,6 +18,7 @@
     "@ts-template/desktop-renderer": "workspace:*"
   },
   "devDependencies": {
+    "@ts-template/node-js-ctx": "workspace:*",
     "@ts-template/file-system": "workspace:*",
     "@ts-template/package-json-util": "workspace:*",
     "@ts-template/tsconfig": "workspace:*",
