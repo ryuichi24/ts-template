@@ -40,7 +40,9 @@
       "cache": true,
       "env": [
         "GITHUB_RELEASE_TOKEN",
-        "GH_TOKEN"
+        "GH_TOKEN",
+        "APPLE_*",
+        "CSC_*"
       ],
       "dependsOn": [
         "build"
