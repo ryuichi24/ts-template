@@ -1,6 +1,7 @@
 import path from "path"
 import builder from "electron-builder";
 import { NodeJSCtx } from "@ts-template/node-js-ctx"
+import { readPackageJsonFile } from "@ts-template/package-json-util"
 
 const envs = {
     COMPANY_DOMAIN: process.env.TST_COMPANY_DOMAIN ?? "example.com",
@@ -25,15 +26,32 @@ const envs = {
 }
 
 const ctx = {
-    assetsDir: path.join(process.cwd(), "node_modules", "@ts-template", "desktop-main", "dist", "assets"),
+    mainProcessModuleDir: path.join(process.cwd(), "node_modules", "@ts-template", "desktop-main"),
     getOSAssetsDir(os: "mac" | "linux" | "windows") {
-        return path.join(this.assetsDir, os)
+        return path.join(this.mainProcessModuleDir, "dist", "assets", os)
     },
     getOSLogoFileExt(os: "mac" | "linux" | "windows") {
         return os === "windows" ? "ico" : os === "mac" ? "icns" : os === "linux" ? "png" : "png"
     },
     getOSLogo(os: "mac" | "linux" | "windows") {
         return path.join(this.getOSAssetsDir(os), "icons", "app", `logo.${this.getOSLogoFileExt(os)}`)
+    },
+    getElectronVersion() {
+        let electronVersion: string | null = null;
+        const mainProcessModulePackageJson = readPackageJsonFile(path.join(this.mainProcessModuleDir, "package.json"))
+        const rawVersion = (mainProcessModulePackageJson.devDependencies.electron ?? mainProcessModulePackageJson.dependencies.electron);
+        if (rawVersion === undefined) {
+            throw new Error("Electron version not found!");
+        }
+
+        if (rawVersion.includes("^")) {
+            electronVersion = rawVersion.split("^")[1]
+        }
+
+        if (!rawVersion.includes("^")) {
+            electronVersion = rawVersion
+        }
+        return electronVersion
     }
 }
 
@@ -47,7 +65,7 @@ let builderConfig: builder.Configuration = {
     ],
     npmRebuild: true,
     files: ["dist", "node_modules", "package.json"],
-    electronVersion: "34.3.0",
+    electronVersion: ctx.getElectronVersion(),
     publish: [
         {
             provider: "github",

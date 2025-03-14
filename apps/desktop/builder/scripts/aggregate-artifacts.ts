@@ -43,7 +43,7 @@ submodules.forEach(subModule => {
     }
 
     /**
-     * Scan dependencies of each sum module and add native modules to the app package.json if any
+     * Scan dependencies of each sub module and add native modules to the app package.json if any
      */
     const subModulePackageJson = readPackageJsonFile(path.join(subModuleDir, "package.json"))
     const subModulePackageJsonObj = new PackageJSON(subModulePackageJson).toObj();
