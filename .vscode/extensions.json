@@ -1,3 +1,6 @@
 {
-    "recommendations": []
+    "recommendations": [
+        // for dotenv file syntax highlighting
+        "mikestead.dotenv"
+    ]
 }
