@@ -6,7 +6,7 @@
         "dev": "pnpm dev:desktop",
         "dev:desktop": "turbo run dev --filter={\"./apps/desktop/**/*\"}",
         "build": "turbo run build",
-        "release:desktop": "dotenv -e ./.env -c local -- turbo run release --filter={\"./apps/desktop/**/*\"}",
+        "release:desktop": "cross-env NODE_ENV=production dotenv -e ./.env -c local -- turbo run release --filter={\"./apps/desktop/**/*\"}",
         "clean": "cle clean . --entries node_modules,.turbo,dist,release",
         "gen:env": "node -e \"const path = require('path'); const src = path.resolve('./.env.example'); const dest = path.resolve('./.env.local'); require('@ts-template/file-system').cpFileIfNotExist(src, dest);\"",
         "postinstall": "pnpm build && pnpm gen:env"
