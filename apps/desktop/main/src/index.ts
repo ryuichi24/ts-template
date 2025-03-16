@@ -73,6 +73,9 @@ async function main() {
   ipcMain.handle("IPC:on-updater-channel-changed", async (evt, { channel }) => {
     appConfig.set("update.channel", channel);
   });
+  ipcMain.handle("IPC:on-update-check-requested", async (evt) => {
+    autoUpdater.checkForUpdates();
+  });
 
   // NOTE: while the main module type is ESM but `require` can be used since esbuild adds a script making a custom `require`
   const rendererFilePath = _app.isInDebugMode()
