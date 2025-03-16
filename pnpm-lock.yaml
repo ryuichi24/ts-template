@@ -89,6 +89,12 @@ importers:
         specifier: ^4.19.3
         version: 4.19.3
 
+  apps/desktop/builder/release/app:
+    dependencies:
+      better-sqlite3:
+        specifier: ^11.8.1
+        version: 11.8.1
+
   apps/desktop/main:
     dependencies:
       electron-log:
@@ -209,6 +215,10 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
+  packages/libs/node-js-ctx/dist/cjs: {}
+
+  packages/libs/node-js-ctx/dist/esm: {}
+
   packages/libs/package-json-util:
     dependencies:
       glob:
@@ -234,6 +244,10 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
+  packages/libs/package-json-util/dist/cjs: {}
+
+  packages/libs/package-json-util/dist/esm: {}
+
   packages/libs/type-util:
     devDependencies:
       '@ts-template/tsbuild':
@@ -245,6 +259,10 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.8.2
+
+  packages/libs/type-util/dist/cjs: {}
+
+  packages/libs/type-util/dist/esm: {}
 
   packages/tools/cle:
     dependencies:

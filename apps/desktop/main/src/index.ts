@@ -6,6 +6,7 @@ import { Application } from "./util/Application.js";
 import { AppTray } from "./util/AppTray.js";
 import { AppWindow } from "./util/AppWindow.js";
 import electronUpdaterPkg from "electron-updater";
+import { appConfig } from "./util/AppConfig.js";
 const { autoUpdater } = electronUpdaterPkg;
 
 if (require("electron-squirrel-startup")) app.quit();
@@ -57,10 +58,17 @@ async function main() {
     }
 
     // register IPC event handlers
-    ipcMain.handle("IPC:app-version-requested", async () => {
+    ipcMain.handle("IPC:on-app-version-requested", async () => {
         const appVersion = app.getVersion();
         const appVersionFromAutoUpdater = autoUpdater.currentVersion
         return { appVersion, appVersionFromAutoUpdater }
+    })
+    ipcMain.handle("IPC:on-updater-channel-requested", async () => {
+        const channel = appConfig.get("update.channel")
+        return { channel }
+    })
+    ipcMain.handle("IPC:on-updater-channel-changed", async (evt, { channel }) => {
+        appConfig.set("update.channel", channel)
     })
 
     // NOTE: while the main module type is ESM but `require` can be used since esbuild adds a script making a custom `require`

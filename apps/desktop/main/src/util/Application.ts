@@ -3,6 +3,7 @@ import { app, nativeTheme, dialog } from "electron";
 import log from "electron-log";
 import electronUpdaterPkg from "electron-updater";
 import { AppWindow } from "./AppWindow.js";
+import { appConfig } from "./AppConfig.js";
 const { autoUpdater } = electronUpdaterPkg;
 autoUpdater.logger = log;
 
@@ -135,7 +136,7 @@ export class Application {
     autoUpdater.allowPrerelease = true;
     autoUpdater.autoInstallOnAppQuit = false;
     // https://www.electron.build/tutorials/release-using-channels.html
-    autoUpdater.channel = TST_AUTO_UPDATER_RELEASE_CHANNEL
+    autoUpdater.channel = appConfig.get("update.channel") ?? "latest";
 
     const globalAppWindowInstance = appWindow.getGlobalInstance();
     autoUpdater.addListener("update-downloaded", (event) => {
