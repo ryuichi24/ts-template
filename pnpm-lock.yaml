@@ -190,6 +190,32 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
+  packages/libs/file-system/dist/cjs: {}
+
+  packages/libs/file-system/dist/esm: {}
+
+  packages/libs/logger:
+    devDependencies:
+      '@ts-template/tsbuild':
+        specifier: workspace:*
+        version: link:../../tools/tsbuild
+      '@ts-template/tsconfig':
+        specifier: workspace:*
+        version: link:../../configs/tsconfig
+      '@types/node':
+        specifier: ^20.11.20
+        version: 20.17.22
+      tsx:
+        specifier: ^4.7.1
+        version: 4.19.3
+      typescript:
+        specifier: ^5.3.3
+        version: 5.8.2
+
+  packages/libs/logger/dist/cjs: {}
+
+  packages/libs/logger/dist/esm: {}
+
   packages/libs/node-js-ctx:
     dependencies:
       glob:
