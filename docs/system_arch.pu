@@ -1,0 +1,28 @@
+@startuml
+
+skinparam rectangle<<style>> {
+	roundCorner 25
+}
+
+sprite $applicationService jar:archimate/application-service
+sprite $technologyInfraService jar:archimate/technology-infra-service
+
+rectangle "Main Process" as MP <<$applicationService>><<style>> #Application
+rectangle "Background Server Process" as BSP <<$applicationService>><<style>> #Application
+rectangle "Renderer Process" as RP <<$applicationService>><<style>> #Application
+
+rectangle "Database" as DB <<$technologyInfraService>><<style>> #Technology
+
+' https://plantuml.com/sequence-diagram
+BSP <-up-> MP : inter process communication
+BSP <-up-> RP : web socket communication
+BSP -down-> DB
+
+legend top left
+System Architecture Entity
+====
+<$applicationService> : application service
+====
+<$technologyInfraService> : infra component
+endlegend
+@enduml

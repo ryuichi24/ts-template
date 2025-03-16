@@ -289,6 +289,8 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
+  packages/tools/uml: {}
+
 packages:
 
   7zip-bin@5.2.0:

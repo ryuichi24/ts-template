@@ -1,0 +1,11 @@
+{
+  "name": "@ts-template/uml",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start": "docker compose up -d",
+    "down": "docker compose down",
+    "stop": "docker compose stop"
+  }
+}

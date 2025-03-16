@@ -1,6 +1,8 @@
 {
     "recommendations": [
         // for dotenv file syntax highlighting
-        "mikestead.dotenv"
+        "mikestead.dotenv",
+        // for plantuml file syntax highlighting
+        "jebbs.plantuml"
     ]
 }
