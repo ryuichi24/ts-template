@@ -11,6 +11,7 @@
   "devDependencies": {
     "@ts-template/tsconfig": "workspace:*",
     "@types/better-sqlite3": "^7.6.12",
+    "@ts-template/logger": "workspace:*",
     "@types/node": "^22.13.8",
     "cross-env": "^7.0.3",
     "esbuild": "^0.25.0",

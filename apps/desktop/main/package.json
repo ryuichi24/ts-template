@@ -15,6 +15,7 @@
     "@ts-template/desktop-background-server": "workspace:*",
     "@ts-template/tsconfig": "workspace:*",
     "@ts-template/file-system": "workspace:*",
+    "@ts-template/logger": "workspace:*",
     "@types/node": "^22.13.8",
     "cross-env": "^7.0.3",
     "electron": "^34.3.1",

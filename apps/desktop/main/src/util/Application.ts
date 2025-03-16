@@ -1,11 +1,12 @@
 import path from "path";
 import { app, nativeTheme, dialog } from "electron";
-import log from "electron-log";
 import electronUpdaterPkg from "electron-updater";
 import { AppWindow } from "./AppWindow.js";
 import { appConfig } from "./AppConfig.js";
+import { logger } from "./logger.js";
 const { autoUpdater } = electronUpdaterPkg;
-autoUpdater.logger = log;
+
+autoUpdater.logger = logger;
 
 export namespace Application {
   export type Props = {
@@ -159,7 +160,7 @@ export class Application {
 
     autoUpdater.checkForUpdatesAndNotify().catch((err) => {
       console.log(err);
-    })
+    });
   }
 
   public hideDock() {
@@ -236,9 +237,9 @@ export class Application {
 }
 
 function terminateOnErr(err: Error) {
-  log.error("electron:err");
-  log.error(err);
-  log.error(err.stack);
+  logger.error("electron:err");
+  logger.error(err);
+  logger.error(err.stack);
   global.mainWindow = null;
   tray?.destroy();
   app.quit();

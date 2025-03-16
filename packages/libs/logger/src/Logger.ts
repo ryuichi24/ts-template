@@ -1,44 +1,67 @@
 export class Logger {
-  private strategies: Logger.LogStrategy[] = [];
-  private globalLevel: Logger.LogLevel = Logger.LogLevel.DEBUG;
+  private _strategies: Logger.LogStrategy[] = [];
+  private _name: string;
+
+  constructor(props: Logger.Props) {
+    this._name = props.name || "Default Logger";
+  }
 
   public addStrategy(strategy: Logger.LogStrategy): this {
-    this.strategies.push(strategy);
+    this._strategies.push(strategy);
     return this;
   }
 
   public setLevel(level: Logger.LogLevel): this {
-    this.globalLevel = level;
-    this.strategies.forEach((strategy) => strategy.setLevel(level));
+    this._strategies.forEach((strategy) => strategy.setLevel(level));
     return this;
   }
 
-  private log(level: Logger.LogLevel, message: string): void {
-    this.strategies.forEach((strategy) => strategy.log(level, message));
+  private log(level: Logger.LogLevel, message?: string | object | null): void {
+    message = this._stringify(message);
+    const logPrefix = this._buildPrefix(level);
+    this._strategies.forEach((strategy) => strategy.log({ level, message, loggerName: this._name, logPrefix }));
   }
 
-  public debug(message: string): void {
+  private _buildPrefix(level: Logger.LogLevel): string {
+    return `[${new Date().toUTCString()}][${Logger.LogLevel[level]}][${this._name}]`;
+  }
+
+  private _stringify(message: string | object | undefined | null): string {
+    if (typeof message === "object") {
+      return JSON.stringify(message, null, 2);
+    }
+    if (message === undefined) {
+      return "undefined";
+    }
+    if (message === null) {
+      return "null";
+    }
+    return message;
+  }
+
+  public debug(message: string | object | undefined | null): void {
     this.log(Logger.LogLevel.DEBUG, message);
   }
 
-  public info(message: string): void {
+  public info(message: string | object | undefined | null): void {
     this.log(Logger.LogLevel.INFO, message);
   }
 
-  public warn(message: string): void {
+  public warn(message: string | object | undefined | null): void {
     this.log(Logger.LogLevel.WARN, message);
   }
 
-  public error(message: string): void {
+  public error(message: string | object | undefined | null): void {
     this.log(Logger.LogLevel.ERROR, message);
   }
 
-  public fatal(message: string): void {
+  public fatal(message: string | object | undefined | null): void {
     this.log(Logger.LogLevel.FATAL, message);
   }
 }
 
 export namespace Logger {
+  export type Props = { name?: string };
   export enum LogLevel {
     DEBUG = 1,
     INFO,
@@ -47,8 +70,10 @@ export namespace Logger {
     FATAL,
   }
 
+  export type LogPayload = { level: Logger.LogLevel; message: string; loggerName: string; logPrefix: string };
+
   export interface LogStrategy {
-    log(level: LogLevel, message: string): void;
+    log(payload: Logger.LogPayload): void;
     setLevel(level: LogLevel): void;
   }
 
@@ -60,7 +85,7 @@ export namespace Logger {
       return this;
     }
 
-    abstract log(level: Logger.LogLevel, message: string): void;
+    abstract log(payload: Logger.LogPayload): void;
 
     protected shouldLog(level: Logger.LogLevel): boolean {
       return level >= this.currentLevel;

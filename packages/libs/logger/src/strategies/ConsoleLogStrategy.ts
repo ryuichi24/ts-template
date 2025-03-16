@@ -1,9 +1,9 @@
 import { Logger } from "../Logger.js";
 
 export class ConsoleLogStrategy extends Logger.BaseLogStrategy {
-  log(level: Logger.LogLevel, message: string): void {
+  log({ level, message, loggerName, logPrefix }: Logger.LogPayload): void {
     if (this.shouldLog(level)) {
-      const msg = `[${new Date().toUTCString()}][${Logger.LogLevel[level]}] ${message}`;
+      const msg = `${logPrefix} ${message}`;
       console.log(msg);
     }
   }
