@@ -23,7 +23,7 @@ export class Logger {
   }
 
   private _buildPrefix(level: Logger.LogLevel): string {
-    return `[${new Date().toUTCString()}][${Logger.LogLevel[level]}][${this._name}]`;
+    return `[${new Date().toUTCString()}][${Logger.LogLevel[level].toUpperCase()}][${this._name}]`;
   }
 
   private _stringify(message: string | object | undefined | null): string {
@@ -78,7 +78,7 @@ export namespace Logger {
   }
 
   export abstract class BaseLogStrategy implements Logger.LogStrategy {
-    protected currentLevel: Logger.LogLevel = Logger.LogLevel.DEBUG;
+    protected currentLevel: Logger.LogLevel = Logger.LogLevel.INFO;
 
     setLevel(level: Logger.LogLevel): this {
       this.currentLevel = level;
