@@ -74,9 +74,15 @@ jobs:
           version: 9.12.3
 
       - name: set up dynamic env vars
-        if: ${{ github.event.inputs.is_private_release == 'true' }}
+        if: ${{ github.event.inputs.is_private_release == 'true' && matrix.os != 'windows-latest' }}
         run: |
           echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
+
+      # https://github.com/actions/runner-images/issues/5251#issuecomment-1071030822
+      - name: set up dynamic env vars for windows
+        if: ${{ github.event.inputs.is_private_release == 'true' && matrix.os == 'windows-latest' }}
+        run: |
+          echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $env:GITHUB_ENV
 
         # NOTE: necessary for rebuilding native modules, see https://github.com/actions/runner/issues/2958
       - name: Install setuptools
