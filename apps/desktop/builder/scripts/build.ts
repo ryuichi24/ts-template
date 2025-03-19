@@ -10,7 +10,11 @@ const envs = {
     ELECTRON_GH_RELEASE_REPO_NAME: process.env.TST_ELECTRON_GH_RELEASE_REPO_NAME,
     ELECTRON_GH_RELEASE_CHANNEL: process.env.TST_ELECTRON_GH_RELEASE_CHANNEL,
     ELECTRON_PUBLISH: process.env.TST_ELECTRON_PUBLISH === "1",
-    GH_TOKEN: process.env.GH_TOKEN,
+    GH_TOKEN: process.env.GH_TOKEN
+    ? process.env.GH_TOKEN.includes("github")
+      ? process.env.GH_TOKEN
+      : undefined
+    : undefined,
     getCompanyName() {
         return envs.COMPANY_DOMAIN.split(".")[0]
     },
