@@ -140,6 +140,11 @@ export class Application {
     autoUpdater.channel = appConfig.get("update.channel") ?? "latest";
 
     const globalAppWindowInstance = appWindow.getGlobalInstance();
+
+    // downloaded files are stored in the following directories:
+    // mac: /Users/{user}/Library/Caches/{app name}-updater
+    // windows: /c/Users/{user}/AppData/Local/{app name}-updater
+    // linux: /home/{user}/.cache/{app name}-updater
     autoUpdater.addListener("update-downloaded", (event) => {
       if (!globalAppWindowInstance) return;
 
