@@ -1,0 +1,69 @@
+@startuml
+
+skinparam rectangle<<style>> {
+    roundCorner 25
+}
+
+' skinparam linetype ortho
+
+sprite $applicationService jar:archimate/application-service
+sprite $technologyInfraService jar:archimate/technology-infra-service
+
+
+rectangle "Desktop App" as DesktopApp {
+    ' desktop application
+    rectangle "Main Process" as MainProcess <<$applicationService>><<style>> #Application
+    rectangle "Background Server Process" as BackgroundServerProcess <<$applicationService>><<style>> #Application
+    rectangle "Renderer Process (GUI)" as RendererProcess <<$applicationService>><<style>> #Application
+    rectangle "Background Worker Process" as BackgroundWorkerProcess <<$applicationService>><<style>> #Application
+    rectangle "Local Database" as LocalDatabase <<$technologyInfraService>><<style>> #Technology
+
+    ' https://plantuml.com/sequence-diagram
+    BackgroundServerProcess <-up-> MainProcess : inter process communication
+    BackgroundServerProcess <-up-> RendererProcess : web socket communication
+    BackgroundServerProcess <-up-> BackgroundWorkerProcess : I/O communication
+    BackgroundServerProcess -down-> LocalDatabase
+}
+
+rectangle "Plugin Market App" as PluginMarketApp {
+    ' Server
+    rectangle "Strapi" {
+        rectangle "Admint Panel (GUI)" as AdminPanel <<$applicationService>><<style>> #Application
+        rectangle "Content Server" as ContentServer <<$applicationService>><<style>> #Application
+        rectangle "Cloud Database" as CloudDatabase <<$technologyInfraService>><<style>> #Technology
+    }
+
+    rectangle "Front Server" as FrontServer <<$applicationService>><<style>> #Application {
+
+    }
+
+    rectangle "Github Server" as GigHubServer <<$applicationService>><<style>> #Application
+
+    AdminPanel -up-> ContentServer : REST API\n (Auth required)
+    FrontServer -up-> ContentServer : REST API\n (Auth required)
+    ContentServer -down-> CloudDatabase
+    FrontServer -left-> GigHubServer: REST API
+}
+
+rectangle "Client Browser" as ClientBrowser
+
+DesktopApp -down-> FrontServer : REST API\n (Auth required)
+ClientBrowser <-up-> DesktopApp: OAuth 2.0
+ClientBrowser <-up-> Externals: OAuth 2.0
+
+rectangle "Externals (e.g. Google)" as Externals {
+    ' external entities
+    rectangle "Authorization Server" as AuthorizationServer <<$applicationService>><<style>> #Application
+    rectangle "Resource Server" as ResourcesServer <<$applicationService>><<style>> #Application
+}
+
+FrontServer <-down-> Externals: OAuth 2.0
+
+legend top left
+System Architecture Entity
+====
+<$applicationService> : application service
+====
+<$technologyInfraService> : infra component
+endlegend
+@enduml
