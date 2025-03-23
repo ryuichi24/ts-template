@@ -64,6 +64,12 @@ export const App: React.FC<App.Props> = (props) => {
       <div>
         <button onClick={handleUpdateCheckRequested}>Check for updates</button>
       </div>
+
+      <div>
+        <div>
+          <button onClick={() => window.IPC.onOpenInBrowserRequested("http://localhost:3000/auth/oauth-login")}>Login with Google</button>
+        </div>
+      </div>
     </div>
   );
 };

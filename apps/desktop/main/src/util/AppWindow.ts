@@ -35,7 +35,7 @@ export class AppWindow {
      * @ts-template/desktop-main:dev: [14052:0305/173019.550077:ERROR:CONSOLE(1)] "Request Autofill.enable failed. {"code":-32601,"message":"'Autofill.enable' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
      * @ts-template/desktop-main:dev: [14052:0305/173019.550098:ERROR:CONSOLE(1)] "Request Autofill.setAddresses failed. {"code":-32601,"message":"'Autofill.setAddresses' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
      * ```
-     * 
+     *
      * As a workaround, you can comment out this line but the warnings have no impact on the application.
      */
     // https://github.com/electron/electron/issues/41614
@@ -69,5 +69,17 @@ export class AppWindow {
 
   public restore() {
     global[this._appWindowId]?.restore();
+  }
+
+  public focus() {
+    global[this._appWindowId]?.focus();
+  }
+
+  public isOpen() {
+    return global[this._appWindowId]?.isVisible();
+  }
+
+  public isMinimized() {
+    return global[this._appWindowId]?.isMinimized();
   }
 }

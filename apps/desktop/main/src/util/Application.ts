@@ -215,6 +215,14 @@ export class Application {
     return this._isMac;
   }
 
+  get isWin() {
+    return this._isWindows;
+  }
+
+  get isLinux() {
+    return this._isLinux;
+  }
+
   get appName() {
     return this._appName;
   }

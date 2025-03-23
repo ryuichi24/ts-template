@@ -3,6 +3,8 @@
         // for dotenv file syntax highlighting
         "mikestead.dotenv",
         // for plantuml file syntax highlighting
-        "jebbs.plantuml"
+        "jebbs.plantuml",
+        // api client
+        "rangav.vscode-thunder-client"
     ]
 }

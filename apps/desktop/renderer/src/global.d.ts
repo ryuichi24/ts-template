@@ -16,6 +16,7 @@ declare global {
       onUpdaterChannelRequested: () => Promise<{ channel: string }>;
       onUpdaterChannelChanged: (channel: string) => Promise<{}>;
       onUpdateCheckRequested: () => Promise<{}>;
+      onOpenInBrowserRequested: (url: string) => Promise<{}>;
     };
   }
 }
