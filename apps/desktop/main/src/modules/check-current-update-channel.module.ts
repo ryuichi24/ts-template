@@ -8,7 +8,6 @@ export class CheckCurrentUpdateChannelModule implements IModule {
     logger.debug("CheckCurrentUpdateChannelModule");
     Electron.ipcMain.handle("IPC:on-updater-channel-requested", async () => {
       const channel = appConfig.get("update.channel");
-      logger.debug(`Current update channel: ${channel}`);
       return channel;
     });
   }

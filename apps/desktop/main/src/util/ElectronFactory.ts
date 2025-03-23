@@ -49,11 +49,13 @@ class ElectronFactory {
 }
 
 class ElectronApp implements IElectronApp {
-  constructor(private modules: IModule[]) {
-    this._setup();
-  }
+  constructor(private modules: IModule[]) {}
+
   public async start(options: AppOptions) {
     const appCtx = this._buildAppCtx(options);
+
+    this._preventMultipleAppInstances();
+    this._configureUserDataFolderName(options.appName);
 
     Electron.app.on("ready", () => {
       this.modules.forEach((module) => module.onReady?.(appCtx));
@@ -101,16 +103,32 @@ class ElectronApp implements IElectronApp {
     };
   }
 
-  private _setup() {
-    this._preventMultipleAppInstances();
-  }
-
   private _preventMultipleAppInstances() {
     const isSingleInstance = Electron.app.requestSingleInstanceLock();
     if (!isSingleInstance) {
       Electron.app.quit();
       return;
     }
+  }
+
+  /**
+   * Configures the user data folder name.
+   *
+   * `appData`:
+   *  - mac => `/Users/<user>/Library/Application Support`
+   *  - windows => `C:\Users\<user>\AppData\Roaming`
+   *  - linux => `/home/<user>/.config`
+   *
+   * `userData`:
+   *  - mac => `/Users/<user>/Library/Application Support/<app name>`
+   *  - windows => `C:\Users\<user>\AppData\Roaming\<app name>`
+   *  - linux => `/home/<user>/.config/<app name>`
+   *
+   * @param name User Data Folder Name
+   */
+  private _configureUserDataFolderName(folderName: string) {
+    const appData = Electron.app.getPath("appData");
+    Electron.app.setPath("userData", path.join(appData, folderName));
   }
 }
 

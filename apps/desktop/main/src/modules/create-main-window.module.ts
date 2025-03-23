@@ -6,11 +6,9 @@ import { AppWindowManager } from "../util/AppWindowManager.js";
 
 export class CreateMainWindowModule implements IModule {
   onReady(appCtx: AppContext): void {
-    logger.debug("CreateMainWindowModule: onReady");
     const preloadScriptPath = path.resolve(appCtx.rootDir, "preload.mjs");
     const iconPath = this._buildLogoIconPath(appCtx.osSpecificAssetPath);
 
-    logger.debug("Making a main window: onReady");
     AppWindowManager.createWindow("main", {
       minWidth: 1408,
       minHeight: 848,
@@ -30,8 +28,6 @@ export class CreateMainWindowModule implements IModule {
       },
     });
 
-    logger.debug("Making a main window is done: onReady");
-
     // NOTE: while the main module type is ESM but `require` can be used since esbuild adds a script making a custom `require`
     const rendererFilePath = NodeJSCtx.isDebug
       ? require.resolve("@ts-template/desktop-renderer/dist/index.html")
@@ -41,6 +37,16 @@ export class CreateMainWindowModule implements IModule {
 
     if (NodeJSCtx.isDev) {
       mainWindow.loadURL(rendererDevServerURL);
+      /**
+       * This opens the devtool in the application window but it emits some warnings below:
+       * ```
+       * @ts-template/desktop-main:dev: [14052:0305/173019.550077:ERROR:CONSOLE(1)] "Request Autofill.enable failed. {"code":-32601,"message":"'Autofill.enable' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+       * @ts-template/desktop-main:dev: [14052:0305/173019.550098:ERROR:CONSOLE(1)] "Request Autofill.setAddresses failed. {"code":-32601,"message":"'Autofill.setAddresses' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+       * ```
+       *
+       * As a workaround, you can comment out this line but the warnings have no impact on the application.
+       */
+      // https://github.com/electron/electron/issues/41614
       mainWindow.webContents.openDevTools();
     }
 

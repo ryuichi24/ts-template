@@ -9,6 +9,7 @@ import { CheckCurrentUpdateChannelModule } from "./modules/check-current-update-
 import { ChangeUpdateChannelModule } from "./modules/change-update-channel.module.js";
 import { CheckAppVersionModule } from "./modules/check-app-version.module.js";
 import { checkForUpdatesModule } from "./modules/check-for-update.module.js";
+import { SetupAutoUpdaterModule } from "./modules/setup-auto-updater.module.js";
 
 if (require("electron-squirrel-startup")) Electron.app.quit();
 
@@ -30,6 +31,7 @@ async function bootstrap() {
     ChangeUpdateChannelModule,
     CheckAppVersionModule,
     checkForUpdatesModule,
+    SetupAutoUpdaterModule,
   ]);
 
   await app.start({
