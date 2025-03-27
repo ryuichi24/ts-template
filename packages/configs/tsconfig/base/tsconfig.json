@@ -9,6 +9,8 @@
     "removeComments": true,
     // Module '"path"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "incremental": true,
+    "strictNullChecks": true
   }
 }

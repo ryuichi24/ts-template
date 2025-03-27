@@ -1,0 +1,37 @@
+import { ConfigFactory } from "@nestjs/config";
+import { Config } from "./config.type";
+
+// https://docs.nestjs.com/techniques/configuration#custom-configuration-files
+export const configFactory: ConfigFactory = (): Config => ({
+  server: {
+    port: parseInt(process.env.PORT ?? "3000", 10),
+  },
+  auth: {
+    // https://stackoverflow.com/questions/63092165/should-refresh-tokens-in-jwt-authentication-schemes-be-signed-with-a-different-s
+    jwt: {
+      accessToken: {
+        secret: process.env.AUTH_JWT_ACCESS_TOKEN_SECRET ?? "",
+        expiresIn: process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRES_IN ?? "15m",
+      },
+      refreshToken: {
+        secret: process.env.AUTH_JWT_REFRESH_TOKEN_SECRET ?? "",
+        expiresIn: process.env.AUTH_JWT_REFRESH_TOKEN_EXPIRES_IN ?? "7d",
+      },
+    },
+    oauth: {
+      desktop: {
+        google: {
+          clientId: process.env.DESKTOP_OAUTH_GOOGLE_CLIENT_ID ?? "",
+          clientSecret: process.env.DESKTOP_OAUTH_GOOGLE_CLIENT_SECRET ?? "",
+          authURL: process.env.DESKTOP_OAUTH_GOOGLE_AUTH_URL ?? "https://accounts.google.com/o/oauth2/v2/auth",
+          redirectUri:
+            process.env.DESKTOP_OAUTH_GOOGLE_REDIRECT_URL ?? "http://localhost:3000/auth/oauth/desktop/google/callback",
+          tokenUrl: process.env.DESKTOP_OAUTH_GOOGLE_TOKEN_URL ?? "https://oauth2.googleapis.com/token",
+        },
+        discord: {},
+      },
+      mobile: {},
+      web: {},
+    },
+  },
+});
