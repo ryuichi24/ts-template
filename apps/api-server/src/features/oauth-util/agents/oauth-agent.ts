@@ -12,9 +12,9 @@ export interface IOAuthAgent {
   makeLoginUrl(): string;
   makeLoginSuccessUrl(payload: {
     accessToken: string;
-    accessTokenExpiresIn: string;
+    accessTokenExpiresAt: Date;
     refreshToken: string;
-    refreshTokenExpiresIn: string;
+    refreshTokenExpiresAt: Date;
   }): string;
   getAuthTokens(code: string): Promise<OAuthTokenResponse>;
   fetchUserInfo(accessToken: string): Promise<any>;
@@ -25,9 +25,9 @@ export abstract class OAuthAgent implements IOAuthAgent {
   abstract makeLoginUrl(): string;
   abstract makeLoginSuccessUrl(payload: {
     accessToken: string;
-    accessTokenExpiresIn: string;
+    accessTokenExpiresAt: Date;
     refreshToken: string;
-    refreshTokenExpiresIn: string;
+    refreshTokenExpiresAt: Date;
   }): string;
   abstract getAuthTokens(code: string): Promise<OAuthTokenResponse>;
   abstract fetchUserInfo(accessToken: string): Promise<any>;

@@ -33,5 +33,8 @@ export const configFactory: ConfigFactory = (): Config => ({
       mobile: {},
       web: {},
     },
+    admin: {
+      emails: [...(process.env.ADMIN_EMAILS?.split(",") ?? [])],
+    },
   },
 });

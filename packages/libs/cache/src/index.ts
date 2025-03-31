@@ -7,7 +7,7 @@ export class Cache {
     this.store.set(key, { value, expiresAt });
   }
 
-  get(key: string): any | null {
+  get<TData>(key: string): TData | null {
     const entry = this.store.get(key);
     if (!entry) return null;
 
@@ -17,6 +17,20 @@ export class Cache {
     }
 
     return entry.value;
+  }
+
+  getAllValues<TData>(): TData[] {
+    return this.getAll().map(([key, value]) => value.value as TData);
+  }
+
+  getAll<TData>(): [
+    string,
+    {
+      value: TData;
+      expiresAt?: number;
+    },
+  ][] {
+    return Array.from(this.store);
   }
 
   delete(key: string): boolean {

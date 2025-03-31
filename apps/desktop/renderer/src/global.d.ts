@@ -17,6 +17,14 @@ declare global {
       onUpdaterChannelChanged: (channel: string) => Promise<{}>;
       onUpdateCheckRequested: () => Promise<{}>;
       onOpenInBrowserRequested: (url: string) => Promise<{}>;
+      onOauthLoginSuccess: (
+        callback: (payload: {
+          accessToken: string;
+          refreshToken: string;
+          accessTokenExpiresAt: string;
+          refreshTokenExpiresAt: string;
+        }) => void,
+      ) => void;
     };
   }
 }

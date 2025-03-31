@@ -50,7 +50,15 @@ export class UserManager {
 
   public async searchUsers() {}
 
-  public async getUserById() {}
+  public async getUserById(id: string) {
+    // TODO: fetch user by email from the database or headless CMS
+    const foundUser = this._users.find((user) => user.id === id);
+    // TODO: if not found, return null
+    if (!foundUser) {
+      return null;
+    }
+    return foundUser;
+  }
 
   public async getUserByEmail(email: string) {
     // TODO: fetch user by email from the database or headless CMS

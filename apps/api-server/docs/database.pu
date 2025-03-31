@@ -1,0 +1,38 @@
+@startuml
+
+entity users {
+    *id: string [PK]
+    --
+    username: string
+    email: string [UNIQUE]
+    password_hash: string?
+    is_email_verified: boolean
+    is_deleted: boolean
+    deleted_at: Date
+    created_at: Date
+    updated_at: Date
+}
+
+entity oauth_accounts {
+    *id: string [PK]
+    --
+    user_id: string [FK -> users.id]
+    oauth_provider: string
+    oauth_id: string [UNIQUE]
+    created_at: Date
+}
+
+entity oauth_tokens {
+    *id: string [PK]
+    --
+    oauth_id: string [FK -> oauth_accounts.oauth_id]
+    access_token: string
+    refresh_token: string
+    expires_at: Date
+    created_at: Date
+}
+
+users::id ||--|{ oauth_accounts::user_id
+oauth_accounts::id ||--|| oauth_tokens::oauth_id
+
+@enduml

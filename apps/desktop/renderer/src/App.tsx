@@ -11,6 +11,12 @@ export const App: React.FC<App.Props> = (props) => {
   const [prereleases, setPrereleases] = useState<string[]>([]);
   const [updaterChannel, setUpdaterChannel] = useState<string>();
   const [customChannel, setCustomChannel] = useState<string>();
+  const [oauthLoginSuccessPayload, setOauthLoginSuccessPayload] = useState<{
+    accessToken: string;
+    refreshToken: string;
+    accessTokenExpiresAt: string;
+    refreshTokenExpiresAt: string;
+  }>();
 
   const handleUpdaterChannelChange = async (channel: string) => {
     await window.IPC.onUpdaterChannelChanged(channel);
@@ -26,6 +32,11 @@ export const App: React.FC<App.Props> = (props) => {
 
     window.IPC.onUpdaterChannelRequested().then(({ channel }) => {
       setUpdaterChannel(channel);
+    });
+
+    window.IPC.onOauthLoginSuccess((payload) => {
+      console.log("oauth login success", payload);
+      setOauthLoginSuccessPayload(payload);
     });
   }, []);
 
@@ -67,8 +78,25 @@ export const App: React.FC<App.Props> = (props) => {
 
       <div>
         <div>
-          <button onClick={() => window.IPC.onOpenInBrowserRequested("http://localhost:3000/auth/oauth-login")}>Login with Google</button>
+          <button
+            onClick={() =>
+              window.IPC.onOpenInBrowserRequested("http://localhost:3000/api/oauth/login/desktop?provider=google")
+            }
+          >
+            Login with Google
+          </button>
         </div>
+      </div>
+
+      <div>
+        {oauthLoginSuccessPayload && (
+          <ul>
+            <li>Access Token: {oauthLoginSuccessPayload.accessToken}</li>
+            <li>Refresh Token: {oauthLoginSuccessPayload.refreshToken}</li>
+            <li>Access Token Expires In: {oauthLoginSuccessPayload.accessTokenExpiresAt}</li>
+            <li>Refresh Token Expires in: {oauthLoginSuccessPayload.refreshTokenExpiresAt}</li>
+          </ul>
+        )}
       </div>
     </div>
   );

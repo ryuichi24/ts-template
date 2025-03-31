@@ -1,22 +1,27 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "src/features/auth/guards/auth.guard";
-import { CacheService } from "./cache.service";
+import { AuthGuard } from "src/features/auth-util/guards/auth.guard";
 import { ApiBearerAuth, ApiParam } from "@nestjs/swagger";
+import { CacheService } from "./cache.service";
+import { RoleGuard } from "src/features/auth-util/guards/role.guard";
+import { Roles } from "src/features/auth-util/decorators/roles.decorator";
 
 @Controller("caches")
-@UseGuards(AuthGuard)
-@ApiBearerAuth("Access Token")
+@UseGuards(AuthGuard, RoleGuard)
+@Roles(['admin'])
+@ApiBearerAuth("Authorization")
 export class CacheController {
   constructor(private _cacheService: CacheService) {}
 
   @Get(":key")
   @ApiParam({ name: "key", type: String, required: true })
   public onCacheCheck(@Param("key") cacheKey: string) {
-    if (!cacheKey) {
-      return { error: "Cache key is required." };
-    }
-    const cache = this._cacheService.get(cacheKey);
+    const res = this._cacheService.onCacheCheck({ key: cacheKey });
+    return { cache: res.cache };
+  }
 
-    return { cache };
+  @Get()
+  public onCacheCheckAll() {
+    const res = this._cacheService.onCacheCheckAll();
+    return { caches: res.caches };
   }
 }

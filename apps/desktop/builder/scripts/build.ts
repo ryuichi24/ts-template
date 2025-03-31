@@ -89,7 +89,7 @@ let builderConfig: builder.Configuration = {
   },
   extraFiles: [],
   protocols: {
-    name: envs.getLowerCaseAppName(),
+    name: envs.ELECTRON_APP_NAME,
     schemes: [envs.getLowerCaseAppName()],
   },
 };

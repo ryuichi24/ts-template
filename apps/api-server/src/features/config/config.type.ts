@@ -27,5 +27,8 @@ export type Config = {
         expiresIn: string;
       };
     };
+    admin: {
+      emails: string[];
+    };
   };
 };

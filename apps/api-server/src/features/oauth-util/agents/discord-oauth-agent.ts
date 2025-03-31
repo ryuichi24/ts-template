@@ -1,5 +1,5 @@
 import { ConfigService } from "src/features/config/config.service";
-import { OAuthAgent, OAuthPlatformType, OAuthTokenResponse } from "./OAuthAgent";
+import { OAuthAgent, OAuthPlatformType, OAuthTokenResponse } from "./oauth-agent";
 
 export class DiscordOAuthAgent extends OAuthAgent {
   constructor(
@@ -8,16 +8,22 @@ export class DiscordOAuthAgent extends OAuthAgent {
   ) {
     super(platform);
   }
-  public makeLoginUrl(): string {
+
+  makeLoginUrl(): string {
     throw new Error("Method not implemented.");
   }
-  public makeLoginSuccessUrl(): string {
+  makeLoginSuccessUrl(payload: {
+    accessToken: string;
+    accessTokenExpiresAt: Date;
+    refreshToken: string;
+    refreshTokenExpiresAt: Date;
+  }): string {
     throw new Error("Method not implemented.");
   }
-  public getAuthTokens(code: string): Promise<OAuthTokenResponse> {
+  getAuthTokens(code: string): Promise<OAuthTokenResponse> {
     throw new Error("Method not implemented.");
   }
-  public fetchUserInfo(accessToken: string): Promise<any> {
+  fetchUserInfo(accessToken: string): Promise<any> {
     throw new Error("Method not implemented.");
   }
 }

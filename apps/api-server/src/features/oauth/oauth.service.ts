@@ -1,127 +1,123 @@
-import crypto from "crypto";
 import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { CacheService } from "../util/cache/cache.service";
-import { OAuthAgentFactory } from "./agents/OAuthAgentFactory";
-import { OAuthPlatformType, OAuthProviderType } from "./agents/OAuthAgent";
-import { UserManager } from "../user/user.manager";
+import { UserManager } from "../user-util/managers/user.manager";
+import { RefreshTokenManager } from "../auth-util/managers/refresh-token.manager";
+import { calculateExpiresAt } from "@ts-template/date-util";
+import { OAuthPlatformType, OAuthProviderType } from "../oauth-util/agents/oauth-agent";
+import { OAuthAgentFactory } from "../oauth-util/agents/oauth-agent-factory";
+import { OAuthAccountManager } from "../oauth-util/managers/oauth-account.manager";
+import { OAuthTokenManager } from "../oauth-util/managers/oauth-token.manager";
+import { ConfigService } from "../config/config.service";
 
-type OAuthAccount = {
-  id: string;
-  userId: string;
-  oauthProvider: string;
-  oauthId: string;
-  createdAt: Date;
-};
-
-type OAuthSession = {
-  id: string;
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: Date;
-  createdAt: Date;
-  oauthAccountId: string;
-};
+export namespace OauthService {
+  export type LoginAttemptDto = {
+    platform: OAuthPlatformType;
+    provider: OAuthProviderType;
+  };
+  export type completeLoginDto = {
+    platform: OAuthPlatformType;
+    provider: OAuthProviderType;
+    code: string;
+  };
+}
 
 @Injectable()
 export class OauthService {
-  private _oauthAccounts: OAuthAccount[] = [];
-  private _oauthSessions: OAuthSession[] = [];
-
   constructor(
     private _configService: ConfigService,
     private _userManger: UserManager,
     private _oauthAgentFactory: OAuthAgentFactory,
     private _jwtService: JwtService,
-    private _cacheService: CacheService,
+    private _oauthAccountManager: OAuthAccountManager,
+    private _oauthTokenManager: OAuthTokenManager,
+    private _refreshTokenManager: RefreshTokenManager,
   ) {}
 
-  public onLoginAttempt(platform: OAuthPlatformType, OAuthProviderType: OAuthProviderType) {
-    const oauthProvider = this._oauthAgentFactory.create({ platform, provider: OAuthProviderType });
+  public attemptLogin(dto: OauthService.LoginAttemptDto) {
+    const oauthProvider = this._oauthAgentFactory.create({ platform: dto.platform, provider: dto.provider });
     const url = oauthProvider.makeLoginUrl();
     return url;
   }
 
-  public async onLoginSuccess(platform: OAuthPlatformType, provider: OAuthProviderType, code: string) {
-    const oauthProvider = this._oauthAgentFactory.create({ platform, provider });
-    const authTokenResponse = await oauthProvider.getAuthTokens(code);
-    // TODO: fetch the user info from the resource provider
+  public async completeLogin(dto: OauthService.completeLoginDto) {
+    const oauthProvider = this._oauthAgentFactory.create({ platform: dto.platform, provider: dto.provider });
+    const authTokenResponse = await oauthProvider.getAuthTokens(dto.code);
     const userInfo = await oauthProvider.fetchUserInfo(authTokenResponse.accessToken);
 
     let existingUser = await this._userManger.getUserByEmail(userInfo.email);
     if (!existingUser) {
-      // TODO: create a new user
       existingUser = await this._userManger.createUser({ email: userInfo.email, username: userInfo.name });
     }
 
-    let existingOauthAccount = this._getOauthAccountByUserId(existingUser.id);
+    let existingOauthAccount = await this._oauthAccountManager.getOAuthAccountByUserIdAndProvider({
+      userId: existingUser.id,
+      oauthProvider: dto.provider,
+    });
     if (!existingOauthAccount) {
-      existingOauthAccount = await this._createOauthAccount({
+      existingOauthAccount = await this._oauthAccountManager.createOAuthAccount({
         userId: existingUser.id,
         oauthId: userInfo.id,
-        oauthProvider: provider,
+        oauthProvider: dto.provider,
       });
     }
 
-    const oauthSession = await this._createOauthSession({
-      email: userInfo.email,
+    // cache oauth token
+    const oauthToken = await this._oauthTokenManager.getOAuthTokenByOauthId(existingOauthAccount.oauthId);
+
+    // delete existing oauth token
+    if (oauthToken) {
+      await this._oauthTokenManager.deleteOAuthToken(oauthToken.id);
+    }
+
+    await this._oauthTokenManager.createOAuthToken({
+      oauthId: userInfo.id,
       accessToken: authTokenResponse.accessToken,
       refreshToken: authTokenResponse.refreshToken,
-      expiresIn: new Date(Date.now() + authTokenResponse.expiresIn * 1000),
-      oauthAccountId: existingOauthAccount.id,
+      expiresAt: new Date(Date.now() + authTokenResponse.expiresIn * 1000),
     });
 
-    const successLoginUrl = oauthProvider.makeLoginSuccessUrl(oauthSession);
+    // generate an access token and refresh token
+
+    // NOTE: temporary role implementation
+    const adminEmails = this._configService.getOrThrow("auth.admin.emails", { infer: true });
+    const isAdmin = adminEmails.includes(existingUser.email);
+
+    const accessTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.accessToken.expiresIn", {
+      infer: true,
+    });
+    const accessTokenPayload = {
+      userId: existingUser.id,
+      oauthId: existingOauthAccount.id,
+      authProvider: dto.provider,
+      roles: ["normal"],
+    };
+
+    if (isAdmin) {
+      accessTokenPayload.roles.push("admin");
+    }
+
+    const accessToken = this._jwtService.sign(accessTokenPayload, {
+      secret: this._configService.get("auth.jwt.accessToken.secret", {
+        infer: true,
+      }),
+      expiresIn: accessTokenExpiresIn,
+    });
+    const accessTokenExpiresAt = calculateExpiresAt(accessTokenExpiresIn);
+    const refreshTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.refreshToken.expiresIn", {
+      infer: true,
+    });
+    const { refreshToken, expiresAt: refreshTokenExpiresAt } = this._refreshTokenManager.issue({
+      userId: existingUser.id,
+      authProvider: dto.provider,
+      expiresIn: refreshTokenExpiresIn,
+    });
+
+    const successLoginUrl = oauthProvider.makeLoginSuccessUrl({
+      accessToken,
+      refreshToken,
+      accessTokenExpiresAt,
+      refreshTokenExpiresAt,
+    });
     return successLoginUrl;
-  }
-
-  private _getOauthAccountByUserId(userId: string) {
-    return this._oauthAccounts.find((account) => account.userId === userId);
-  }
-
-  private async _createOauthAccount(createOauthDto: {
-    userId: string;
-    oauthId: string;
-    oauthProvider: OAuthProviderType;
-  }) {
-    const newOauthAccount: OAuthAccount = {
-      id: Math.random().toString(36).substring(7),
-      ...createOauthDto,
-      createdAt: new Date(),
-    };
-    this._oauthAccounts.push(newOauthAccount);
-
-    return newOauthAccount;
-  }
-
-  private async _createOauthSession(createOauthSessionDto: {
-    email: string;
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: Date;
-    oauthAccountId: string;
-  }) {
-    const newOauthSession: OAuthSession = {
-      id: crypto.randomUUID(),
-      ...createOauthSessionDto,
-      createdAt: new Date(),
-    };
-    this._oauthSessions.push(newOauthSession);
-
-    const accessTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.accessToken.expiresIn");
-    const accessToken = this._jwtService.sign(
-      { email: createOauthSessionDto.email, oauthSessionId: newOauthSession.id },
-      {
-        secret: this._configService.get("auth.jwt.accessToken.secret"),
-        expiresIn: accessTokenExpiresIn,
-      },
-    );
-
-    const refreshToken = crypto.randomBytes(40).toString("hex");
-    const refreshTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.refreshToken.expiresIn");
-    this._cacheService.set(refreshToken, newOauthSession.id, refreshTokenExpiresIn);
-
-    return { accessToken, accessTokenExpiresIn, refreshToken, refreshTokenExpiresIn: refreshTokenExpiresIn };
   }
 }

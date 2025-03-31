@@ -12,7 +12,7 @@ async function bootstrap() {
     .setDescription("TS Template API description")
     .setVersion("1.0")
     // https://docs.nestjs.com/openapi/security#bearer-authentication
-    .addBearerAuth({ type: "apiKey", name: "Access Token", in: "header" }, "Access Token")
+    .addBearerAuth({ type: "http", name: "Authorization", in: "header" }, "Authorization")
     // https://docs.nestjs.com/openapi/security#oauth2-authentication
     .addOAuth2(
       {

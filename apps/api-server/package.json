@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nest start --watch --env-file='.env.local'",
     "build": "nest build",
-    "gen:module": "nest generate module --",
+    "gen:mdl": "nest generate module --",
     "gen:ctrl": "nest generate controller --",
     "gen:srvs": "nest generate service --",
     "gen:proj": "nest new --",
@@ -20,6 +20,7 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/platform-express": "^11.0.1",
     "@ts-template/cache": "workspace:*",
+    "@ts-template/date-util": "workspace:*",
     "axios": "^1.8.4",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"

@@ -1,11 +1,14 @@
-import axios from "axios";
 import { ConfigService } from "@nestjs/config";
-import { OAuthAgent, OAuthPlatformType, OAuthTokenResponse } from "./OAuthAgent";
+import { OAuthAgent, OAuthPlatformType, OAuthTokenResponse } from "./oauth-agent";
+import { Injectable } from "@nestjs/common";
+import { GoogleOauthApiClient } from "../clients/google-oauth-api-client";
 
+@Injectable()
 export class GoogleOAuthAgent extends OAuthAgent {
   constructor(
     platform: OAuthPlatformType,
     private _configService: ConfigService,
+    private _googleApiClient: GoogleOauthApiClient,
   ) {
     super(platform);
   }
@@ -42,56 +45,46 @@ export class GoogleOAuthAgent extends OAuthAgent {
     const redirectUri = this._configService.getOrThrow<string>(`auth.oauth.${this.platformName}.google.redirectUri`, {
       infer: true,
     });
-
-    const params = new URLSearchParams({
-      code,
-      client_id: clientId,
-      client_secret: clientSecret,
-      redirect_uri: redirectUri,
-      grant_type: "authorization_code",
+    const tokenUrl = this._configService.getOrThrow<string>(`auth.oauth.${this.platformName}.google.tokenUrl`, {
+      infer: true,
     });
 
-    const url = `${this._configService.getOrThrow(`auth.oauth.${this.platformName}.google.tokenUrl`, { infer: true })}?${params.toString()}`;
-    const response = await axios.post(url);
+    const res = await this._googleApiClient.requestToken({
+      tokenUrl,
+      tokenCode: code,
+      clientId,
+      clientSecret,
+      redirectUri,
+      grantType: "authorization_code",
+    });
 
-    const accessToken = response.data.access_token;
-    const refreshToken = response.data.refresh_token;
-    const idToken = response.data.id_token;
-    const expiresIn = response.data.expires_in;
-
-    return {
-      accessToken,
-      refreshToken,
-      idToken,
-      expiresIn,
-    };
+    return res;
   }
 
   makeLoginSuccessUrl(payload: {
     accessToken: string;
-    accessTokenExpiresIn: string;
+    accessTokenExpiresAt: Date;
     refreshToken: string;
-    refreshTokenExpiresIn: string;
+    refreshTokenExpiresAt: Date;
   }): string {
     const params = new URLSearchParams({
       access_token: payload.accessToken,
-      access_token_expires_in: payload.accessTokenExpiresIn,
+      access_token_expires_at: payload.accessTokenExpiresAt.toISOString(),
       refresh_token: payload.refreshToken,
-      refresh_token_expires_in: payload.refreshTokenExpiresIn,
+      refresh_token_expires_at: payload.refreshTokenExpiresAt.toISOString(),
     });
 
-    return `tstemplate://success?${params.toString()}`;
+    let protocol = "https";
+
+    if (this.platform === "desktop") {
+      protocol = "tstemplate";
+    }
+
+    return `${protocol}://success?${params.toString()}`;
   }
 
   async fetchUserInfo(accessToken: string) {
-    const response = await axios.get("https://www.googleapis.com/oauth2/v1/userinfo", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const data = response.data;
-
-    return data;
+    const userInfo = await this._googleApiClient.requestUserInfo(accessToken);
+    return userInfo;
   }
 }

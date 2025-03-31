@@ -1,7 +1,7 @@
 import { Controller, Get, HttpRedirectResponse, Param, Query, Redirect } from "@nestjs/common";
 import { OauthService } from "./oauth.service";
-import { OAuthPlatformType, OAuthProviderType } from "./agents/OAuthAgent";
-import { ApiParam, ApiQuery, ApiResponse, ApiBearerAuth, ApiOAuth2 } from "@nestjs/swagger";
+import { ApiParam, ApiQuery, ApiResponse } from "@nestjs/swagger";
+import { OAuthPlatformType, OAuthProviderType } from "../oauth-util/agents/oauth-agent";
 
 @Controller("oauth")
 export class OauthController {
@@ -14,7 +14,7 @@ export class OauthController {
   @ApiQuery({ name: "provider", type: String, required: true, enum: ["google", "github", "discord"] })
   @ApiResponse({ status: 302, description: "Redirect to authorization server" })
   async onLoginAttempt(@Param("platform") platform: OAuthPlatformType, @Query("provider") provider: OAuthProviderType) {
-    const loginUrl = this._oauthService.onLoginAttempt(platform, provider);
+    const loginUrl = this._oauthService.attemptLogin({ platform, provider });
     const redirectRes: HttpRedirectResponse = {
       url: loginUrl,
       statusCode: 302,
@@ -32,7 +32,7 @@ export class OauthController {
     @Query("provider") provider: OAuthProviderType,
     @Query("code") code: string,
   ) {
-    const successLoginUrl = await this._oauthService.onLoginSuccess(platform, provider, code);
+    const successLoginUrl = await this._oauthService.completeLogin({ platform, provider, code });
     const redirectRes: HttpRedirectResponse = {
       url: successLoginUrl,
       statusCode: 302,

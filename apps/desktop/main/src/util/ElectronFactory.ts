@@ -79,6 +79,7 @@ class ElectronApp implements IElectronApp {
     });
 
     Electron.app.on("open-url", (event, url) => {
+      event.preventDefault();
       this.modules.forEach((module) => module.onOpenUrl?.(appCtx, event, url));
     });
 

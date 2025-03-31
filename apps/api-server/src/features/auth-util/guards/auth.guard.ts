@@ -20,18 +20,27 @@ export class AuthGuard implements CanActivate {
     const token = authHeader.split(" ")[1];
 
     try {
-      const decoded = this._jwtService.verify<{ email: string; oauthSessionId: string; iat: number; exp: number }>(
-        token,
-        {
-          secret: this._configService.get("auth.jwt.accessToken.secret", { infer: true }),
-        },
-      );
+      const decoded = this._jwtService.verify<{ userId: string; iat: number; exp: number }>(token, {
+        secret: this._configService.get("auth.jwt.accessToken.secret", { infer: true }),
+      });
 
-      req.user = decoded;
+      req.user = this._normalizeDecodedData(decoded);
 
       return true;
     } catch (error) {
       throw new UnauthorizedException("Invalid token Token.");
     }
+  }
+
+  private _normalizeDecodedData(decoded: { [key: string]: any }): { [key: string]: any } {
+    return Object.entries(decoded).reduce((acc, [key, value]) => {
+      if (key === "userId") {
+        return { ...acc, id: value };
+      }
+      return {
+        ...acc,
+        [key]: value,
+      };
+    }, {});
   }
 }

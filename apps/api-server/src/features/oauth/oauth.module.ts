@@ -2,13 +2,13 @@ import { Module } from "@nestjs/common";
 import { OauthService } from "./oauth.service";
 import { OauthController } from "./oauth.controller";
 import { JwtModule } from "@nestjs/jwt";
-import { OAuthAgentFactory } from "./agents/OAuthAgentFactory";
-import { CacheModule } from "../util/cache/cache.module";
-import { UserModule } from "../user/user.module";
+import { AuthUtilModule } from "../auth-util/auth-util.module";
+import { OauthUtilModule } from "../oauth-util/oauth-util.module";
+import { UserUtilModule } from "../user-util/user-util.module";
 
 @Module({
-  imports: [JwtModule.register({ global: true }), CacheModule, UserModule],
-  providers: [OauthService, OAuthAgentFactory],
+  imports: [OauthUtilModule, AuthUtilModule, UserUtilModule, JwtModule.register({ global: true })],
+  providers: [OauthService],
   controllers: [OauthController],
 })
 export class OauthModule {}
