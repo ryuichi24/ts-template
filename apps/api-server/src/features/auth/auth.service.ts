@@ -67,7 +67,7 @@ export class AuthService {
       return null;
     }
 
-    return { user: existingUser };
+    return { user: { ...existingUser, avatarUrl: userInfo.avatarUrl } };
   }
 
   public async refreshToken(dto: AuthService.RefreshTokenDto) {

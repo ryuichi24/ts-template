@@ -10,6 +10,7 @@ type User = {
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
+  avatarUrl?: string;
 };
 
 type EmailVerificationToken = {};

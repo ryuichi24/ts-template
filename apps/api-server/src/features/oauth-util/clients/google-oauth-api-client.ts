@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IOauthApiClient } from "./oauth-api-client";
+import { IOauthApiClient, UserInfo } from "./oauth-api-client";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -35,7 +35,7 @@ export class GoogleOauthApiClient implements IOauthApiClient {
       expiresIn,
     };
   }
-  async requestUserInfo(accessToken: string): Promise<any> {
+  async requestUserInfo(accessToken: string): Promise<UserInfo> {
     const response = await axios.get("https://www.googleapis.com/oauth2/v1/userinfo", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -44,6 +44,6 @@ export class GoogleOauthApiClient implements IOauthApiClient {
 
     const data = response.data;
 
-    return data;
+    return { ...data, avatarUrl: data.picture };
   }
 }
