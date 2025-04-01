@@ -24,14 +24,14 @@ type ValueOfNestedKey<T, K extends string> = K extends `${infer P}.${infer Rest}
 
 export namespace AppStore {
   export type StoreConfig<TStore> = {
-    storeFileName?: `${string}.json`;
+    storeFileName: `${string}.json`;
     defaultData?: TStore;
     interceptorGet?: CanIntercept;
     interceptorSet?: CanIntercept;
   };
 
   export interface CanIntercept {
-    intercept<TValue>(value: TValue): TValue;
+    intercept(key: string, value: any): any;
   }
 }
 
@@ -41,17 +41,10 @@ export class AppStore<TStore> {
   private interceptorGet?: AppStore.CanIntercept;
   private interceptorSet?: AppStore.CanIntercept;
 
-  constructor(
-    config: AppStore.StoreConfig<TStore> = {
-      storeFileName: "user-config.json",
-      defaultData: {} as TStore,
-      interceptorGet: undefined,
-      interceptorSet: undefined,
-    },
-  ) {
+  constructor(config: AppStore.StoreConfig<TStore>) {
     const userDataPath = app.getPath("userData");
-    this.storePath = path.join(userDataPath, config.storeFileName!);
-    this.storeData = this.loadData(config.defaultData!);
+    this.storePath = path.join(userDataPath, config.storeFileName);
+    this.storeData = this.loadData(config.defaultData ?? ({} as TStore));
     this.interceptorGet = config.interceptorGet;
     this.interceptorSet = config.interceptorSet;
   }
@@ -85,7 +78,7 @@ export class AppStore<TStore> {
       return undefined;
     }
     if (this.interceptorGet) {
-      value = this.interceptorGet.intercept(value);
+      value = this.interceptorGet.intercept(key, value);
     }
     return value;
   }
@@ -100,7 +93,7 @@ export class AppStore<TStore> {
 
   public set<TKey extends NestedKeyOf<TStore>>(key: TKey, value: ValueOfNestedKey<TStore, TKey>): void {
     if (this.interceptorSet) {
-      value = this.interceptorSet.intercept(value);
+      value = this.interceptorSet.intercept(key, value);
     }
     setNestedProperty(this.storeData, key, value);
     this.saveData();

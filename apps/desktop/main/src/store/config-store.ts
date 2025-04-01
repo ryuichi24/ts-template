@@ -4,4 +4,6 @@ export const configStore = new AppStore<{
   update: {
     channel: string;
   };
-}>();
+}>({
+  storeFileName: "user-config.json",
+});
