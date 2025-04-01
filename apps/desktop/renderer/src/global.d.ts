@@ -23,6 +23,7 @@ declare global {
           refreshToken: string;
           accessTokenExpiresAt: string;
           refreshTokenExpiresAt: string;
+          userInfo: any;
         }) => void,
       ) => void;
     };

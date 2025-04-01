@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useUserInfo } from "./features/auth";
 
 export namespace App {
   export type Props = {};
@@ -17,7 +18,8 @@ export const App: React.FC<App.Props> = (props) => {
     accessTokenExpiresAt: string;
     refreshTokenExpiresAt: string;
   }>();
-  const [userInfo, setUserInfo] = useState<any>({});
+
+  const { userInfo } = useUserInfo();
 
   const handleUpdaterChannelChange = async (channel: string) => {
     await window.IPC.onUpdaterChannelChanged(channel);
@@ -47,6 +49,14 @@ export const App: React.FC<App.Props> = (props) => {
 
   return (
     <div className="bg-gray-950 text-gray-200 min-h-screen p-6">
+      <header className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">App Header</h1>
+        <div className="w-10 h-10 rounded-full overflow-hidden">
+          {userInfo.avatarUrl ? (
+            <img src={userInfo.avatarUrl} alt="User Avatar" className="w-full h-full object-cover" />
+          ) : null}
+        </div>
+      </header>
       <div className="mb-4 text-lg font-semibold">App version: {appVersion}</div>
       <div className="mb-4 text-lg font-semibold">App version (auto updater): {appVersionAutoUpdater}</div>
       <div className="mb-4">
@@ -58,13 +68,22 @@ export const App: React.FC<App.Props> = (props) => {
       </div>
       <div className="mb-4 text-lg font-semibold">Updater channel: {updaterChannel}</div>
       <div className="mb-4 space-x-2">
-        <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded" onClick={() => handleUpdaterChannelChange("latest")}>
+        <button
+          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
+          onClick={() => handleUpdaterChannelChange("latest")}
+        >
           Change to latest
         </button>
-        <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded" onClick={() => handleUpdaterChannelChange("beta")}>
+        <button
+          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
+          onClick={() => handleUpdaterChannelChange("beta")}
+        >
           Change to beta
         </button>
-        <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded" onClick={() => handleUpdaterChannelChange("alpha")}>
+        <button
+          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
+          onClick={() => handleUpdaterChannelChange("alpha")}
+        >
           Change to alpha
         </button>
         <input

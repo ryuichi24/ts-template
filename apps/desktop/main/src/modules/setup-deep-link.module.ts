@@ -5,6 +5,7 @@ import { AppContext, IModule } from "../util/ElectronFactory.js";
 import { AppWindowManager } from "../util/AppWindowManager.js";
 import { logger } from "../util/logger.js";
 import { credentialStore } from "../store/credential-store.js";
+import axios from "axios";
 
 // https://dev.to/rwwagner90/launching-electron-apps-from-the-browser-59oc
 // https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app
@@ -39,17 +40,20 @@ export class SetupDeepLinkModule implements IModule {
     credentialStore.set("refreshToken.value", refreshToken);
     credentialStore.set("refreshToken.expiresAt", refreshTokenExpiresAt);
 
-    const mainWindow = AppWindowManager.getWindowOrThrow("main");
-    mainWindow.webContents.send("IPC:oauth-login-success", {
-      accessToken,
-      refreshToken,
-      accessTokenExpiresAt,
-      refreshTokenExpiresAt,
+    axios("http://localhost:3000/api/auth/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then((res) => {
+      const mainWindow = AppWindowManager.getWindowOrThrow("main");
+      mainWindow.webContents.send("IPC:oauth-login-success", {
+        accessToken,
+        refreshToken,
+        accessTokenExpiresAt,
+        refreshTokenExpiresAt,
+        userInfo: res.data,
+      });
+      mainWindow.focus();
     });
-    mainWindow.focus();
-
-    if (url.startsWith(appUrl)) {
-      Electron.dialog.showErrorBox("Welcome Back", `You arrived from: ${url}`);
-    }
   }
 }
