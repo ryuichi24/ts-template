@@ -2,11 +2,11 @@ import Electron from "electron";
 import { autoUpdater } from "electron-updater";
 import { AppContext, IModule } from "../util/ElectronFactory.js";
 import { AppWindowManager } from "../util/AppWindowManager.js";
-import { appConfig } from "../util/AppConfig.js";
+import { configStore } from "../store/config-store.js";
 
 export class SetupAutoUpdaterModule implements IModule {
   onReady(appCtx: AppContext): void {
-    const updateChannel = appConfig.get<string>("update.channel") ?? "latest";
+    const updateChannel = configStore.get("update.channel") ?? "latest";
     autoUpdater.allowPrerelease = updateChannel !== "latest";
     autoUpdater.autoInstallOnAppQuit = false;
     // https://www.electron.build/tutorials/release-using-channels.html
