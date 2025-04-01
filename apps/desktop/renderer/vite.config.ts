@@ -1,8 +1,9 @@
 import path from "path";
 import { defineConfig, loadEnv, UserConfig } from "vite";
-import react from '@vitejs/plugin-react-swc'
+import react from "@vitejs/plugin-react-swc";
+import tailwindcss from "@tailwindcss/vite";
 
-const ENV_PREFIX = "TST"
+const ENV_PREFIX = "TST";
 
 export default defineConfig(() => {
   const envFileDir = process.env.INIT_CWD ?? process.cwd();
@@ -29,7 +30,7 @@ export default defineConfig(() => {
         { find: "react", replacement: path.resolve(process.cwd(), "node_modules/react") },
       ],
     },
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
     server: {
       // electron app does not have to use browser
       open: process.env.DEV_TYPE === "web" ? "index.html" : false,
