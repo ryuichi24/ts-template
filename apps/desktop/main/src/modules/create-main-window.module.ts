@@ -1,11 +1,10 @@
 import path from "path";
 import { NodeJSCtx } from "@ts-template/node-js-ctx";
 import { AppContext, IModule } from "../util/ElectronFactory.js";
-import { logger } from "../util/logger.js";
 import { AppWindowManager } from "../util/AppWindowManager.js";
 
 export class CreateMainWindowModule implements IModule {
-  onReady(appCtx: AppContext): void {
+  async onBootstrap(appCtx: AppContext): Promise<void> {
     const preloadScriptPath = path.resolve(appCtx.rootDir, "preload.mjs");
     const iconPath = this._buildLogoIconPath(appCtx.osSpecificAssetPath);
 
@@ -27,7 +26,9 @@ export class CreateMainWindowModule implements IModule {
         devTools: NodeJSCtx.isDev || NodeJSCtx.isDebug,
       },
     });
+  }
 
+  onReady(appCtx: AppContext): void {
     // NOTE: while the main module type is ESM but `require` can be used since esbuild adds a script making a custom `require`
     const rendererFilePath = NodeJSCtx.isDebug
       ? require.resolve("@ts-template/desktop-renderer/dist/index.html")

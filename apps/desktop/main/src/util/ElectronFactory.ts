@@ -10,6 +10,7 @@ export interface IConstructor<TInstance> {
 export interface IModuleConstructor extends IConstructor<IModule> {}
 
 export interface IModule {
+  onBootstrap?(appCtx: AppContext): Promise<void>;
   onReady?(appCtx: AppContext): void;
   onQuit?(appCtx: AppContext, event: Electron.Event, exitCode: number): void;
   onBeforeQuit?(appCtx: AppContext, event: Electron.Event): void;
@@ -57,7 +58,8 @@ class ElectronApp implements IElectronApp {
     this._preventMultipleAppInstances();
     this._configureUserDataFolderName(options.appName);
 
-    Electron.app.on("ready", () => {
+    Electron.app.on("ready", async () => {
+      await Promise.all(this.modules.map((module) => module.onBootstrap?.(appCtx)));
       this.modules.forEach((module) => module.onReady?.(appCtx));
     });
 

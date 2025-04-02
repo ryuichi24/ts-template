@@ -4,7 +4,7 @@ import { NodeJSCtx } from "@ts-template/node-js-ctx";
 import { AppContext, IModule } from "../util/ElectronFactory.js";
 
 export class StartBackgroundServerModule implements IModule {
-  onReady(appCtx: AppContext): void {
+  async onBootstrap(appCtx: AppContext): Promise<void> {
     // bg server start
     const serverFilePath =
       NodeJSCtx.isDev || NodeJSCtx.isDebug
@@ -23,4 +23,5 @@ export class StartBackgroundServerModule implements IModule {
       stdio: "inherit",
     });
   }
+  onReady(appCtx: AppContext): void {}
 }
