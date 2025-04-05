@@ -10,7 +10,7 @@
     "build:ts": "pnpm build:esm & pnpm build:cjs",
     "build:esm": "tsb tsconfig.json -t esm",
     "build:cjs": "tsb tsconfig.cjs.json -t cjs",
-    "dev": "node dist/esm/index.js"
+    "dev": "pnpm build && node dist/esm/index.js"
   },
   "devDependencies": {
     "@ts-template/tsbuild": "workspace:*",

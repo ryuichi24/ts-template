@@ -1,4 +1,4 @@
-import { ElectronAppProtocolConfigurator } from "./bindings.js";
+import { ProtocolConfigurator } from "./bindings.js";
 
-const configurator = new ElectronAppProtocolConfigurator("../../TestApp", "app-protocol");
+const configurator = new ProtocolConfigurator("../../TestApp", "app-protocol");
 configurator.configure();

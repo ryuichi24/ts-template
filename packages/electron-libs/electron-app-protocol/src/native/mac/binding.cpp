@@ -1,10 +1,10 @@
 #include <napi.h>
-#include "electron_app_protocol_configurator_napi.hpp"
+#include "mac_protocol_configurator_napi.h"
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
-  Napi::String className = Napi::String::New(env, "ElectronAppProtocolConfigurator");
-  exports.Set(className, EAP::ElectronAppProtocolConfiguratorNapi::GetClass(env));
+  Napi::String className = Napi::String::New(env, "ProtocolConfigurator");
+  exports.Set(className, EAP::MacProtocolConfiguratorNapi::GetClass(env));
   return exports;
 }
 

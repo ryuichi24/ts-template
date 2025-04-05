@@ -2,10 +2,10 @@ import bindings from "bindings";
 
 const addon = bindings("../../..//build/Release/cpp_addon_example.node");
 
-export interface ElectronAppProtocolConfigurator {
+export interface ProtocolConfigurator {
   configure(): void;
 }
 
-export const ElectronAppProtocolConfigurator: {
-  new (appBundlePath: string, protocol: string): ElectronAppProtocolConfigurator;
-} = addon.ElectronAppProtocolConfigurator;
+export const ProtocolConfigurator: {
+  new (appBundlePath: string, protocol: string): ProtocolConfigurator;
+} = addon.ProtocolConfigurator;

@@ -29,7 +29,7 @@ else()
     message(FATAL_ERROR "Unsupported operating system")
 endif()
 
-file(GLOB SOURCE_FILES "src/native/${OS}/*")
+file(GLOB SOURCE_FILES "src/native/${OS}/*" "src/native/core/*")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
