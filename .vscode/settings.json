@@ -1,6 +1,7 @@
 {
   "files.associations": {
-    "*.json": "jsonc"
+    "*.json": "jsonc",
+    "iostream": "cpp"
   },
   // PlantUML
   "plantuml.render": "PlantUMLServer",

@@ -1,0 +1,32 @@
+{
+  "name": "@ts-template/electron-app-protocol",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm build:ts & pnpm build:cc",
+    "build:cc": "cmake-js compile",
+    "build:ts": "pnpm build:esm & pnpm build:cjs",
+    "build:esm": "tsb tsconfig.json -t esm",
+    "build:cjs": "tsb tsconfig.cjs.json -t cjs",
+    "dev": "node dist/esm/index.js"
+  },
+  "devDependencies": {
+    "@ts-template/tsbuild": "workspace:*",
+    "@ts-template/tsconfig": "workspace:*",
+    "@types/bindings": "^1.5.5",
+    "@types/node": "^22.14.0",
+    "cmake-js": "^7.3.0",
+    "node-addon-api": "^8.3.1",
+    "typescript": "^5.8.2"
+  },
+  "binary": {
+    "napi_versions": [
+      9
+    ]
+  },
+  "dependencies": {
+    "bindings": "^1.5.0"
+  }
+}

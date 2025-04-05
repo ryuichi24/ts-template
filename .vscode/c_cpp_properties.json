@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "name": "Mac",
+      "includePath": [
+        "${workspaceFolder}/node_modules/.pnpm/node-api-headers@1.5.0/**",
+        "${workspaceFolder}/**/electron-app-protocol/node_modules/**"
+      ]
+    }
+  ],
+  "version": 4
+}

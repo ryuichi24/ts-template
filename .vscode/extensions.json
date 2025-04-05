@@ -5,6 +5,10 @@
         // for plantuml file syntax highlighting
         "jebbs.plantuml",
         // api client
-        "rangav.vscode-thunder-client"
+        "rangav.vscode-thunder-client",
+        // for c/cpp file syntax highlighting
+        "ms-vscode.cpptools",
+        // for cmake file syntax highlighting
+        "KylinIdeTeam.cmake-intellisence"
     ]
 }
