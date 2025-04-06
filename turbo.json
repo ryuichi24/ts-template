@@ -33,7 +33,8 @@
         "!README.md"
       ],
       "outputs": [
-        "dist/**"
+        "dist/**",
+        "build/**"
       ]
     },
     "release": {

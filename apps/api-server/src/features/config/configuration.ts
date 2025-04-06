@@ -20,18 +20,37 @@ export const configFactory: ConfigFactory = (): Config => ({
     },
     oauth: {
       desktop: {
-        google: {
-          clientId: process.env.DESKTOP_OAUTH_GOOGLE_CLIENT_ID ?? "",
-          clientSecret: process.env.DESKTOP_OAUTH_GOOGLE_CLIENT_SECRET ?? "",
-          authURL: process.env.DESKTOP_OAUTH_GOOGLE_AUTH_URL ?? "https://accounts.google.com/o/oauth2/v2/auth",
-          redirectUri:
-            process.env.DESKTOP_OAUTH_GOOGLE_REDIRECT_URL ?? "http://localhost:3000/auth/oauth/desktop/google/callback",
-          tokenUrl: process.env.DESKTOP_OAUTH_GOOGLE_TOKEN_URL ?? "https://oauth2.googleapis.com/token",
+        provider: {
+          google: {
+            clientId: process.env.DESKTOP_OAUTH_GOOGLE_CLIENT_ID ?? "",
+            clientSecret: process.env.DESKTOP_OAUTH_GOOGLE_CLIENT_SECRET ?? "",
+            authURL: process.env.DESKTOP_OAUTH_GOOGLE_AUTH_URL ?? "https://accounts.google.com/o/oauth2/v2/auth",
+            redirectUri:
+              process.env.DESKTOP_OAUTH_GOOGLE_REDIRECT_URL ??
+              "http://localhost:3000/auth/oauth/desktop/google/callback",
+            tokenUrl: process.env.DESKTOP_OAUTH_GOOGLE_TOKEN_URL ?? "https://oauth2.googleapis.com/token",
+          },
+          discord: {},
+          github: {},
         },
-        discord: {},
+        protocol: process.env.OAUTH_DESKTOP_PROTOCOL ?? "ts-template",
       },
-      mobile: {},
-      web: {},
+      mobile: {
+        provider: {
+          google: {},
+          discord: {},
+          github: {},
+        },
+        protocol: process.env.OAUTH_MOBILE_PROTOCOL ?? "ts-template",
+      },
+      web: {
+        provider: {
+          google: {},
+          discord: {},
+          github: {},
+        },
+        protocol: process.env.OAUTH_WEB_PROTOCOL ?? "https",
+      },
     },
     admin: {
       emails: [...(process.env.ADMIN_EMAILS?.split(",") ?? [])],

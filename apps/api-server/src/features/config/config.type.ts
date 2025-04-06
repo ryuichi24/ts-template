@@ -5,17 +5,27 @@ export type Config = {
   auth: {
     oauth: {
       desktop: {
-        google: {
-          clientId: string;
-          clientSecret: string;
-          authURL: string;
-          redirectUri: string;
-          tokenUrl?: string;
+        provider: {
+          google: {
+            clientId: string;
+            clientSecret: string;
+            authURL: string;
+            redirectUri: string;
+            tokenUrl?: string;
+          };
+          discord: {};
+          github: {};
         };
-        discord: {};
+        protocol: string;
       };
-      mobile: {};
-      web: {};
+      mobile: {
+        provider: { google: {}; discord: {}; github: {} };
+        protocol: string;
+      };
+      web: {
+        provider: { google: {}; discord: {}; github: {} };
+        protocol: string;
+      };
     };
     jwt: {
       accessToken: {

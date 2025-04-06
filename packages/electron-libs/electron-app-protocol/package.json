@@ -5,9 +5,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm build:ts & pnpm build:cc",
+    "build": "pnpm build:ts && pnpm build:cc",
     "build:cc": "cmake-js compile",
-    "build:ts": "pnpm build:esm & pnpm build:cjs",
+    "build:ts": "pnpm build:esm && pnpm build:cjs",
     "build:esm": "tsb tsconfig.json -t esm",
     "build:cjs": "tsb tsconfig.cjs.json -t cjs",
     "dev": "pnpm build && node dist/esm/index.js"
@@ -20,6 +20,18 @@
     "cmake-js": "^7.3.0",
     "node-addon-api": "^8.3.1",
     "typescript": "^5.8.2"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
   },
   "binary": {
     "napi_versions": [

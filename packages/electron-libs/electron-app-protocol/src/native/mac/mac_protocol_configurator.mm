@@ -43,18 +43,5 @@ void EAP::MacProtocolConfigurator::configure() const
 
     CFArrayRef urlList =
       LSCopyApplicationURLsForURL((__bridge CFURLRef)url, kLSRolesAll);
-
-        // Define a string variable and store a value in it
-        NSString *message = @"hello";
-
-        // Log the string to the console
-        NSLog(@"%@", message);
-        NSLog(@"%@", appProtocol);
-        NSLog(@"%@", appPath);
-        NSLog(@"%@", inUrl);
-        NSLog(@"%@", bundleID);
-        NSLog(@"%@", setDefaultStatus);
-        NSLog(@"%@", url);
-        NSLog(@"%@", urlList);
     }
 }

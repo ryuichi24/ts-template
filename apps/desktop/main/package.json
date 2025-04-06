@@ -13,6 +13,7 @@
   "type": "module",
   "devDependencies": {
     "@ts-template/desktop-background-server": "workspace:*",
+    "@ts-template/electron-app-protocol": "workspace:*",
     "@ts-template/file-system": "workspace:*",
     "@ts-template/logger": "workspace:*",
     "@ts-template/node-js-ctx": "workspace:*",

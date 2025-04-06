@@ -14,13 +14,13 @@ export class GoogleOAuthAgent extends OAuthAgent {
   }
 
   makeLoginUrl(): string {
-    const clientId = this._configService.getOrThrow(`auth.oauth.${this.platformName}.google.clientId`, {
+    const clientId = this._configService.getOrThrow(`auth.oauth.${this.platformName}.provider.google.clientId`, {
       infer: true,
     });
-    const authURL = this._configService.getOrThrow(`auth.oauth.${this.platformName}.google.authURL`, {
+    const authURL = this._configService.getOrThrow(`auth.oauth.${this.platformName}.provider.google.authURL`, {
       infer: true,
     });
-    const redirectUri = this._configService.getOrThrow(`auth.oauth.${this.platformName}.google.redirectUri`, {
+    const redirectUri = this._configService.getOrThrow(`auth.oauth.${this.platformName}.provider.google.redirectUri`, {
       infer: true,
     });
     const params = new URLSearchParams({
@@ -36,18 +36,30 @@ export class GoogleOAuthAgent extends OAuthAgent {
   }
 
   async getAuthTokens(code: string): Promise<OAuthTokenResponse> {
-    const clientId = this._configService.getOrThrow<string>(`auth.oauth.${this.platformName}.google.clientId`, {
-      infer: true,
-    });
-    const clientSecret = this._configService.getOrThrow<string>(`auth.oauth.${this.platformName}.google.clientSecret`, {
-      infer: true,
-    });
-    const redirectUri = this._configService.getOrThrow<string>(`auth.oauth.${this.platformName}.google.redirectUri`, {
-      infer: true,
-    });
-    const tokenUrl = this._configService.getOrThrow<string>(`auth.oauth.${this.platformName}.google.tokenUrl`, {
-      infer: true,
-    });
+    const clientId = this._configService.getOrThrow<string>(
+      `auth.oauth.${this.platformName}.provider.google.clientId`,
+      {
+        infer: true,
+      },
+    );
+    const clientSecret = this._configService.getOrThrow<string>(
+      `auth.oauth.${this.platformName}.provider.google.clientSecret`,
+      {
+        infer: true,
+      },
+    );
+    const redirectUri = this._configService.getOrThrow<string>(
+      `auth.oauth.${this.platformName}.provider.google.redirectUri`,
+      {
+        infer: true,
+      },
+    );
+    const tokenUrl = this._configService.getOrThrow<string>(
+      `auth.oauth.${this.platformName}.provider.google.tokenUrl`,
+      {
+        infer: true,
+      },
+    );
 
     const res = await this._googleApiClient.requestToken({
       tokenUrl,
@@ -77,7 +89,10 @@ export class GoogleOAuthAgent extends OAuthAgent {
     let protocol = "https";
 
     if (this.platform === "desktop") {
-      protocol = "tstemplate";
+      const desktopProtocol = this._configService.getOrThrow<string>(`auth.oauth.${this.platformName}.protocol`, {
+        infer: true,
+      });
+      protocol = desktopProtocol;
     }
 
     return `${protocol}://success?${params.toString()}`;

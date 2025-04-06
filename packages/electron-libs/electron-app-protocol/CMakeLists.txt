@@ -2,9 +2,9 @@
 cmake_minimum_required(VERSION 3.31.2)
 
 # name of the project
-project(cpp_addon_example
+project(electron_app_protocol_configurator
     VERSION 1.0.0
-    DESCRIPTION "A simple cpp addon example project"
+    DESCRIPTION "Electron App Protocol Configurator"
     LANGUAGES C CXX
 )
 

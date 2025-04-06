@@ -6,12 +6,19 @@ import { AppWindowManager } from "../util/AppWindowManager.js";
 import { logger } from "../util/logger.js";
 import { credentialStore } from "../store/credential-store.js";
 import axios from "axios";
+import { registerProtocol } from "@ts-template/electron-app-protocol";
 
 // https://dev.to/rwwagner90/launching-electron-apps-from-the-browser-59oc
 // https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app
 export class SetupDeepLinkModule implements IModule {
   onReady(appCtx: AppContext): void {
     const protocol = appCtx.appName.toLocaleLowerCase();
+
+    // register a custom protocol for dev mode since in dev mode, the deep link will not work
+    if (!appCtx.isPackaged) {
+      registerProtocol(protocol);
+    }
+
     if (process.defaultApp) {
       if (process.argv.length >= 2) {
         Electron.app.setAsDefaultProtocolClient(protocol, process.execPath, [path.resolve(process.argv[1])]);
@@ -57,3 +64,25 @@ export class SetupDeepLinkModule implements IModule {
     });
   }
 }
+
+// const api = axios.create({ baseURL: "/api", withCredentials: true });
+
+// api.interceptors.request.use(async (config) => {
+//   const { accessToken, refreshAccessToken } = useAuth();
+
+//   if (accessToken) {
+//     config.headers.Authorization = `Bearer ${accessToken}`;
+//   } else {
+//     await refreshAccessToken();
+//   }
+
+//   return config;
+// });
+
+// api.interceptors.response.use(null, async (error) => {
+//   if (error.response?.status === 401) {
+//     await refreshAccessToken();
+//     return api(error.config); // Retry request
+//   }
+//   return Promise.reject(error);
+// });

@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "description": "",
     "scripts": {
-        "dev": "pnpm dev:desktop",
+        "dev": "dotenv -e ./.env -c local -- pnpm dev:desktop",
         "dev:desktop": "turbo run dev --filter={\"./apps/desktop/**/*\"}",
         "build": "turbo run build",
         "release:desktop": "cross-env NODE_ENV=production dotenv -e ./.env -c local -- turbo run release --filter={\"./apps/desktop/**/*\"}",
