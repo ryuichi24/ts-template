@@ -1,0 +1,6 @@
+{
+  "display": "@ts-template/util ESM",
+  "extends": "@ts-template/tsconfig/node.lib",
+  "compilerOptions": {},
+  "include": ["src"]
+}

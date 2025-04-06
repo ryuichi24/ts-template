@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/chrome-manifest",
+  "manifest_version": 3,
+  "name": "Minimal Manifest",
+  "version": "1.0.0",
+  "description": "A basic example extension with only required keys",
+  "background": {
+    "service_worker": "worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup/index.html"
+  },
+  "host_permissions": ["http://*/*", "https://*/*", "http://localhost/*", "https://localhost/*"],
+  "permissions": ["scripting", "activeTab", "commands"],
+  "commands": {
+    "reload": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      },
+      "description": "Reload the extension"
+    }
+  }
+}

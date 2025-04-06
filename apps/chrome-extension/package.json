@@ -1,0 +1,20 @@
+{
+  "name": "@ts-template/chrome-extension",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node esbuild.config.js"
+  },
+  "devDependencies": {
+    "@ts-template/tsconfig": "workspace:*",
+    "@ts-template/type-util": "workspace:*",
+    "@ts-template/file-system": "workspace:*",
+    "@types/chrome": "^0.0.313",
+    "@types/node": "^20.11.20",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.4.5"
+  }
+}
