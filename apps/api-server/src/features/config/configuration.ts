@@ -56,4 +56,10 @@ export const configFactory: ConfigFactory = (): Config => ({
       emails: [...(process.env.ADMIN_EMAILS?.split(",") ?? [])],
     },
   },
+  api: {
+    strapi: {
+      baseUrl: process.env.STRAPI_BASE_URL ?? "http://localhost:1337",
+      token: process.env.STRAPI_TOKEN ?? "",
+    },
+  },
 });

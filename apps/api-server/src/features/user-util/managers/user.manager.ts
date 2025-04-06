@@ -1,4 +1,5 @@
 import { Injectable, Scope } from "@nestjs/common";
+import { StrapiClient } from "src/features/strapi/clients/strapi.client";
 
 type User = {
   id: string;
@@ -19,11 +20,12 @@ type EmailVerificationToken = {};
 export class UserManager {
   private _users: User[];
 
-  constructor() {
+  constructor(private _strapiClient: StrapiClient) {
     this._users = [];
   }
 
   public async createUser(createUserDto: any): Promise<User> {
+    await this._strapiClient.getCollection("user").create({});
     const newUser = {
       id: (this._users.length + 1).toString(),
       username: createUserDto.username,

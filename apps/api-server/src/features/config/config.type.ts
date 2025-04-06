@@ -41,4 +41,10 @@ export type Config = {
       emails: string[];
     };
   };
+  api: {
+    strapi: {
+      baseUrl: string;
+      token: string;
+    };
+  };
 };
