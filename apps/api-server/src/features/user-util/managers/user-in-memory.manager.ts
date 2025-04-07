@@ -1,5 +1,4 @@
 import { Injectable, Scope } from "@nestjs/common";
-import { StrapiClient } from "src/features/strapi/clients/strapi.client";
 
 type User = {
   id: string;
@@ -20,12 +19,12 @@ type EmailVerificationToken = {};
 export class UserManager {
   private _users: User[];
 
-  constructor(private _strapiClient: StrapiClient) {
+  constructor() {
     this._users = [];
   }
 
   public async createUser(createUserDto: any): Promise<User> {
-    const res = await this._strapiClient.getCollection("user").create({
+    const newUser = {
       id: (this._users.length + 1).toString(),
       username: createUserDto.username,
       email: createUserDto.email,
@@ -33,11 +32,9 @@ export class UserManager {
       isDeleted: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
+    };
 
-    console.log({ res });
-
-    const { data: newUser, meta } = res;
+    this._users.push(newUser);
 
     return newUser as User;
   }
@@ -55,9 +52,9 @@ export class UserManager {
   public async searchUsers() {}
 
   public async getUserById(id: string) {
-    const res = await this._strapiClient.getCollection("user").findOne(id);
-    const { data: foundUser, meta } = res;
-
+    // TODO: fetch user by email from the database or headless CMS
+    const foundUser = this._users.find((user) => user.id === id);
+    // TODO: if not found, return null
     if (!foundUser) {
       return null;
     }
@@ -65,11 +62,9 @@ export class UserManager {
   }
 
   public async getUserByEmail(email: string) {
-    const res = await this._strapiClient.getCollection("user").find({ fields: ["email"] });
-    const { data: foundUsers, meta } = res;
-
-    const foundUser = foundUsers[0];
-
+    // TODO: fetch user by email from the database or headless CMS
+    const foundUser = this._users.find((user) => user.email === email);
+    // TODO: if not found, return null
     if (!foundUser) {
       return null;
     }
