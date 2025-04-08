@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "oauth_accounts",
+  "info": {
+    "singularName": "oauth-account",
+    "pluralName": "oauth-accounts",
+    "displayName": "oauth account",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "provider": {
+      "type": "string",
+      "required": true
+    },
+    "oauthId": {
+      "type": "string",
+      "required": true
+    },
+    "userId": {
+      "type": "uid",
+      "required": true
+    },
+    "uuid": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    }
+  }
+}

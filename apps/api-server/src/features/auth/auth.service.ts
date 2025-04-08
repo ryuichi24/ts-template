@@ -37,37 +37,18 @@ export class AuthService {
       return null;
     }
 
-    // If the user is using custom authentication, we don't need to check OAuth account
-    if (dto.authUser.authProvider === "custom") {
-      return { user: existingUser };
-    }
-
     // If the user is using OAuth, we need to check if the OAuth account exists
-    const existingOAuthAccount = await this._oauthAccountManager.getOAuthAccountByUserIdAndProvider({
-      userId: existingUser.id,
-      oauthProvider: dto.authUser.authProvider,
-    });
-    if (!existingOAuthAccount) {
-      return null;
+    if (dto.authUser.authProvider !== "custom") {
+      const existingOAuthAccount = await this._oauthAccountManager.getOAuthAccountByUserIdAndProvider({
+        userId: existingUser.id.toString(),
+        oauthProvider: dto.authUser.authProvider,
+      });
+      if (!existingOAuthAccount) {
+        return null;
+      }
     }
 
-    // Check if the existing OAuth account is still valid
-    // get the saved access toke
-    const oauthAccessToken = await this._oauthTokenManager.getOAuthTokenByOauthId(existingOAuthAccount.oauthId);
-    if (!oauthAccessToken) {
-      return null;
-    }
-
-    const oauthApiClient = this._oauthApiClientFactory.create(dto.authUser.authProvider);
-    // fetch the user info from the google api
-    let userInfo = await oauthApiClient.requestUserInfo(oauthAccessToken.accessToken);
-    // check if the email of the oauth account is the same as the one in the user info
-    if (existingUser.email !== userInfo.email) {
-      // revoke the refresh token
-      return null;
-    }
-
-    return { user: { ...existingUser, avatarUrl: userInfo.avatarUrl } };
+    return { user: existingUser };
   }
 
   public async refreshToken(dto: AuthService.RefreshTokenDto) {
@@ -90,6 +71,20 @@ export class AuthService {
       });
 
       if (!existingOauthAccount) {
+        return null;
+      }
+
+      const oauthAccessToken = await this._oauthTokenManager.getOAuthTokenByOauthId(existingOauthAccount.oauthId);
+      if (!oauthAccessToken) {
+        return null;
+      }
+
+      const oauthApiClient = this._oauthApiClientFactory.create(refreshTokenPayload.authProvider);
+      // fetch the user info from the google api
+      let userInfo = await oauthApiClient.requestUserInfo(oauthAccessToken.accessToken);
+      // check if the email of the oauth account is the same as the one in the user info
+      if (existingUser.email !== userInfo.email) {
+        // revoke the refresh token
         return null;
       }
     }

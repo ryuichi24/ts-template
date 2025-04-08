@@ -1,22 +1,9 @@
+import crypto from "crypto";
 import { Injectable, Scope } from "@nestjs/common";
-
-type User = {
-  id: string;
-  username: string;
-  email: string;
-  password_hash?: string;
-  isEmailVerified: boolean;
-  isDeleted: boolean;
-  deletedAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  avatarUrl?: string;
-};
-
-type EmailVerificationToken = {};
+import { IUserManager, UpdateUserDto, User } from "./user-base.manager";
 
 @Injectable({ scope: Scope.DEFAULT })
-export class UserManager {
+export class UserManager implements IUserManager {
   private _users: User[];
 
   constructor() {
@@ -25,7 +12,7 @@ export class UserManager {
 
   public async createUser(createUserDto: any): Promise<User> {
     const newUser = {
-      id: (this._users.length + 1).toString(),
+      id: crypto.randomUUID(),
       username: createUserDto.username,
       email: createUserDto.email,
       isEmailVerified: false,
@@ -39,17 +26,9 @@ export class UserManager {
     return newUser as User;
   }
 
-  public async getUser() {}
-
-  public async updateUser() {}
-
-  public async deleteUser() {}
-
-  public async listUsers() {
-    return this._users;
+  updateUser(dto: UpdateUserDto): Promise<User> {
+    throw new Error("Method not implemented.");
   }
-
-  public async searchUsers() {}
 
   public async getUserById(id: string) {
     // TODO: fetch user by email from the database or headless CMS
@@ -70,6 +49,4 @@ export class UserManager {
     }
     return foundUser;
   }
-
-  public async getUserByUsername() {}
 }

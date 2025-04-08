@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "accounts",
+  "info": {
+    "singularName": "account",
+    "pluralName": "accounts",
+    "displayName": "account",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "username": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "passwordHash": {
+      "type": "password"
+    },
+    "isEmailVerified": {
+      "type": "boolean"
+    },
+    "isDeleted": {
+      "type": "boolean",
+      "default": false
+    },
+    "deletedAt": {
+      "type": "datetime"
+    },
+    "avatarUrl": {
+      "type": "string"
+    },
+    "uuid": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    }
+  }
+}

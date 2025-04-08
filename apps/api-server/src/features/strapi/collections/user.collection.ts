@@ -1,12 +1,12 @@
-export type UserCollection = {
-  id: string;
-  username: string;
-  email: string;
-  password_hash?: string;
-  isEmailVerified: boolean;
-  isDeleted: boolean;
-  deletedAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  avatarUrl?: string;
-};
+import { HasUUID, StrapiBase } from "./strapi-base.collection";
+
+export type UserCollection = StrapiBase &
+  HasUUID & {
+    username: string;
+    email: string;
+    passwordHash?: string;
+    isEmailVerified: boolean;
+    isDeleted: boolean;
+    deletedAt?: Date;
+    avatarUrl?: string;
+  };

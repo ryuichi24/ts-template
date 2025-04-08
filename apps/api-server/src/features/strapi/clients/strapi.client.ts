@@ -4,15 +4,27 @@ import { ConfigService } from "src/features/config/config.service";
 import type { UserCollection } from "../collections/user.collection";
 import type { OAuthAccountCollection } from "../collections/oauth-account.collection";
 
-type StrapiCollection = "user" | "oauth-account";
-type StrapiSingle = "";
+const STRAPI_COLLECTIONS = {
+  USERS: "accounts",
+  OAUTH_ACCOUNTS: "oauth-accounts",
+} as const;
+
+type StrapiCollections = typeof STRAPI_COLLECTIONS;
+
+type StrapiCollection = StrapiCollections[keyof StrapiCollections];
+
+const STRAPI_SINGLES = {} as const;
+
+type StrapiSingles = typeof STRAPI_SINGLES;
+
+type StrapiSingle = StrapiSingles[keyof StrapiSingles];
 
 type CustomBaseQueryParams<TCollection> = {
   populate?: string | string[] | Record<string, unknown>;
 
   fields?: (keyof TCollection)[];
 
-  filters?: Record<keyof TCollection, TCollection[keyof TCollection]>;
+  filters?: PartialRecord<keyof TCollection, TCollection[keyof TCollection]>;
 
   locale?: string;
 
@@ -29,27 +41,42 @@ type CustomBaseQueryParams<TCollection> = {
   };
 };
 
-type InferCollection<TStrapiCollection extends StrapiCollection> = TStrapiCollection extends "user"
+type Pagination = {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+};
+
+type GenericResponse<T> = {
+  data: T;
+  meta: { pagination?: Pagination };
+};
+
+type GenericDocumentResponse<T> = GenericResponse<T>;
+type GenericMultiDocumentResponse<T> = GenericResponse<T[]>;
+
+type InferCollection<TStrapiCollection extends StrapiCollection> = TStrapiCollection extends StrapiCollections["USERS"]
   ? UserCollection
-  : TStrapiCollection extends "oauth-account"
+  : TStrapiCollection extends StrapiCollections["OAUTH_ACCOUNTS"]
     ? OAuthAccountCollection
     : never;
 
 type PartialRecord<K extends keyof any, T> = Partial<Record<K, T>>;
 
 interface CanManageCollection<TCollection> {
-  find: (query?: CustomBaseQueryParams<TCollection>) => Promise<any>;
-  findOne: (id: string, query?: CustomBaseQueryParams<TCollection>) => Promise<any>;
+  find: (query?: CustomBaseQueryParams<TCollection>) => Promise<GenericMultiDocumentResponse<TCollection>>;
+  findOne: (id: string, query?: CustomBaseQueryParams<TCollection>) => Promise<GenericDocumentResponse<TCollection>>;
   create: (
     data: PartialRecord<keyof TCollection, TCollection[keyof TCollection]>,
     query?: CustomBaseQueryParams<TCollection>,
-  ) => Promise<any>;
+  ) => Promise<GenericDocumentResponse<TCollection>>;
   update: (
     id: string,
     data: PartialRecord<keyof TCollection, TCollection[keyof TCollection]>,
     query?: CustomBaseQueryParams<TCollection>,
-  ) => Promise<any>;
-  delete: (id: string, query?: CustomBaseQueryParams<TCollection>) => Promise<any>;
+  ) => Promise<GenericDocumentResponse<TCollection>>;
+  delete: (id: string, query?: CustomBaseQueryParams<TCollection>) => Promise<void>;
 }
 
 @Injectable()
@@ -68,7 +95,7 @@ export class StrapiClient {
   private _getTypedCollection<TCollection extends StrapiCollection>(
     type: TCollection,
   ): CanManageCollection<InferCollection<TCollection>> {
-    return this._client.collection(type) as CanManageCollection<InferCollection<TCollection>>;
+    return this._client.collection(type) as unknown as CanManageCollection<InferCollection<TCollection>>;
   }
 
   public getCollection<TCollection extends StrapiCollection>(
@@ -79,5 +106,9 @@ export class StrapiClient {
 
   public getSingle(type: StrapiSingle) {
     return this._client.single(type);
+  }
+
+  public static get COLLECTIONS() {
+    return STRAPI_COLLECTIONS;
   }
 }

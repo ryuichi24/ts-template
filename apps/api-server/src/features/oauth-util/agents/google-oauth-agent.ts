@@ -2,6 +2,7 @@ import { ConfigService } from "@nestjs/config";
 import { OAuthAgent, OAuthPlatformType, OAuthTokenResponse } from "./oauth-agent";
 import { Injectable } from "@nestjs/common";
 import { GoogleOauthApiClient } from "../clients/google-oauth-api-client";
+import { UserInfo } from "../clients/oauth-api-client";
 
 @Injectable()
 export class GoogleOAuthAgent extends OAuthAgent {
@@ -98,7 +99,7 @@ export class GoogleOAuthAgent extends OAuthAgent {
     return `${protocol}://success?${params.toString()}`;
   }
 
-  async fetchUserInfo(accessToken: string) {
+  async fetchUserInfo(accessToken: string): Promise<UserInfo> {
     const userInfo = await this._googleApiClient.requestUserInfo(accessToken);
     return userInfo;
   }

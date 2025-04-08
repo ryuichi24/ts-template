@@ -1,7 +1,8 @@
-export type OAuthAccountCollection = {
-  id: string;
-  userId: string;
-  oauthProvider: string;
-  oauthId: string;
-  createdAt: Date;
-};
+import { HasUUID, StrapiBase } from "./strapi-base.collection";
+
+export type OAuthAccountCollection = StrapiBase &
+  HasUUID & {
+    userId: string;
+    provider: string;
+    oauthId: string;
+  };

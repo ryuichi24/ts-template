@@ -1,3 +1,5 @@
+import { UserInfo } from "../clients/oauth-api-client";
+
 export type OAuthPlatformType = "web" | "desktop" | "mobile";
 export type OAuthProviderType = "google" | "github" | "discord";
 
@@ -17,7 +19,7 @@ export interface IOAuthAgent {
     refreshTokenExpiresAt: Date;
   }): string;
   getAuthTokens(code: string): Promise<OAuthTokenResponse>;
-  fetchUserInfo(accessToken: string): Promise<any>;
+  fetchUserInfo(accessToken: string): Promise<UserInfo>;
 }
 
 export abstract class OAuthAgent implements IOAuthAgent {
@@ -30,7 +32,7 @@ export abstract class OAuthAgent implements IOAuthAgent {
     refreshTokenExpiresAt: Date;
   }): string;
   abstract getAuthTokens(code: string): Promise<OAuthTokenResponse>;
-  abstract fetchUserInfo(accessToken: string): Promise<any>;
+  abstract fetchUserInfo(accessToken: string): Promise<UserInfo>;
 
   protected get platformName(): string {
     return this.platform.toLocaleLowerCase();

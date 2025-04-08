@@ -43,7 +43,16 @@ export class GoogleOauthApiClient implements IOauthApiClient {
     });
 
     const data = response.data;
+    const {
+      id,
+      email,
+      verified_email: isEmailVerified,
+      name: username,
+      given_name: givenName,
+      family_name: familyName,
+      picture: avatarUrl,
+    } = data;
 
-    return { ...data, avatarUrl: data.picture };
+    return { id, email, isEmailVerified, username, givenName, familyName, avatarUrl };
   }
 }

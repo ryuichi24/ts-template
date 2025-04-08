@@ -46,7 +46,12 @@ export class OauthService {
 
     let existingUser = await this._userManger.getUserByEmail(userInfo.email);
     if (!existingUser) {
-      existingUser = await this._userManger.createUser({ email: userInfo.email, username: userInfo.name });
+      existingUser = await this._userManger.createUser({
+        email: userInfo.email,
+        username: userInfo.username,
+        isEmailVerified: userInfo.isEmailVerified,
+        avatarUrl: userInfo.avatarUrl,
+      });
     }
 
     let existingOauthAccount = await this._oauthAccountManager.getOAuthAccountByUserIdAndProvider({
@@ -57,8 +62,19 @@ export class OauthService {
       existingOauthAccount = await this._oauthAccountManager.createOAuthAccount({
         userId: existingUser.id,
         oauthId: userInfo.id,
-        oauthProvider: dto.provider,
+        provider: dto.provider,
       });
+    }
+
+    // check if the email of the oauth account is still valid if not update it
+    if (existingUser.email !== userInfo.email) {
+      existingUser = await this._userManger.updateUser({
+        id: existingUser.id,
+        data: {
+          email: userInfo.email,
+        },
+      });
+      //
     }
 
     // cache oauth token
