@@ -1,13 +1,15 @@
-export class Cache {
-  private store: Map<string, { value: any; expiresAt?: number }> = new Map();
+import { CacheBase, CacheItem, CacheOptions } from "./cache-base.js";
 
-  set(key: string, value: any, expiresIn?: string | number): void {
+export class Cache<TValue = any> extends CacheBase<TValue> {
+  private store: Map<string, CacheItem<TValue>> = new Map();
+
+  set(key: string, value: any, options: CacheOptions): void {
     this.cleanup();
-    const expiresAt = expiresIn ? Date.now() + this.parseExpiresIn(expiresIn) : undefined;
-    this.store.set(key, { value, expiresAt });
+    const expiresAt = options.expiresIn ? Date.now() + this.parseExpiresIn(options.expiresIn) : undefined;
+    this.store.set(key, { key, value, expiresAt });
   }
 
-  get<TData>(key: string): TData | null {
+  get(key: string): TValue | null {
     const entry = this.store.get(key);
     if (!entry) return null;
 
@@ -19,18 +21,12 @@ export class Cache {
     return entry.value;
   }
 
-  getAllValues<TData>(): TData[] {
-    return this.getAll().map(([key, value]) => value.value as TData);
+  getAll(): TValue[] {
+    return Array.from(this.store.values().map((entry) => entry.value));
   }
 
-  getAll<TData>(): [
-    string,
-    {
-      value: TData;
-      expiresAt?: number;
-    },
-  ][] {
-    return Array.from(this.store);
+  getAllAsCacheItem(): CacheItem[] {
+    throw Array.from(this.store.values());
   }
 
   delete(key: string): boolean {
@@ -41,7 +37,7 @@ export class Cache {
     return this.store.has(key);
   }
 
-  private cleanup(): void {
+  protected cleanup(): void {
     const now = Date.now();
 
     this.store.forEach((entry, key) => {
@@ -49,32 +45,5 @@ export class Cache {
         this.store.delete(key);
       }
     });
-  }
-
-  private parseExpiresIn(expiresIn: string | number): number {
-    if (typeof expiresIn === "number") {
-      return expiresIn * 1000;
-    }
-
-    const match = expiresIn.match(/^(\d+)([smhd])$/);
-    if (!match) {
-      throw new Error("Invalid expiresIn format. Use a number or a string like '10s', '5m', '7d'");
-    }
-
-    const value = parseInt(match[1], 10);
-    const unit = match[2];
-
-    switch (unit) {
-      case "s":
-        return value * 1000;
-      case "m":
-        return value * 60 * 1000;
-      case "h":
-        return value * 60 * 60 * 1000;
-      case "d":
-        return value * 24 * 60 * 60 * 1000;
-      default:
-        throw new Error("Unsupported time unit");
-    }
   }
 }

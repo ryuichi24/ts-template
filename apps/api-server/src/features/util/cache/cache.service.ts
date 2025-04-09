@@ -16,7 +16,7 @@ export class CacheService {
   }
 
   public onCacheCheckAll() {
-    const caches = this._cacheManager.getAll();
+    const caches = this._cacheManager.getAllAsCacheItem();
     return { caches };
   }
 }

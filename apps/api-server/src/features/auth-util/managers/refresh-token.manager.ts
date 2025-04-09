@@ -43,16 +43,14 @@ export class RefreshTokenManager {
         authProvider: dto.authProvider,
         expiresAt: refreshTokenExpiresAt,
       },
-      refreshTokenExpiresIn,
+      { expiresIn: refreshTokenExpiresIn },
     );
 
     return { refreshToken, expiresAt: refreshTokenExpiresAt };
   }
 
   public verify(dto: RefreshTokenManager.VerifyDto) {
-    const refreshTokenPayload = this._cacheManager.get<RefreshTokenManager.TokenPayload>(
-      `refreshToken:${dto.refreshToken}`,
-    );
+    const refreshTokenPayload = this._cacheManager.get(`refreshToken:${dto.refreshToken}`);
     if (!refreshTokenPayload) {
       return null;
     }
