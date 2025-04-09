@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development pnpm electron:start",
     "build": "node scripts/build-prod.mjs & pnpm copy:assets",
-    "electron:start": "electron dist/index.js",
+    "electron:start": "dotenv -e ./.env -c local -- electron dist/index.js",
     "copy:assets": "node -e \"const path = require('path'); const source = path.resolve('src', 'assets'); const dest = path.resolve('dist', 'assets'); const fileSystemUtl = require('@ts-template/file-system'); fileSystemUtl.symlinkDirIfNotExist(source, dest);\""
   },
   "type": "module",
@@ -23,7 +23,8 @@
     "electron": "^34.3.1",
     "electron-squirrel-startup": "^1.0.1",
     "esbuild": "^0.25.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "dotenv-cli": "^8.0.0"
   },
   "dependencies": {
     "axios": "^1.8.4",

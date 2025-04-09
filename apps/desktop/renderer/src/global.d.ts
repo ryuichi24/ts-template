@@ -26,6 +26,7 @@ declare global {
           userInfo: any;
         }) => void,
       ) => void;
+      onCheckAuthRequested: () => Promise<any>;
     };
   }
 }

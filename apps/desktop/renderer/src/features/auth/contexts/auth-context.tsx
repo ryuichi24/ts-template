@@ -73,6 +73,11 @@ export const AuthProvider: React.FC<AuthProvider.Props> = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    // Check if user is authenticated
+    window.IPC.onCheckAuthRequested();
+  }, []);
+
   return <AuthCtx.Provider value={{ dispatch, ...state }}>{children}</AuthCtx.Provider>;
 };
 

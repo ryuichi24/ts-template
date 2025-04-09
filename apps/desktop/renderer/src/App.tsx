@@ -12,12 +12,6 @@ export const App: React.FC<App.Props> = (props) => {
   const [prereleases, setPrereleases] = useState<string[]>([]);
   const [updaterChannel, setUpdaterChannel] = useState<string>();
   const [customChannel, setCustomChannel] = useState<string>();
-  const [oauthLoginSuccessPayload, setOauthLoginSuccessPayload] = useState<{
-    accessToken: string;
-    refreshToken: string;
-    accessTokenExpiresAt: string;
-    refreshTokenExpiresAt: string;
-  }>();
 
   const { userInfo } = useUserInfo();
 
@@ -35,11 +29,6 @@ export const App: React.FC<App.Props> = (props) => {
 
     window.IPC.onUpdaterChannelRequested().then(({ channel }) => {
       setUpdaterChannel(channel);
-    });
-
-    window.IPC.onOauthLoginSuccess((payload) => {
-      console.log("oauth login success", payload);
-      setOauthLoginSuccessPayload(payload);
     });
   }, []);
 
@@ -118,17 +107,6 @@ export const App: React.FC<App.Props> = (props) => {
         >
           Login with Google
         </button>
-      </div>
-
-      <div className="mb-4">
-        {oauthLoginSuccessPayload && (
-          <ul className="list-disc list-inside">
-            <li>Access Token: {oauthLoginSuccessPayload.accessToken}</li>
-            <li>Refresh Token: {oauthLoginSuccessPayload.refreshToken}</li>
-            <li>Access Token Expires In: {oauthLoginSuccessPayload.accessTokenExpiresAt}</li>
-            <li>Refresh Token Expires in: {oauthLoginSuccessPayload.refreshTokenExpiresAt}</li>
-          </ul>
-        )}
       </div>
 
       <div>

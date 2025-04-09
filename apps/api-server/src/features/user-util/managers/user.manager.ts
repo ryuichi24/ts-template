@@ -28,7 +28,7 @@ export class UserManager implements IUserManager {
   }
 
   public async getUserById(id: string) {
-    const res = await this._strapiClient.getCollection(StrapiClient.COLLECTIONS.USERS).find({ filters: { id } });
+    const res = await this._strapiClient.getCollection(StrapiClient.COLLECTIONS.USERS).find({ filters: { uuid: id } });
     const { data: foundUsers, meta } = res;
 
     const foundUser = foundUsers[0];

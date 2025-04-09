@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   // https://turbo.build/repo/docs/reference/configuration#ui
-  "ui": "tui",
+  "ui": "stream",
   // https://turbo.build/repo/docs/reference/configuration#envmode
   "envMode": "strict",
   "globalDependencies": [],
