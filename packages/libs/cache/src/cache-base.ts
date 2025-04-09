@@ -4,6 +4,14 @@ export type CacheItem<TValue = any> = {
   expiresAt?: number;
 };
 
+export interface ICacheStore<TValue = any> {
+  save(item: CacheItem<TValue>): void;
+  get(key: string): CacheItem<TValue> | null;
+  has(key: string): boolean;
+  getAll(): CacheItem<TValue>[];
+  delete(key: string): boolean;
+}
+
 export type CacheOptions = {
   expiresIn?: string | number;
 };
@@ -18,6 +26,8 @@ interface ICache<TValue = any> {
 }
 
 export abstract class CacheBase<TValue> implements ICache<TValue> {
+  constructor(protected _store: ICacheStore<TValue>) {}
+
   abstract set(key: string, value: TValue, options: CacheOptions): void;
   abstract get(key: string): TValue | null;
   abstract delete(key: string): boolean;

@@ -1,16 +1,16 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "src/features/auth-util/guards/auth.guard";
 import { ApiBearerAuth, ApiParam } from "@nestjs/swagger";
-import { CacheService } from "./cache.service";
-import { RoleGuard } from "src/features/auth-util/guards/role.guard";
-import { Roles } from "src/features/auth-util/decorators/roles.decorator";
+import { Roles } from "../auth-util/decorators/roles.decorator";
+import { AuthGuard } from "../auth-util/guards/auth.guard";
+import { RoleGuard } from "../auth-util/guards/role.guard";
+import { RefreshTokenCacheService } from "./refresh-token-cache.service";
 
-@Controller("caches")
+@Controller("refresh-token-caches")
 @UseGuards(AuthGuard, RoleGuard)
-@Roles(['admin'])
+@Roles(["admin"])
 @ApiBearerAuth("Authorization")
-export class CacheController {
-  constructor(private _cacheService: CacheService) {}
+export class RefreshTokenCacheController {
+  constructor(private _cacheService: RefreshTokenCacheService) {}
 
   @Get(":key")
   @ApiParam({ name: "key", type: String, required: true })

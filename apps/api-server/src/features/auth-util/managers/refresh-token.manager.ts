@@ -1,9 +1,9 @@
 import crypto from "crypto";
 import { calculateExpiresAt } from "@ts-template/date-util";
 import { ConfigService } from "src/features/config/config.service";
-import { CacheManager } from "src/features/util/cache/cache.manager";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { OAuthProviderType } from "src/features/oauth-util/agents/oauth-agent";
+import { CacheService } from "src/features/util/cache/cache.service";
 
 export namespace RefreshTokenManager {
   export type VerifyDto = {
@@ -26,7 +26,7 @@ export namespace RefreshTokenManager {
 @Injectable()
 export class RefreshTokenManager {
   constructor(
-    private _cacheManager: CacheManager,
+    @Inject("refresh-token-cache:cache") private _cacheService: CacheService,
     private _configService: ConfigService,
   ) {}
 
@@ -36,7 +36,7 @@ export class RefreshTokenManager {
     });
     const refreshTokenExpiresAt = calculateExpiresAt(refreshTokenExpiresIn);
     const refreshToken = crypto.randomBytes(40).toString("hex");
-    this._cacheManager.set(
+    this._cacheService.set(
       `refreshToken:${refreshToken}`,
       {
         userId: dto.userId,
@@ -50,7 +50,7 @@ export class RefreshTokenManager {
   }
 
   public verify(dto: RefreshTokenManager.VerifyDto) {
-    const refreshTokenPayload = this._cacheManager.get(`refreshToken:${dto.refreshToken}`);
+    const refreshTokenPayload = this._cacheService.get(`refreshToken:${dto.refreshToken}`);
     if (!refreshTokenPayload) {
       return null;
     }

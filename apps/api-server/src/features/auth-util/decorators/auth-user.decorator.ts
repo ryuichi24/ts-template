@@ -1,5 +1,5 @@
 import { createParamDecorator } from "@nestjs/common";
-import { OAuthProviderType } from "src/features/oauth/agents/oauth-agent";
+import { OAuthProviderType } from "src/features/oauth-util/agents/oauth-agent";
 
 export namespace AuthUser {
   export type User = {
