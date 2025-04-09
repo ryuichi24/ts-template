@@ -23,6 +23,8 @@
     "@ts-template/cache": "workspace:*",
     "@ts-template/date-util": "workspace:*",
     "axios": "^1.8.4",
+    "better-sqlite3": "^11.9.1",
+    "drizzle-orm": "^0.41.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -37,6 +39,7 @@
     "@ts-template/logger": "workspace:*",
     "@ts-template/node-js-ctx": "workspace:*",
     "@ts-template/tsconfig": "workspace:*",
+    "@types/better-sqlite3": "^7.6.12",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.8",
