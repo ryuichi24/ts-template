@@ -5,11 +5,11 @@ export type CacheItem<TValue = any> = {
 };
 
 export interface ICacheStore<TValue = any> {
-  save(item: CacheItem<TValue>): void;
-  get(key: string): CacheItem<TValue> | null;
-  has(key: string): boolean;
-  getAll(): CacheItem<TValue>[];
-  delete(key: string): boolean;
+  save(item: CacheItem<TValue>): Promise<void> | void;
+  get(key: string): Promise<CacheItem<TValue> | null> | CacheItem<TValue> | null;
+  has(key: string): Promise<boolean> | boolean;
+  getAll(): Promise<CacheItem<TValue>[]> | CacheItem<TValue>[];
+  delete(key: string): Promise<void> | void;
 }
 
 export type CacheOptions = {
@@ -17,24 +17,24 @@ export type CacheOptions = {
 };
 
 interface ICache<TValue = any> {
-  set(key: string, value: TValue, options: CacheOptions): void;
-  get(key: string): TValue | null;
-  delete(key: string): boolean;
-  has(key: string): boolean;
-  getAll(): TValue[];
-  getAllAsCacheItem(): CacheItem[];
+  set(key: string, value: TValue, options: CacheOptions): Promise<void>;
+  get(key: string): Promise<TValue | null>;
+  delete(key: string): Promise<void>;
+  has(key: string): Promise<boolean>;
+  getAll(): Promise<TValue[]>;
+  getAllAsCacheItem(): Promise<CacheItem[]>;
 }
 
 export abstract class CacheBase<TValue> implements ICache<TValue> {
   constructor(protected _store: ICacheStore<TValue>) {}
 
-  abstract set(key: string, value: TValue, options: CacheOptions): void;
-  abstract get(key: string): TValue | null;
-  abstract delete(key: string): boolean;
-  abstract has(key: string): boolean;
-  abstract getAll(): TValue[];
-  abstract getAllAsCacheItem(): CacheItem[];
-  protected abstract cleanup(): void;
+  abstract set(key: string, value: TValue, options: CacheOptions): Promise<void>;
+  abstract get(key: string): Promise<TValue | null>;
+  abstract delete(key: string): Promise<void>;
+  abstract has(key: string): Promise<boolean>;
+  abstract getAll(): Promise<TValue[]>;
+  abstract getAllAsCacheItem(): Promise<CacheItem[]>;
+  protected abstract cleanup(): Promise<void>;
   protected parseExpiresIn(expiresIn: string | number): number {
     if (typeof expiresIn === "number") {
       return expiresIn * 1000;

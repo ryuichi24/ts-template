@@ -89,7 +89,7 @@ export class OauthService {
       oauthId: userInfo.id,
       accessToken: authTokenResponse.accessToken,
       refreshToken: authTokenResponse.refreshToken,
-      expiresAt: new Date(Date.now() + authTokenResponse.expiresIn * 1000),
+      expiresIn: authTokenResponse.expiresIn,
     });
 
     // generate an access token and refresh token

@@ -26,7 +26,7 @@ export namespace RefreshTokenManager {
 @Injectable()
 export class RefreshTokenManager {
   constructor(
-    @Inject("refresh-token-cache:cache") private _cacheService: CacheService,
+    @Inject("REFRESH_TOKEN:CACHE") private _cacheService: CacheService,
     private _configService: ConfigService,
   ) {}
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useUserInfo } from "./features/auth";
+import { useAuth, useUserInfo } from "./features/auth";
 
 export namespace App {
   export type Props = {};
@@ -13,6 +13,7 @@ export const App: React.FC<App.Props> = (props) => {
   const [updaterChannel, setUpdaterChannel] = useState<string>();
   const [customChannel, setCustomChannel] = useState<string>();
 
+  const { isAuthenticated } = useAuth();
   const { userInfo } = useUserInfo();
 
   const handleUpdaterChannelChange = async (channel: string) => {
@@ -99,14 +100,18 @@ export const App: React.FC<App.Props> = (props) => {
       </div>
 
       <div className="mb-4">
-        <button
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-          onClick={() =>
-            window.IPC.onOpenInBrowserRequested("http://localhost:3000/api/oauth/login/desktop?provider=google")
-          }
-        >
-          Login with Google
-        </button>
+        {isAuthenticated ? (
+          <div className="text-lg font-semibold">You are logged in.</div>
+        ) : (
+          <button
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
+            onClick={() =>
+              window.IPC.onOpenInBrowserRequested("http://localhost:3000/api/oauth/login/desktop?provider=google")
+            }
+          >
+            Login with Google
+          </button>
+        )}
       </div>
 
       <div>

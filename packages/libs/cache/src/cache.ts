@@ -6,46 +6,50 @@ export class Cache<TValue = any> extends CacheBase<TValue> {
     super(_store);
   }
 
-  set(key: string, value: any, options: CacheOptions): void {
+  async set(key: string, value: any, options: CacheOptions): Promise<void> {
     this.cleanup();
     const expiresAt = options.expiresIn ? Date.now() + this.parseExpiresIn(options.expiresIn) : undefined;
-    this._store.save({ key, value, expiresAt });
+    await this._store.save({ key, value, expiresAt });
   }
 
-  get(key: string): TValue | null {
-    const entry = this._store.get(key);
+  async get(key: string): Promise<TValue | null> {
+    const entry = await this._store.get(key);
     if (!entry) return null;
 
     if (entry.expiresAt && entry.expiresAt < Date.now()) {
-      this._store.delete(key);
+      await this._store.delete(key);
       return null;
     }
 
     return entry.value;
   }
 
-  getAll(): TValue[] {
-    return this._store.getAll().map((entry) => entry.value);
+  async getAll(): Promise<TValue[]> {
+    const items = await this._store.getAll();
+    return items.map((entry) => entry.value);
   }
 
-  getAllAsCacheItem(): CacheItem[] {
-    return this._store.getAll();
+  async getAllAsCacheItem(): Promise<CacheItem[]> {
+    return await this._store.getAll();
   }
 
-  delete(key: string): boolean {
-    return this._store.delete(key);
+  async delete(key: string): Promise<void> {
+    await this._store.delete(key);
   }
 
-  has(key: string): boolean {
-    return this._store.has(key);
+  async has(key: string): Promise<boolean> {
+    return await this._store.has(key);
   }
 
-  protected cleanup(): void {
+  protected async cleanup(): Promise<void> {
     const now = Date.now();
-    this._store.getAll().forEach((entry) => {
-      if (entry.expiresAt && entry.expiresAt < now) {
-        this._store.delete(entry.key);
+    const items = await this._store.getAll();
+
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
+      if (item.expiresAt && item.expiresAt < now) {
+        await this._store.delete(item.key);
       }
-    });
+    }
   }
 }

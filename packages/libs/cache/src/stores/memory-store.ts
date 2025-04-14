@@ -21,7 +21,7 @@ export class MemoryStore<TValue = any> implements ICacheStore<TValue> {
     return Array.from(this.store.values());
   }
 
-  delete(key: string): boolean {
-    return this.store.delete(key);
+  delete(key: string): void {
+    this.store.delete(key);
   }
 }

@@ -1,5 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { CacheService } from "src/features/util/cache/cache.service";
+import { Injectable } from "@nestjs/common";
 
 export namespace OAuthTokenManager {
   export type OAuthToken = {
@@ -14,42 +13,34 @@ export namespace OAuthTokenManager {
 
 @Injectable()
 export class OAuthTokenManager {
-  constructor(@Inject("OAUTH_TOKEN:CACHE") private _cacheService: CacheService) {}
+  private _oauthToken: OAuthTokenManager.OAuthToken[];
+
+  constructor() {
+    this._oauthToken = [];
+  }
 
   public async createOAuthToken(dto: {
     oauthId: string;
     accessToken: string;
     refreshToken: string;
-    expiresIn: number;
+    expiresAt: Date;
   }): Promise<OAuthTokenManager.OAuthToken> {
     const newOAuthToken = {
       id: crypto.randomUUID(),
       oauthId: dto.oauthId,
       accessToken: dto.accessToken,
       refreshToken: dto.refreshToken,
-      expiresAt: new Date(Date.now() + dto.expiresIn * 1000),
+      expiresAt: dto.expiresAt,
       createdAt: new Date(),
     };
 
-    // new Date(Date.now() + authTokenResponse.expiresIn * 1000)
-    this._cacheService.set(
-      `oauthToken:${newOAuthToken.oauthId}`,
-      {
-        id: newOAuthToken.id,
-        oauthId: newOAuthToken.oauthId,
-        accessToken: newOAuthToken.accessToken,
-        refreshToken: newOAuthToken.refreshToken,
-        expiresAt: newOAuthToken.expiresAt,
-        createdAt: newOAuthToken.createdAt,
-      },
-      { expiresIn: dto.expiresIn },
-    );
+    this._oauthToken.push(newOAuthToken);
 
     return newOAuthToken;
   }
 
   public async getOAuthTokenByOauthId(oauthId: string): Promise<OAuthTokenManager.OAuthToken | null> {
-    const foundOAuthToken = this._cacheService.get(`oauthToken:${oauthId}`);
+    const foundOAuthToken = this._oauthToken.find((token) => token.oauthId === oauthId);
     if (!foundOAuthToken) {
       return null;
     }
@@ -75,6 +66,6 @@ export class OAuthTokenManager {
   }
 
   public async deleteOAuthToken(oauthId: string): Promise<void> {
-    await this._cacheService.delete(`oauthToken:${oauthId}`);
+    this._oauthToken = this._oauthToken.filter((token) => token.oauthId !== oauthId);
   }
 }

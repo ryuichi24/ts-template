@@ -4,7 +4,7 @@ import { CacheService } from "../util/cache/cache.service";
 
 @Injectable()
 export class RefreshTokenCacheService {
-  constructor(@Inject("refresh-token-cache:cache") private _cacheService: CacheService) {}
+  constructor(@Inject("REFRESH_TOKEN:CACHE") private _cacheService: CacheService) {}
 
   public onCacheCheck(cacheCheckDto: { key: string }) {
     const { key } = cacheCheckDto;
