@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   public async refreshToken(dto: AuthService.RefreshTokenDto) {
-    const refreshTokenPayload = this._refreshTokenManager.verify(dto);
+    const refreshTokenPayload = await this._refreshTokenManager.verify(dto);
     if (!refreshTokenPayload) {
       return null;
     }
@@ -61,6 +61,19 @@ export class AuthService {
 
     if (!existingUser) {
       return null;
+    }
+
+    const accessTokenPayload: any = {
+      userId: existingUser.id,
+      authProvider: refreshTokenPayload.authProvider,
+      roles: ["normal", "refreshed"],
+
+    };
+
+    const adminEmails = this._configService.getOrThrow("auth.admin.emails", { infer: true });
+    const isAdmin = adminEmails.includes(existingUser.email);
+    if (isAdmin) {
+      accessTokenPayload.roles.push("admin");
     }
 
     // verify if the user's oauth account is still valid
@@ -87,20 +100,20 @@ export class AuthService {
         // revoke the refresh token
         return null;
       }
+
+      accessTokenPayload.oauthId = existingOauthAccount.oauthId;
     }
 
     const accessTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.accessToken.expiresIn", {
       infer: true,
     });
-    const accessTokenPayload = {
-      userId: existingUser.id,
-      authProvider: refreshTokenPayload.authProvider,
-    };
+
     const accessTokenOptions = {
       secret: this._configService.get("auth.jwt.accessToken.secret", { infer: true }),
       expiresIn: accessTokenExpiresIn,
     };
     const accessTokenExpiresAt = calculateExpiresAt(accessTokenExpiresIn);
+    accessTokenPayload.expiresAt = accessTokenExpiresAt;
 
     const accessToken = this._jwtService.sign(accessTokenPayload, accessTokenOptions);
 

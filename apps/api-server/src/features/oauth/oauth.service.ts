@@ -106,6 +106,7 @@ export class OauthService {
       oauthId: existingOauthAccount.id,
       authProvider: dto.provider,
       roles: ["normal"],
+      expiresAt: calculateExpiresAt(accessTokenExpiresIn).getTime(),
     };
 
     if (isAdmin) {

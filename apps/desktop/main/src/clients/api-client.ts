@@ -9,7 +9,10 @@ export const apiClient = new HTTPClient({
   baseURL: API_BASE_URL,
   refreshTokenUrl: REFRESH_TOKEN_URL,
   auth: {
-    setAccessToken: (accessToken: string) => {},
+    setAccessToken: (accessToken: string) => {
+      logger.debug(`Setting access token: ${accessToken}`);
+      credentialStore.set("accessToken.value", accessToken);
+    },
     getAccessToken: () => {
       const token = credentialStore.get("accessToken.value");
       logger.debug(`access token: ${token}`);

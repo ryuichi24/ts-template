@@ -28,7 +28,7 @@ export class BetterSqlite3DbStore implements ICacheStore {
     if (!cache) {
       return null;
     }
-    return cache;
+    return this._parseCacheItem(cache);
   }
 
   async has(key: string): Promise<boolean> {
@@ -46,12 +46,16 @@ export class BetterSqlite3DbStore implements ICacheStore {
 
   async getAll(): Promise<CacheItem<any>[]> {
     const caches = await this._drizzleClientProvider.drizzleClient.query.caches.findMany();
-    return caches;
+    return caches.map((cache) => this._parseCacheItem(cache));
   }
 
   async delete(key: string): Promise<void> {
     await this._drizzleClientProvider.drizzleClient
       .delete(betterSqlite3DrizzleSchema.caches)
       .where(eq(betterSqlite3DrizzleSchema.caches.key, key));
+  }
+
+  private _parseCacheItem(cache: any): any {
+    return { ...cache, value: JSON.parse(cache.value) };
   }
 }

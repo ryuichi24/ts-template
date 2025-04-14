@@ -19,7 +19,7 @@ import * as libsqlDrizzleSchema from "./drizzle-schema/libsql/index.js";
         clientConfig: {
           filename: "cache.db",
           options: {
-            verbose: console.log,
+            // verbose: console.log,
           },
         },
       },

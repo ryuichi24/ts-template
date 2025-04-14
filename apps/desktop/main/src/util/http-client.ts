@@ -4,6 +4,7 @@ import { logger } from "./logger.js";
 export namespace HTTPClient {
   export type Config = {
     baseURL: string;
+    baseUrlForPublic?: string;
     refreshTokenUrl: string;
     auth?: {
       setAccessToken: (accessToken: string) => void;
@@ -15,6 +16,7 @@ export namespace HTTPClient {
 
 export class HTTPClient {
   _axiosInstance: AxiosInstance;
+  _publicAxiosInstance: AxiosInstance;
   _refreshTokenUrl: string;
   _auth?: {
     setAccessToken: (accessToken: string) => void;
@@ -27,6 +29,10 @@ export class HTTPClient {
     this._axiosInstance = axios.create({
       baseURL: props.baseURL,
       withCredentials: true,
+    });
+
+    this._publicAxiosInstance = axios.create({
+      baseURL: props.baseUrlForPublic ?? props.baseURL,
     });
 
     const hasAuth = !!props.auth;
@@ -68,6 +74,7 @@ export class HTTPClient {
 
         // If the error is not due to authentication, do not refresh the access token
         if (response.status !== 401) throw err;
+
         // If the error is due to the refresh token, do not retry
         if (config.url === this._refreshTokenUrl) throw err;
 
@@ -78,15 +85,20 @@ export class HTTPClient {
           throw err;
         }
 
-        const res = await this._axiosInstance.post(this._refreshTokenUrl, {
+        const res = await this._publicAxiosInstance.post(this._refreshTokenUrl, {
           refreshToken: refreshToken,
         });
 
         const { accessToken } = res.data;
         if (!accessToken) throw err;
 
+        logger.debug(`Access token refreshed successfully. ${accessToken}`);
+
         // Save the new access token
         this._auth.setAccessToken(accessToken);
+
+        // Update the original request with the new access token
+        config.headers.Authorization = `Bearer ${accessToken}`;
 
         // retry the original request with the new access token
         return await this._axiosInstance(config);
