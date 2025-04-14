@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "../config/config.service";
 import { JwtService } from "@nestjs/jwt";
 import { UserManager } from "../user-util/managers/user.manager";
@@ -6,8 +6,8 @@ import { AuthUser } from "../auth-util/decorators/auth-user.decorator";
 import { RefreshTokenManager } from "../auth-util/managers/refresh-token.manager";
 import { calculateExpiresAt } from "@ts-template/date-util";
 import { OauthApiClientFactory } from "../oauth-util/clients/oauth-api-client-factory";
-import { OAuthAccountManager } from "../oauth-util/managers/oauth-account.manager";
-import { OAuthTokenManager } from "../oauth-util/managers/oauth-token.manager";
+import { OauthAccountRepository } from "../oauth-util/repositories/oauth-account.repository";
+import { OauthTokenRepository } from "../oauth-util/repositories/oauth-token.repository";
 
 export namespace AuthService {
   export type CheckUserAuthDto = {
@@ -25,10 +25,12 @@ export class AuthService {
     private _configService: ConfigService,
     private _jwtService: JwtService,
     private _userManger: UserManager,
-    private _oauthAccountManager: OAuthAccountManager,
     private _oauthApiClientFactory: OauthApiClientFactory,
-    private _oauthTokenManager: OAuthTokenManager,
     private _refreshTokenManager: RefreshTokenManager,
+    @Inject(OauthAccountRepository)
+    private _oauthAccountRepository: OauthAccountRepository,
+    @Inject(OauthTokenRepository)
+    private _oauthTokenRepository: OauthTokenRepository,
   ) {}
 
   public async checkUserAuth(dto: AuthService.CheckUserAuthDto) {
@@ -39,7 +41,7 @@ export class AuthService {
 
     // If the user is using OAuth, we need to check if the OAuth account exists
     if (dto.authUser.authProvider !== "custom") {
-      const existingOAuthAccount = await this._oauthAccountManager.getOAuthAccountByUserIdAndProvider({
+      const existingOAuthAccount = await this._oauthAccountRepository.getByUserIdAndProvider({
         userId: existingUser.id.toString(),
         oauthProvider: dto.authUser.authProvider,
       });
@@ -77,7 +79,7 @@ export class AuthService {
 
     // verify if the user's oauth account is still valid
     if (refreshTokenPayload.authProvider !== "custom") {
-      const existingOauthAccount = await this._oauthAccountManager.getOAuthAccountByUserIdAndProvider({
+      const existingOauthAccount = await this._oauthAccountRepository.getByUserIdAndProvider({
         userId: existingUser.id,
         oauthProvider: refreshTokenPayload.authProvider,
       });
@@ -86,7 +88,7 @@ export class AuthService {
         return null;
       }
 
-      const oauthAccessToken = await this._oauthTokenManager.getOAuthTokenByOauthId(existingOauthAccount.oauthId);
+      const oauthAccessToken = await this._oauthTokenRepository.getByOauthId({ oauthId: existingOauthAccount.oauthId });
       if (!oauthAccessToken) {
         return null;
       }

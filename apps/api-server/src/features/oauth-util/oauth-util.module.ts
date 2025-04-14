@@ -2,13 +2,36 @@ import { Module } from "@nestjs/common";
 import { OAuthAgentFactory } from "./agents/oauth-agent-factory";
 import { GoogleOauthApiClient } from "./clients/google-oauth-api-client";
 import { OauthApiClientFactory } from "./clients/oauth-api-client-factory";
-import { OAuthAccountManager } from "./managers/oauth-account.manager";
-import { OAuthTokenManager } from "./managers/oauth-token.manager";
 import { StrapiModule } from "../strapi/strapi.module";
+import { OauthAccountStrapiRepository } from "./repositories/oauth-account-strapi.repository";
+import { OauthAccountRepository } from "./repositories/oauth-account.repository";
+import { OauthTokenRepository } from "./repositories/oauth-token.repository";
+import { OauthTokenStrapiRepository } from "./repositories/oauth-token-cache.repository";
 
 @Module({
   imports: [StrapiModule],
-  exports: [OAuthAgentFactory, OAuthAccountManager, OauthApiClientFactory, OAuthTokenManager, GoogleOauthApiClient],
-  providers: [OAuthAgentFactory, OAuthAccountManager, OauthApiClientFactory, OAuthTokenManager, GoogleOauthApiClient],
+  exports: [
+    // https://stackoverflow.com/questions/78405348/nest-cannot-export-a-provider-module
+    OauthAccountRepository,
+    OauthTokenRepository,
+    OAuthAgentFactory,
+    OauthApiClientFactory,
+    GoogleOauthApiClient,
+  ],
+  providers: [
+    OAuthAgentFactory,
+    OauthApiClientFactory,
+    GoogleOauthApiClient,
+    // https://docs.nestjs.com/fundamentals/custom-providers#class-providers-useclass
+    {
+      provide: OauthAccountRepository,
+      useClass: OauthAccountStrapiRepository,
+    },
+    {
+      provide: OauthTokenRepository,
+      useClass: OauthTokenStrapiRepository,
+    },
+  ],
 })
 export class OauthUtilModule {}
+OauthAccountRepository;

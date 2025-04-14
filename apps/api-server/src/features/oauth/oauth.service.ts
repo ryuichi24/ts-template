@@ -1,13 +1,13 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserManager } from "../user-util/managers/user.manager";
 import { RefreshTokenManager } from "../auth-util/managers/refresh-token.manager";
 import { calculateExpiresAt } from "@ts-template/date-util";
 import { OAuthPlatformType, OAuthProviderType } from "../oauth-util/agents/oauth-agent";
 import { OAuthAgentFactory } from "../oauth-util/agents/oauth-agent-factory";
-import { OAuthAccountManager } from "../oauth-util/managers/oauth-account.manager";
-import { OAuthTokenManager } from "../oauth-util/managers/oauth-token.manager";
 import { ConfigService } from "../config/config.service";
+import { OauthAccountRepository } from "../oauth-util/repositories/oauth-account.repository";
+import { OauthTokenRepository } from "../oauth-util/repositories/oauth-token.repository";
 
 export namespace OauthService {
   export type LoginAttemptDto = {
@@ -28,8 +28,10 @@ export class OauthService {
     private _userManger: UserManager,
     private _oauthAgentFactory: OAuthAgentFactory,
     private _jwtService: JwtService,
-    private _oauthAccountManager: OAuthAccountManager,
-    private _oauthTokenManager: OAuthTokenManager,
+    @Inject(OauthAccountRepository)
+    private _oauthAccountRepository: OauthAccountRepository,
+    @Inject(OauthTokenRepository)
+    private _oauthTokenRepository: OauthTokenRepository,
     private _refreshTokenManager: RefreshTokenManager,
   ) {}
 
@@ -54,12 +56,12 @@ export class OauthService {
       });
     }
 
-    let existingOauthAccount = await this._oauthAccountManager.getOAuthAccountByUserIdAndProvider({
+    let existingOauthAccount = await this._oauthAccountRepository.getByUserIdAndProvider({
       userId: existingUser.id,
       oauthProvider: dto.provider,
     });
     if (!existingOauthAccount) {
-      existingOauthAccount = await this._oauthAccountManager.createOAuthAccount({
+      existingOauthAccount = await this._oauthAccountRepository.create({
         userId: existingUser.id,
         oauthId: userInfo.id,
         provider: dto.provider,
@@ -78,14 +80,14 @@ export class OauthService {
     }
 
     // cache oauth token
-    const oauthToken = await this._oauthTokenManager.getOAuthTokenByOauthId(existingOauthAccount.oauthId);
+    const oauthToken = await this._oauthTokenRepository.getByOauthId({ oauthId: existingOauthAccount.oauthId });
 
     // delete existing oauth token
     if (oauthToken) {
-      await this._oauthTokenManager.deleteOAuthToken(oauthToken.id);
+      await this._oauthTokenRepository.delete({ oauthId: oauthToken.oauthId });
     }
 
-    await this._oauthTokenManager.createOAuthToken({
+    await this._oauthTokenRepository.create({
       oauthId: userInfo.id,
       accessToken: authTokenResponse.accessToken,
       refreshToken: authTokenResponse.refreshToken,
