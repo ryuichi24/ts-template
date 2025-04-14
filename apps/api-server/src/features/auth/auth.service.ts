@@ -66,8 +66,7 @@ export class AuthService {
     const accessTokenPayload: any = {
       userId: existingUser.id,
       authProvider: refreshTokenPayload.authProvider,
-      roles: ["normal", "refreshed"],
-
+      roles: ["normal"],
     };
 
     const adminEmails = this._configService.getOrThrow("auth.admin.emails", { infer: true });
