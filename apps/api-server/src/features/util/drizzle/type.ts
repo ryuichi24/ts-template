@@ -2,6 +2,14 @@ import Database from "better-sqlite3";
 import { DrizzleConfig } from "drizzle-orm";
 import { MySql2DrizzleConfig } from "drizzle-orm/mysql2";
 import { Config as LibsqlConfig } from "@libsql/client";
+import {
+  CommonOptionsBase,
+  CanBuildConfig,
+  SyncRegisterOptionsBase,
+  AsyncRegisterOptionsBase,
+} from "../configurable-module-base/types";
+
+export type DrizzleSchema = Record<string, any>;
 
 export const databaseClientTypes = {
   BETTER_SQLITE3: "better-sqlite3",
@@ -10,9 +18,9 @@ export const databaseClientTypes = {
   MYSQL2: "mysql2",
 } as const;
 
-export type DatabaseClientTypes = typeof databaseClientTypes;
+type DatabaseClientTypes = typeof databaseClientTypes;
 
-export type SqliteConfig<TSchema extends DrizzleSchema> = {
+type SqliteConfig<TSchema extends DrizzleSchema> = {
   clientType: DatabaseClientTypes["BETTER_SQLITE3"];
   clientConfig: {
     filename?: string | Buffer;
@@ -21,20 +29,20 @@ export type SqliteConfig<TSchema extends DrizzleSchema> = {
   drizzleConfig: DrizzleConfig<TSchema>;
 };
 
-export type LibSqlConfig<TSchema extends DrizzleSchema> = {
+type LibSqlConfig<TSchema extends DrizzleSchema> = {
   clientType: DatabaseClientTypes["LIBSQL"];
   clientConfig: LibsqlConfig;
   drizzleConfig: DrizzleConfig<TSchema>;
 };
 
-export type PostgresConfig<TSchema extends DrizzleSchema> = {
+type PostgresConfig<TSchema extends DrizzleSchema> = {
   clientType: DatabaseClientTypes["POSTGRES_JS"];
   // TODO: Add Postgres config options as we need
   clientConfig: {};
   drizzleConfig: DrizzleConfig<TSchema>;
 };
 
-export type Mysql2Config<TSchema extends DrizzleSchema> = {
+type Mysql2Config<TSchema extends DrizzleSchema> = {
   clientType: DatabaseClientTypes["MYSQL2"];
   // TODO: Add MySQL config options as we need
   clientConfig: {};
@@ -48,28 +56,21 @@ export type DatabaseConfig<TSchema extends DrizzleSchema> = {} & (
   | Mysql2Config<TSchema>
 );
 
-type Options = {
-  tag: `${string}:DRIZZLE`;
-  isGlobal?: boolean;
-};
+export type DrizzleServiceSyncConfig = {};
 
-export type SyncRegisterOptions = Options & {
+export type DrizzleServiceAsyncConfig = {};
+
+type DrizzleCommonOptions = CommonOptionsBase & {
+  tag: `${string}:DRIZZLE`;
   dbConfig: DatabaseConfig<any>;
 };
 
-export interface DatabaseConfigFactory {
-  buildConfig(): Promise<DatabaseConfig<any>> | DatabaseConfig<any>;
+export type SyncRegisterDrizzleOptions = SyncRegisterOptionsBase<DrizzleServiceSyncConfig, DrizzleCommonOptions>;
+
+export type AsyncRegisterDrizzleOptions = AsyncRegisterOptionsBase<DrizzleServiceAsyncConfig, DrizzleCommonOptions>;
+
+export class DrizzleConfigFactory implements CanBuildConfig<DrizzleServiceAsyncConfig> {
+  buildConfig(): DrizzleServiceAsyncConfig | Promise<DrizzleServiceAsyncConfig> {
+    return {};
+  }
 }
-
-export type AsyncRegisterOptions = Options & (AsyncRegisterWithFactory | AsyncRegisterWithClass);
-
-type AsyncRegisterWithFactory = {
-  useFactory: (...args: any[]) => Promise<DatabaseConfig<any>> | DatabaseConfig<any>;
-  inject?: any[];
-};
-
-type AsyncRegisterWithClass = {
-  useClass: new (...args: any[]) => DatabaseConfigFactory;
-};
-
-export type DrizzleSchema = Record<string, any>;

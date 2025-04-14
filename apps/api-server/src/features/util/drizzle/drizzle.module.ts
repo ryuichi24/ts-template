@@ -3,17 +3,17 @@ import { DrizzleBetterSqlite3Service } from "./drizzle-better-sqlite3/drizzle-be
 import { DrizzlePostgresJsService } from "./drizzle-postgres-js/drizzle-postgres-js.service";
 import { DrizzleMysql2Service } from "./drizzle-mysql2/drizzle-mysql2.service";
 import {
+  SyncRegisterDrizzleOptions,
+  AsyncRegisterDrizzleOptions,
   databaseClientTypes,
   DatabaseConfig,
-  SyncRegisterOptions,
-  AsyncRegisterOptions,
-  DatabaseConfigFactory,
+  DrizzleConfigFactory,
 } from "./type";
 import { DrizzleLibsqlService } from "./drizzle-libsql/drizzle-libsql.service";
 
 @Module({})
 export class DrizzleModule {
-  static register(options: SyncRegisterOptions): DynamicModule {
+  static register(options: SyncRegisterDrizzleOptions): DynamicModule {
     const { tag, isGlobal, dbConfig } = options;
 
     const provider: Provider = {
@@ -25,43 +25,44 @@ export class DrizzleModule {
     };
 
     return {
-      global: isGlobal,
       module: DrizzleModule,
+      global: isGlobal,
       providers: [provider],
       exports: [provider],
     };
   }
 
-  static registerAsync(options: AsyncRegisterOptions): DynamicModule {
-    const { tag, isGlobal, ...rest } = options;
-    const dbConfigToken = `${tag}:dbConfig`;
+  static registerAsync(options: AsyncRegisterDrizzleOptions): DynamicModule {
+    const dbConfigToken = `${options.tag ?? "DEFAULT"}:DRIZZLE_CONFIG`;
 
-    let configProvider: Provider;
+    const providers: Provider[] = [];
 
-    if ("useClass" in rest) {
-      configProvider = {
+    if ("useClass" in options) {
+      const configProvider = {
         provide: dbConfigToken,
-        useFactory: async (factory: DatabaseConfigFactory) => await factory.buildConfig(),
-        inject: [rest.useClass],
+        useFactory: async (factory: DrizzleConfigFactory) => await factory.buildConfig(),
+        inject: [options.useClass],
       };
+      providers.push(configProvider);
     }
 
-    if ("useFactory" in rest) {
-      configProvider = {
+    if ("useFactory" in options) {
+      const configProvider = {
         provide: dbConfigToken,
-        useFactory: rest.useFactory,
-        inject: [...(rest.inject || [])],
+        useFactory: options.useFactory,
+        inject: [...(options.inject || [])],
       };
+      providers.push(configProvider);
+      providers.push(...(options.inject ?? []));
     }
 
     return {
-      global: isGlobal,
       module: DrizzleModule,
-      imports: [],
+      global: options.isGlobal,
       providers: [
-        configProvider!,
+        ...providers,
         {
-          provide: tag,
+          provide: options.tag,
           useFactory: async (dbConfig: DatabaseConfig<any>) => {
             const client = this._createDbClient(dbConfig);
             return client;
@@ -69,8 +70,7 @@ export class DrizzleModule {
           inject: [dbConfigToken],
         },
       ],
-      exports: [tag],
-      controllers: [],
+      exports: [options.tag],
     };
   }
 

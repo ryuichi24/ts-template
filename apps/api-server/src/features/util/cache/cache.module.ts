@@ -20,14 +20,13 @@ export class CacheModule {
     return {
       module: CacheModule,
       global: options.isGlobal,
-      controllers: [],
       providers: [cacheProvider, options.store],
       exports: [cacheProvider],
     };
   }
 
   static registerAsync(options: AsyncRegisterCacheOptions): DynamicModule {
-    const configToken = `${options.tag ?? "default"}:config`;
+    const configToken = `${options.tag ?? "DEFAULT"}:CACHE_CONFIG`;
 
     const providers: Provider[] = [];
 
