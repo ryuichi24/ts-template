@@ -1,14 +1,19 @@
+import crypto from "crypto";
 import { StrapiRepository } from "src/features/strapi/repositories/strapi.repository";
 import { UserRepository } from "./user.repository";
 import { StrapiClient } from "src/features/strapi/clients/strapi.client";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class UserStrapiRepository extends StrapiRepository implements UserRepository {
   constructor(private _strapiClient: StrapiClient) {
     super();
   }
 
   async create(cmd: UserRepository.CreateCommand): Promise<UserRepository.User> {
-    const res = await this._strapiClient.getCollection(StrapiClient.COLLECTIONS.USERS).create(cmd);
+    const res = await this._strapiClient
+      .getCollection(StrapiClient.COLLECTIONS.USERS)
+      .create({ ...cmd, uuid: crypto.randomUUID() });
 
     const { data: newUser, meta } = res;
 

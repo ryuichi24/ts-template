@@ -1,5 +1,7 @@
+import { Injectable } from "@nestjs/common";
 import { OauthTokenRepository } from "./oauth-token.repository";
 
+@Injectable()
 export class OauthTokenInMemoryRepository implements OauthTokenRepository {
   private _oauthToken: OauthTokenRepository.OauthToken[];
 

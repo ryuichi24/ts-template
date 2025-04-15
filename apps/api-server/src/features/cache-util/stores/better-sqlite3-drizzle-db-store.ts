@@ -3,7 +3,7 @@ import { ICacheStore } from "@ts-template/cache";
 import { CacheItem } from "node_modules/@ts-template/cache/dist/cjs/cache-base";
 import { DrizzleBetterSqlite3Service } from "src/features/util/drizzle/drizzle-better-sqlite3/drizzle-better-sqlite3.service";
 import * as betterSqlite3DrizzleSchema from "../../database/drizzle-schema/better-sqlite3/index.js";
-import { eq } from "drizzle-orm";
+import { eq } from "drizzle-orm/expressions";
 
 @Injectable()
 export class BetterSqlite3DbStore implements ICacheStore {
@@ -22,7 +22,7 @@ export class BetterSqlite3DbStore implements ICacheStore {
 
   async get(key: string): Promise<CacheItem<any> | null> {
     const cache = await this._drizzleClientProvider.drizzleClient.query.caches.findFirst({
-      where: (col, { eq }) => eq(col.key, key),
+      where: (col) => eq(col.key, key),
     });
 
     if (!cache) {
