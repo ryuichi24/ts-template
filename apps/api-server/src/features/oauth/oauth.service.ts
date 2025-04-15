@@ -1,6 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { UserManager } from "../user-util/managers/user.manager";
 import { RefreshTokenManager } from "../auth-util/managers/refresh-token.manager";
 import { calculateExpiresAt } from "@ts-template/date-util";
 import { OAuthPlatformType, OAuthProviderType } from "../oauth-util/agents/oauth-agent";
@@ -8,6 +7,7 @@ import { OAuthAgentFactory } from "../oauth-util/agents/oauth-agent-factory";
 import { ConfigService } from "../config/config.service";
 import { OauthAccountRepository } from "../oauth-util/repositories/oauth-account.repository";
 import { OauthTokenRepository } from "../oauth-util/repositories/oauth-token.repository";
+import { UserRepository } from "../user-util/repositories/user.repository";
 
 export namespace OauthService {
   export type LoginAttemptDto = {
@@ -25,14 +25,18 @@ export namespace OauthService {
 export class OauthService {
   constructor(
     private _configService: ConfigService,
-    private _userManger: UserManager,
     private _oauthAgentFactory: OAuthAgentFactory,
     private _jwtService: JwtService,
+    private _refreshTokenManager: RefreshTokenManager,
+
+    @Inject(UserRepository)
+    private _userRepository: UserRepository,
+
     @Inject(OauthAccountRepository)
     private _oauthAccountRepository: OauthAccountRepository,
+
     @Inject(OauthTokenRepository)
     private _oauthTokenRepository: OauthTokenRepository,
-    private _refreshTokenManager: RefreshTokenManager,
   ) {}
 
   public attemptLogin(dto: OauthService.LoginAttemptDto) {
@@ -46,9 +50,12 @@ export class OauthService {
     const authTokenResponse = await oauthProvider.getAuthTokens(dto.code);
     const userInfo = await oauthProvider.fetchUserInfo(authTokenResponse.accessToken);
 
-    let existingUser = await this._userManger.getUserByEmail(userInfo.email);
+    let existingUser = await this._userRepository.getByEmail({
+      email: userInfo.email,
+    });
+
     if (!existingUser) {
-      existingUser = await this._userManger.createUser({
+      existingUser = await this._userRepository.create({
         email: userInfo.email,
         username: userInfo.username,
         isEmailVerified: userInfo.isEmailVerified,
@@ -70,7 +77,7 @@ export class OauthService {
 
     // check if the email of the oauth account is still valid if not update it
     if (existingUser.email !== userInfo.email) {
-      existingUser = await this._userManger.updateUser({
+      existingUser = await this._userRepository.update({
         id: existingUser.id,
         data: {
           email: userInfo.email,
@@ -98,13 +105,13 @@ export class OauthService {
 
     // NOTE: temporary role implementation
     const adminEmails = this._configService.getOrThrow("auth.admin.emails", { infer: true });
-    const isAdmin = adminEmails.includes(existingUser.email);
+    const isAdmin = adminEmails.includes(existingUser!.email);
 
     const accessTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.accessToken.expiresIn", {
       infer: true,
     });
     const accessTokenPayload = {
-      userId: existingUser.id,
+      userId: existingUser?.id,
       oauthId: existingOauthAccount.id,
       authProvider: dto.provider,
       roles: ["normal"],
@@ -126,7 +133,7 @@ export class OauthService {
       infer: true,
     });
     const { refreshToken, expiresAt: refreshTokenExpiresAt } = this._refreshTokenManager.issue({
-      userId: existingUser.id,
+      userId: existingUser!.id,
       authProvider: dto.provider,
       expiresIn: refreshTokenExpiresIn,
     });

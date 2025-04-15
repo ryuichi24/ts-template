@@ -1,10 +1,16 @@
 import { Module } from "@nestjs/common";
-import { UserManager } from "./managers/user.manager";
 import { StrapiModule } from "../strapi/strapi.module";
+import { UserRepository } from "./repositories/user.repository";
+import { UserStrapiRepository } from "./repositories/user-strapi.repository";
 
 @Module({
   imports: [StrapiModule],
-  exports: [UserManager],
-  providers: [UserManager],
+  exports: [UserRepository],
+  providers: [
+    {
+      provide: UserRepository,
+      useClass: UserStrapiRepository,
+    },
+  ],
 })
 export class UserUtilModule {}

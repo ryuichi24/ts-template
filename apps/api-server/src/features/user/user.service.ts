@@ -1,9 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { UserManager } from "../user-util/managers/user.manager";
+import { Inject, Injectable } from "@nestjs/common";
+import { UserRepository } from "../user-util/repositories/user.repository";
 
 export namespace UserService {}
 
 @Injectable()
 export class UserService {
-  constructor(private _userManager: UserManager) {}
+  constructor(
+    @Inject(UserRepository)
+    private _userRepository: UserRepository,
+  ) {}
 }

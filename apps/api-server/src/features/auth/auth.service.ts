@@ -1,13 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "../config/config.service";
 import { JwtService } from "@nestjs/jwt";
-import { UserManager } from "../user-util/managers/user.manager";
 import { AuthUser } from "../auth-util/decorators/auth-user.decorator";
 import { RefreshTokenManager } from "../auth-util/managers/refresh-token.manager";
 import { calculateExpiresAt } from "@ts-template/date-util";
 import { OauthApiClientFactory } from "../oauth-util/clients/oauth-api-client-factory";
 import { OauthAccountRepository } from "../oauth-util/repositories/oauth-account.repository";
 import { OauthTokenRepository } from "../oauth-util/repositories/oauth-token.repository";
+import { UserRepository } from "../user-util/repositories/user.repository";
 
 export namespace AuthService {
   export type CheckUserAuthDto = {
@@ -24,17 +24,23 @@ export class AuthService {
   constructor(
     private _configService: ConfigService,
     private _jwtService: JwtService,
-    private _userManger: UserManager,
-    private _oauthApiClientFactory: OauthApiClientFactory,
     private _refreshTokenManager: RefreshTokenManager,
+    private _oauthApiClientFactory: OauthApiClientFactory,
+
+    @Inject(UserRepository)
+    private _userRepository: UserRepository,
+
     @Inject(OauthAccountRepository)
     private _oauthAccountRepository: OauthAccountRepository,
+
     @Inject(OauthTokenRepository)
     private _oauthTokenRepository: OauthTokenRepository,
   ) {}
 
   public async checkUserAuth(dto: AuthService.CheckUserAuthDto) {
-    const existingUser = await this._userManger.getUserById(dto.authUser.id);
+    const existingUser = await this._userRepository.getById({
+      id: dto.authUser.id,
+    });
     if (!existingUser) {
       return null;
     }
@@ -59,7 +65,9 @@ export class AuthService {
       return null;
     }
 
-    const existingUser = await this._userManger.getUserById(refreshTokenPayload.userId);
+    const existingUser = await this._userRepository.getById({
+      id: refreshTokenPayload.userId,
+    });
 
     if (!existingUser) {
       return null;
