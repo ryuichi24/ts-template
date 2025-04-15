@@ -106,7 +106,7 @@ export const App: React.FC<App.Props> = (props) => {
           <button
             className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
             onClick={() =>
-              window.IPC.onOpenInBrowserRequested("http://localhost:3000/api/oauth/login/desktop?provider=google")
+              window.IPC.onOpenInBrowserRequested("http://localhost:3000/api/oauth/login/desktop/google")
             }
           >
             Login with Google
