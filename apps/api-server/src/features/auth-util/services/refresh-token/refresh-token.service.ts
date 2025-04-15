@@ -17,6 +17,10 @@ export namespace RefreshTokenService {
     expiresIn: string | number;
   };
 
+  export type RevokeDto = {
+    refreshToken: string;
+  };
+
   export type TokenPayload = {
     userId: string;
     authProvider: OAuthProviderType | "custom";
@@ -31,13 +35,13 @@ export class RefreshTokenService {
     private _configService: ConfigService,
   ) {}
 
-  public issue(dto: RefreshTokenService.IssueDto) {
+  public async issue(dto: RefreshTokenService.IssueDto) {
     const refreshTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.refreshToken.expiresIn", {
       infer: true,
     });
     const refreshTokenExpiresAt = calculateExpiresAt(refreshTokenExpiresIn);
     const refreshToken = crypto.randomBytes(40).toString("hex");
-    this._cacheService.set(
+    await this._cacheService.set(
       `refreshToken:${refreshToken}`,
       {
         userId: dto.userId,
@@ -50,12 +54,16 @@ export class RefreshTokenService {
     return { refreshToken, expiresAt: refreshTokenExpiresAt };
   }
 
-  public verify(dto: RefreshTokenService.VerifyDto) {
-    const refreshTokenPayload = this._cacheService.get(`refreshToken:${dto.refreshToken}`);
+  public async verify(dto: RefreshTokenService.VerifyDto) {
+    const refreshTokenPayload = await this._cacheService.get(`refreshToken:${dto.refreshToken}`);
     if (!refreshTokenPayload) {
       return null;
     }
 
     return refreshTokenPayload;
+  }
+
+  public async revoke(dto: RefreshTokenService.RevokeDto) {
+    await this._cacheService.delete(`refreshToken:${dto.refreshToken}`);
   }
 }

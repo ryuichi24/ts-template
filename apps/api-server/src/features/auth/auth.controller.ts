@@ -32,4 +32,12 @@ export class AuthController {
 
     return res;
   }
+
+  @Post("logout")
+  @UseGuards(AuthGuard)
+  @ApiBody({ schema: { type: "object", properties: { refreshToken: { type: "string" } } }, required: true })
+  @ApiBearerAuth("Authorization")
+  public async onLogout(@Body() dto: Omit<AuthService.LogoutDto, "authUser">, @AuthUser() authUser: AuthUser.User) {
+    await this._authService.logout({ ...dto, authUser });
+  }
 }

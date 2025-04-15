@@ -17,6 +17,11 @@ export namespace AuthService {
   export type RefreshTokenDto = {
     refreshToken: string;
   };
+
+  export type LogoutDto = {
+    authUser: AuthUser.User;
+    refreshToken: string;
+  };
 }
 
 @Injectable()
@@ -127,5 +132,28 @@ export class AuthService {
     const accessToken = this._jwtService.sign(accessTokenPayload, accessTokenOptions);
 
     return { accessToken, expiresAt: accessTokenExpiresAt };
+  }
+
+  public async logout(dto: AuthService.LogoutDto) {
+    const existingUser = await this._userRepository.getById({ id: dto.authUser.id });
+
+    if (!existingUser) {
+      return null;
+    }
+
+    await this._refreshTokenService.revoke({ refreshToken: dto.refreshToken });
+
+    if (dto.authUser.authProvider !== "custom") {
+      const existingOauthAccount = await this._oauthAccountRepository.getByUserIdAndProvider({
+        userId: existingUser.id,
+        oauthProvider: dto.authUser.authProvider,
+      });
+
+      if (!existingOauthAccount) {
+        return null;
+      }
+
+      await this._oauthTokenRepository.delete({ oauthId: existingOauthAccount.oauthId });
+    }
   }
 }
