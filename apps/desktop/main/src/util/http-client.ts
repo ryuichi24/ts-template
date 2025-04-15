@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
 import { logger } from "./logger.js";
 
 export namespace HTTPClient {
@@ -42,10 +42,12 @@ export class HTTPClient {
     }
   }
 
-  public async get(url: string, params?: Record<string, any>) {
-    return await this._axiosInstance.get.bind(this._axiosInstance)(url, {
-      params,
-    });
+  public async get(url: string, config?: AxiosRequestConfig<Record<string, any>>) {
+    return await this._axiosInstance.get.bind(this._axiosInstance)(url, { ...config });
+  }
+
+  public async post(url: string, data?: Record<string, any>, config?: AxiosRequestConfig<Record<string, any>>) {
+    return await this._axiosInstance.post.bind(this._axiosInstance)(url, data, config);
   }
 
   private _setupAuth() {
