@@ -11,7 +11,7 @@ export namespace AuthCtx {
     roles: string[];
   };
 
-  export type ReducerAction = { type: "ON_AUTHENTICATED"; payload: { userInfo: any } };
+  export type ReducerAction = { type: "ON_AUTHENTICATED"; payload: { userInfo: any } } | { type: "ON_LOGOUT" };
 }
 
 export const AuthCtx = createContext<AuthCtx.State>({
@@ -33,6 +33,14 @@ function reducer(state: AuthCtx.ReducerState, action: AuthCtx.ReducerAction): Au
         ...state,
         isAuthenticated: true,
         userInfo: payload.userInfo,
+      };
+    }
+    case "ON_LOGOUT": {
+      return {
+        ...state,
+        isAuthenticated: false,
+        userInfo: {},
+        roles: [],
       };
     }
     default: {
@@ -66,6 +74,14 @@ export const AuthProvider: React.FC<AuthProvider.Props> = (props) => {
           userInfo: payload.userInfo,
         },
       });
+    });
+
+    window.IPC.onLogoutSuccess(() => {
+      // Handle logout success  public async onLogout(@Body() dto: AuthService.) {
+      dispatch({
+        type: "ON_LOGOUT",
+      });
+      console.log("Logout successful");
     });
 
     return () => {

@@ -27,6 +27,8 @@ declare global {
         }) => void,
       ) => void;
       onCheckAuthRequested: () => Promise<any>;
+      onLogoutRequested: () => Promise<any>;
+      onLogoutSuccess: (callback: () => void) => void;
     };
   }
 }

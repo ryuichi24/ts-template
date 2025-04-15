@@ -98,6 +98,11 @@ export class AppStore<TStore> {
     setNestedProperty(this.storeData, key, value);
     this.saveData();
   }
+
+  public delete<TKey extends NestedKeyOf<TStore>>(key: TKey): void {
+    setNestedProperty(this.storeData, key, null);
+    this.saveData();
+  }
 }
 
 function getNestedProperty<T>(obj: any, key: string): T | undefined {

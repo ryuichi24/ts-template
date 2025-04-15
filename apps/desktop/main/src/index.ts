@@ -12,6 +12,7 @@ import { checkForUpdatesModule } from "./modules/check-for-update.module.js";
 import { SetupAutoUpdaterModule } from "./modules/setup-auto-updater.module.js";
 import { SetupDeepLinkModule } from "./modules/setup-deep-link.module.js";
 import { CheckAuthModule } from "./modules/check-auth.module.js";
+import { LogoutModule } from "./modules/logout.module.js";
 
 if (require("electron-squirrel-startup")) Electron.app.quit();
 
@@ -34,7 +35,8 @@ async function bootstrap() {
     checkForUpdatesModule,
     SetupAutoUpdaterModule,
     SetupDeepLinkModule,
-    CheckAuthModule
+    CheckAuthModule,
+    LogoutModule,
   ]);
 
   await app.start({

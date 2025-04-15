@@ -101,13 +101,16 @@ export const App: React.FC<App.Props> = (props) => {
 
       <div className="mb-4">
         {isAuthenticated ? (
-          <div className="text-lg font-semibold">You are logged in.</div>
+          <div>
+            <div className="text-lg font-semibold">You are logged in.</div>
+            <div>
+              <button onClick={() => window.IPC.onLogoutRequested()}>Logout</button>
+            </div>
+          </div>
         ) : (
           <button
             className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-            onClick={() =>
-              window.IPC.onOpenInBrowserRequested("http://localhost:3000/api/oauth/login/desktop/google")
-            }
+            onClick={() => window.IPC.onOpenInBrowserRequested("http://localhost:3000/api/oauth/login/desktop/google")}
           >
             Login with Google
           </button>

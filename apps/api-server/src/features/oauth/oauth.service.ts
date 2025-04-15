@@ -132,7 +132,7 @@ export class OauthService {
     const refreshTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.refreshToken.expiresIn", {
       infer: true,
     });
-    const { refreshToken, expiresAt: refreshTokenExpiresAt } = this._refreshTokenService.issue({
+    const { refreshToken, expiresAt: refreshTokenExpiresAt } = await this._refreshTokenService.issue({
       userId: existingUser!.id,
       authProvider: dto.provider,
       expiresIn: refreshTokenExpiresIn,

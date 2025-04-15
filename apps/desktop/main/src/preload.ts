@@ -13,6 +13,6 @@ contextBridge.exposeInMainWorld("IPC", {
     callback: (payload: { accessToken: string; refreshToken: string; idToken: string; expiresIn: string }) => void,
   ) => ipcRenderer.on("IPC:oauth-login-success", (_event, value) => callback(value)),
   onCheckAuthRequested: () => ipcRenderer.invoke("IPC:on-check-auth-requested"),
+  onLogoutRequested: () => ipcRenderer.invoke("IPC:on-logout-requested"),
+  onLogoutSuccess: (callback: () => void) => ipcRenderer.on("IPC:logout-success", () => callback()),
 });
-
-
