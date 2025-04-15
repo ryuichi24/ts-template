@@ -7,9 +7,18 @@ import { OauthAccountStrapiRepository } from "./repositories/oauth-account-strap
 import { OauthAccountRepository } from "./repositories/oauth-account.repository";
 import { OauthTokenRepository } from "./repositories/oauth-token.repository";
 import { OauthTokenStrapiRepository } from "./repositories/oauth-token-cache.repository";
+import { CacheModule } from "../util/cache/cache.module";
+import { BetterSqlite3DbStore } from "../cache-util/stores/better-sqlite3-drizzle-db-store";
+import { OauthTokenCache } from "./cache/oauth-token-cache";
 
 @Module({
-  imports: [StrapiModule],
+  imports: [
+    StrapiModule,
+    CacheModule.register({
+      tag: OauthTokenCache,
+      store: BetterSqlite3DbStore,
+    }),
+  ],
   exports: [
     // https://stackoverflow.com/questions/78405348/nest-cannot-export-a-provider-module
     OauthAccountRepository,

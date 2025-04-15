@@ -26,7 +26,7 @@ export class CacheModule {
   }
 
   static registerAsync(options: AsyncRegisterCacheOptions): DynamicModule {
-    const configToken = `${options.tag ?? "DEFAULT"}:CACHE_CONFIG`;
+    const configToken = `${options.tag.toString() ?? "DEFAULT"}:CACHE_CONFIG`;
 
     const providers: Provider[] = [];
 

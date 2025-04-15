@@ -27,7 +27,7 @@ type CacheCommonOptions = CommonOptionsBase & {
    * constructor(@Inject("${tag}:cache") private _cacheService: CacheService) {}
    * ```
    */
-  tag: `${string}:CACHE`;
+  tag: `${string}:CACHE` | symbol;
 };
 
 export type SyncRegisterCacheOptions = SyncRegisterOptionsBase<CacheServiceSyncConfig, CacheCommonOptions>;

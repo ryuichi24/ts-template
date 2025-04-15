@@ -2,12 +2,12 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "../config/config.service";
 import { JwtService } from "@nestjs/jwt";
 import { AuthUser } from "../auth-util/decorators/auth-user.decorator";
-import { RefreshTokenManager } from "../auth-util/managers/refresh-token.manager";
 import { calculateExpiresAt } from "@ts-template/date-util";
 import { OauthApiClientFactory } from "../oauth-util/clients/oauth-api-client-factory";
 import { OauthAccountRepository } from "../oauth-util/repositories/oauth-account.repository";
 import { OauthTokenRepository } from "../oauth-util/repositories/oauth-token.repository";
 import { UserRepository } from "../user-util/repositories/user.repository";
+import { RefreshTokenService } from "../auth-util/services/refresh-token/refresh-token.service";
 
 export namespace AuthService {
   export type CheckUserAuthDto = {
@@ -24,7 +24,7 @@ export class AuthService {
   constructor(
     private _configService: ConfigService,
     private _jwtService: JwtService,
-    private _refreshTokenManager: RefreshTokenManager,
+    private _refreshTokenService: RefreshTokenService,
     private _oauthApiClientFactory: OauthApiClientFactory,
 
     @Inject(UserRepository)
@@ -60,7 +60,7 @@ export class AuthService {
   }
 
   public async refreshToken(dto: AuthService.RefreshTokenDto) {
-    const refreshTokenPayload = await this._refreshTokenManager.verify(dto);
+    const refreshTokenPayload = await this._refreshTokenService.verify(dto);
     if (!refreshTokenPayload) {
       return null;
     }

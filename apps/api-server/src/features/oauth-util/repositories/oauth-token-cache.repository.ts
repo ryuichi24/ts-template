@@ -1,9 +1,10 @@
 import { OauthTokenRepository } from "./oauth-token.repository";
 import { Inject } from "@nestjs/common";
 import { CacheService } from "src/features/util/cache/cache.service";
+import { OauthTokenCache } from "../cache/oauth-token-cache";
 
 export class OauthTokenStrapiRepository implements OauthTokenRepository {
-  constructor(@Inject("OAUTH_TOKEN:CACHE") private _cacheService: CacheService) {}
+  constructor(@Inject(OauthTokenCache) private _cacheService: CacheService) {}
 
   async create(cmd: OauthTokenRepository.CreateCommand): Promise<OauthTokenRepository.OauthToken> {
     const newOAuthToken = {

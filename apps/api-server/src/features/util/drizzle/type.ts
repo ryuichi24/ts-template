@@ -61,7 +61,7 @@ export type DrizzleServiceSyncConfig = {};
 export type DrizzleServiceAsyncConfig = {};
 
 type DrizzleCommonOptions = CommonOptionsBase & {
-  tag: `${string}:DRIZZLE`;
+  tag: `${string}:DRIZZLE` | symbol;
   dbConfig: DatabaseConfig<any>;
 };
 

@@ -33,7 +33,7 @@ export class DrizzleModule {
   }
 
   static registerAsync(options: AsyncRegisterDrizzleOptions): DynamicModule {
-    const dbConfigToken = `${options.tag ?? "DEFAULT"}:DRIZZLE_CONFIG`;
+    const dbConfigToken = `${options.tag.toString() ?? "DEFAULT"}:DRIZZLE_CONFIG`;
 
     const providers: Provider[] = [];
 

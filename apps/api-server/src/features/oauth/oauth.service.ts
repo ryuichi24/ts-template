@@ -1,6 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { RefreshTokenManager } from "../auth-util/managers/refresh-token.manager";
 import { calculateExpiresAt } from "@ts-template/date-util";
 import { OAuthPlatformType, OAuthProviderType } from "../oauth-util/agents/oauth-agent";
 import { OAuthAgentFactory } from "../oauth-util/agents/oauth-agent-factory";
@@ -8,6 +7,7 @@ import { ConfigService } from "../config/config.service";
 import { OauthAccountRepository } from "../oauth-util/repositories/oauth-account.repository";
 import { OauthTokenRepository } from "../oauth-util/repositories/oauth-token.repository";
 import { UserRepository } from "../user-util/repositories/user.repository";
+import { RefreshTokenService } from "../auth-util/services/refresh-token/refresh-token.service";
 
 export namespace OauthService {
   export type LoginAttemptDto = {
@@ -27,7 +27,7 @@ export class OauthService {
     private _configService: ConfigService,
     private _oauthAgentFactory: OAuthAgentFactory,
     private _jwtService: JwtService,
-    private _refreshTokenManager: RefreshTokenManager,
+    private _refreshTokenService: RefreshTokenService,
 
     @Inject(UserRepository)
     private _userRepository: UserRepository,
@@ -132,7 +132,7 @@ export class OauthService {
     const refreshTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.refreshToken.expiresIn", {
       infer: true,
     });
-    const { refreshToken, expiresAt: refreshTokenExpiresAt } = this._refreshTokenManager.issue({
+    const { refreshToken, expiresAt: refreshTokenExpiresAt } = this._refreshTokenService.issue({
       userId: existingUser!.id,
       authProvider: dto.provider,
       expiresIn: refreshTokenExpiresIn,

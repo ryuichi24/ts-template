@@ -1,11 +1,12 @@
 import crypto from "crypto";
-import { calculateExpiresAt } from "@ts-template/date-util";
-import { ConfigService } from "src/features/config/config.service";
 import { Inject, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { calculateExpiresAt } from "@ts-template/date-util";
 import { OAuthProviderType } from "src/features/oauth-util/agents/oauth-agent";
 import { CacheService } from "src/features/util/cache/cache.service";
+import { RefreshTokenCache } from "../../cache/refresh-token-cache";
 
-export namespace RefreshTokenManager {
+export namespace RefreshTokenService {
   export type VerifyDto = {
     refreshToken: string;
   };
@@ -24,13 +25,13 @@ export namespace RefreshTokenManager {
 }
 
 @Injectable()
-export class RefreshTokenManager {
+export class RefreshTokenService {
   constructor(
-    @Inject("REFRESH_TOKEN:CACHE") private _cacheService: CacheService,
+    @Inject(RefreshTokenCache) private _cacheService: CacheService,
     private _configService: ConfigService,
   ) {}
 
-  public issue(dto: RefreshTokenManager.IssueDto) {
+  public issue(dto: RefreshTokenService.IssueDto) {
     const refreshTokenExpiresIn = this._configService.getOrThrow<string>("auth.jwt.refreshToken.expiresIn", {
       infer: true,
     });
@@ -49,7 +50,7 @@ export class RefreshTokenManager {
     return { refreshToken, expiresAt: refreshTokenExpiresAt };
   }
 
-  public verify(dto: RefreshTokenManager.VerifyDto) {
+  public verify(dto: RefreshTokenService.VerifyDto) {
     const refreshTokenPayload = this._cacheService.get(`refreshToken:${dto.refreshToken}`);
     if (!refreshTokenPayload) {
       return null;
