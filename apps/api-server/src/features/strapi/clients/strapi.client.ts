@@ -111,4 +111,14 @@ export class StrapiClient {
   public static get COLLECTIONS() {
     return STRAPI_COLLECTIONS;
   }
+
+  public async isRunning() {
+    try {
+      const res = await this._client.fetch("/");
+      return res.status === 404;
+    } catch (error) {
+      const statusCode = (error as { response: Response })?.response?.status;
+      return statusCode === 404;
+    }
+  }
 }

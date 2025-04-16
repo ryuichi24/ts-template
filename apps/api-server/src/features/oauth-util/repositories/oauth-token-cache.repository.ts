@@ -4,7 +4,7 @@ import { CacheService } from "src/features/util/cache/cache.service";
 import { OauthTokenCache } from "../cache/oauth-token-cache";
 
 @Injectable()
-export class OauthTokenStrapiRepository implements OauthTokenRepository {
+export class OauthTokenCacheRepository implements OauthTokenRepository {
   constructor(@Inject(OauthTokenCache) private _cacheService: CacheService) {}
 
   async create(cmd: OauthTokenRepository.CreateCommand): Promise<OauthTokenRepository.OauthToken> {

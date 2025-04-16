@@ -366,10 +366,6 @@ importers:
         specifier: ^5.8.2
         version: 5.8.2
 
-  packages/electron-libs/electron-app-protocol/dist/cjs: {}
-
-  packages/electron-libs/electron-app-protocol/dist/esm: {}
-
   packages/libs/cache:
     dependencies:
       glob:
@@ -394,10 +390,6 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.8.2
-
-  packages/libs/cache/dist/cjs: {}
-
-  packages/libs/cache/dist/esm: {}
 
   packages/libs/date-util:
     dependencies:
@@ -424,10 +416,6 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
-  packages/libs/date-util/dist/cjs: {}
-
-  packages/libs/date-util/dist/esm: {}
-
   packages/libs/file-system:
     dependencies:
       glob:
@@ -453,10 +441,6 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
-  packages/libs/file-system/dist/cjs: {}
-
-  packages/libs/file-system/dist/esm: {}
-
   packages/libs/logger:
     devDependencies:
       '@ts-template/tsbuild':
@@ -474,10 +458,6 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.8.2
-
-  packages/libs/logger/dist/cjs: {}
-
-  packages/libs/logger/dist/esm: {}
 
   packages/libs/node-js-ctx:
     dependencies:
@@ -504,10 +484,6 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
-  packages/libs/node-js-ctx/dist/cjs: {}
-
-  packages/libs/node-js-ctx/dist/esm: {}
-
   packages/libs/package-json-util:
     dependencies:
       glob:
@@ -533,10 +509,6 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
-  packages/libs/package-json-util/dist/cjs: {}
-
-  packages/libs/package-json-util/dist/esm: {}
-
   packages/libs/type-util:
     devDependencies:
       '@ts-template/tsbuild':
@@ -548,10 +520,6 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.8.2
-
-  packages/libs/type-util/dist/cjs: {}
-
-  packages/libs/type-util/dist/esm: {}
 
   packages/tools/cle:
     dependencies:
