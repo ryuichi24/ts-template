@@ -1,2 +1,3 @@
-export * from "./hooks/useUserInfo";
-export * from "./hooks/useAuth";
+export * from "./hooks/use-userInfo";
+export * from "./hooks/use-auth";
+export * from "./components/AuthProvider";

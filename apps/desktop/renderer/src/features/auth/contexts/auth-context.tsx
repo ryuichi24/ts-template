@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext } from "react";
 
 export namespace AuthCtx {
   export type State = { dispatch: React.Dispatch<ReducerAction> } & ReducerState;
@@ -50,51 +50,3 @@ function reducer(state: AuthCtx.ReducerState, action: AuthCtx.ReducerAction): Au
 }
 
 AuthCtx.reducer = reducer;
-
-export namespace AuthProvider {
-  export type Props = {
-    children: React.ReactNode;
-  };
-}
-
-export const AuthProvider: React.FC<AuthProvider.Props> = (props) => {
-  const { children } = props;
-
-  const [state, dispatch] = useReducer(AuthCtx.reducer, {
-    isAuthenticated: false,
-    roles: [],
-    userInfo: {},
-  });
-
-  useEffect(() => {
-    window.IPC.onOauthLoginSuccess((payload) => {
-      dispatch({
-        type: "ON_AUTHENTICATED",
-        payload: {
-          userInfo: payload.userInfo,
-        },
-      });
-    });
-
-    window.IPC.onLogoutSuccess(() => {
-      // Handle logout success  public async onLogout(@Body() dto: AuthService.) {
-      dispatch({
-        type: "ON_LOGOUT",
-      });
-      console.log("Logout successful");
-    });
-
-    return () => {
-      // Cleanup if needed
-    };
-  }, []);
-
-  useEffect(() => {
-    // Check if user is authenticated
-    window.IPC.onCheckAuthRequested();
-  }, []);
-
-  return <AuthCtx.Provider value={{ dispatch, ...state }}>{children}</AuthCtx.Provider>;
-};
-
-export const useAuthCtx = () => useContext(AuthCtx);

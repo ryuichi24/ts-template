@@ -1,4 +1,12 @@
-export class Logger {
+export interface ILogger {
+  debug(message: string | object | undefined | null): void;
+  info(message: string | object | undefined | null): void;
+  warn(message: string | object | undefined | null): void;
+  error(message: string | object | undefined | null): void;
+  fatal(message: string | object | undefined | null): void;
+}
+
+export class Logger implements ILogger {
   private _strategies: Logger.LogStrategy[] = [];
   private _name: string;
 

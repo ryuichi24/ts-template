@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { ApiBearerAuth, ApiBody } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiResponse } from "@nestjs/swagger";
 import { AuthUser } from "../auth-util/decorators/auth-user.decorator";
 import { AuthGuard } from "../auth-util/guards/auth.guard";
 
@@ -24,6 +24,17 @@ export class AuthController {
 
   @Post("refresh-token")
   @ApiBody({ schema: { type: "object", properties: { refreshToken: { type: "string" } } }, required: true })
+  @ApiResponse({
+    status: 200,
+    description: "Refresh token response",
+    schema: {
+      type: "object",
+      properties: {
+        accessToken: { type: "string" },
+        expiresAt: { type: "string", format: "date-time" },
+      },
+    },
+  })
   async onRefreshToken(@Body() dto: AuthService.RefreshTokenDto) {
     const res = await this._authService.refreshToken(dto);
     if (!res) {

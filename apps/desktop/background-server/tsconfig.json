@@ -3,5 +3,5 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src"]
+  "include": ["src", "../main/src/util/background-worker-manager.ts"]
 }

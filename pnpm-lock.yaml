@@ -181,9 +181,24 @@ importers:
 
   apps/desktop/background-server:
     dependencies:
+      '@hono/node-server':
+        specifier: ^1.14.1
+        version: 1.14.1(hono@4.7.7)
+      '@hono/node-ws':
+        specifier: ^1.1.1
+        version: 1.1.1(@hono/node-server@1.14.1(hono@4.7.7))(hono@4.7.7)
+      '@ts-template/process-event-emitter':
+        specifier: workspace:*
+        version: link:../../../packages/libs/process-event-emitter
+      axios:
+        specifier: ^1.8.4
+        version: 1.8.4(debug@4.4.0)
       better-sqlite3:
         specifier: ^11.8.1
         version: 11.8.1
+      hono:
+        specifier: ^4.7.7
+        version: 4.7.7
     devDependencies:
       '@ts-template/logger':
         specifier: workspace:*
@@ -271,6 +286,9 @@ importers:
       '@ts-template/node-js-ctx':
         specifier: workspace:*
         version: link:../../../packages/libs/node-js-ctx
+      '@ts-template/process-event-emitter':
+        specifier: workspace:*
+        version: link:../../../packages/libs/process-event-emitter
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/configs/tsconfig
@@ -366,6 +384,10 @@ importers:
         specifier: ^5.8.2
         version: 5.8.2
 
+  packages/electron-libs/electron-app-protocol/dist/cjs: {}
+
+  packages/electron-libs/electron-app-protocol/dist/esm: {}
+
   packages/libs/cache:
     dependencies:
       glob:
@@ -390,6 +412,10 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.8.2
+
+  packages/libs/cache/dist/cjs: {}
+
+  packages/libs/cache/dist/esm: {}
 
   packages/libs/date-util:
     dependencies:
@@ -416,6 +442,10 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
+  packages/libs/date-util/dist/cjs: {}
+
+  packages/libs/date-util/dist/esm: {}
+
   packages/libs/file-system:
     dependencies:
       glob:
@@ -441,6 +471,10 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
+  packages/libs/file-system/dist/cjs: {}
+
+  packages/libs/file-system/dist/esm: {}
+
   packages/libs/logger:
     devDependencies:
       '@ts-template/tsbuild':
@@ -458,6 +492,10 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.8.2
+
+  packages/libs/logger/dist/cjs: {}
+
+  packages/libs/logger/dist/esm: {}
 
   packages/libs/node-js-ctx:
     dependencies:
@@ -484,6 +522,10 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
+  packages/libs/node-js-ctx/dist/cjs: {}
+
+  packages/libs/node-js-ctx/dist/esm: {}
+
   packages/libs/package-json-util:
     dependencies:
       glob:
@@ -509,6 +551,32 @@ importers:
         specifier: ^5.4.5
         version: 5.8.2
 
+  packages/libs/package-json-util/dist/cjs: {}
+
+  packages/libs/package-json-util/dist/esm: {}
+
+  packages/libs/process-event-emitter:
+    devDependencies:
+      '@ts-template/tsbuild':
+        specifier: workspace:*
+        version: link:../../tools/tsbuild
+      '@ts-template/tsconfig':
+        specifier: workspace:*
+        version: link:../../configs/tsconfig
+      '@types/node':
+        specifier: ^20.11.20
+        version: 20.17.22
+      tsx:
+        specifier: ^4.7.1
+        version: 4.19.3
+      typescript:
+        specifier: ^5.3.3
+        version: 5.8.2
+
+  packages/libs/process-event-emitter/dist/cjs: {}
+
+  packages/libs/process-event-emitter/dist/esm: {}
+
   packages/libs/type-util:
     devDependencies:
       '@ts-template/tsbuild':
@@ -520,6 +588,10 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.8.2
+
+  packages/libs/type-util/dist/cjs: {}
+
+  packages/libs/type-util/dist/esm: {}
 
   packages/tools/cle:
     dependencies:
@@ -1516,6 +1588,19 @@ packages:
 
   '@hapi/bourne@3.0.0':
     resolution: {integrity: sha512-Waj1cwPXJDucOib4a3bAISsKJVb15MKi9IvmTI/7ssVEm6sywXGjVJDhl6/umt1pK1ZS7PacXU3A1PmFKHEZ2w==}
+
+  '@hono/node-server@1.14.1':
+    resolution: {integrity: sha512-vmbuM+HPinjWzPe7FFPWMMQMsbKE9gDPhaH0FFdqbGpkT5lp++tcWDTxwBl5EgS5y6JVgIaCdjeHRfQ4XRBRjQ==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
+
+  '@hono/node-ws@1.1.1':
+    resolution: {integrity: sha512-iFJrAw5GuBTstehBzLY2FyW5rRlXmO3Uwpijpm4Liv75owNP/UjZe3KExsLuEK4w+u+xhvHqOoQUyEKWUvyghw==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      '@hono/node-server': ^1.11.1
+      hono: ^4.6.0
 
   '@inquirer/checkbox@4.1.4':
     resolution: {integrity: sha512-d30576EZdApjAMceijXA5jDzRQHT/MygbC+J8I7EqA6f/FRpYxlRtRJbHF8gHeWYeSdOuTEJqonn7QLB1ELezA==}
@@ -5597,6 +5682,10 @@ packages:
   homedir-polyfill@1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
+
+  hono@4.7.7:
+    resolution: {integrity: sha512-2PCpQRbN87Crty8/L/7akZN3UyZIAopSoRxCwRbJgUuV1+MHNFHzYFxZTg4v/03cXUm+jce/qa2VSBZpKBm3Qw==}
+    engines: {node: '>=16.9.0'}
 
   hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
@@ -10026,6 +10115,19 @@ snapshots:
   '@gar/promisify@1.1.3': {}
 
   '@hapi/bourne@3.0.0': {}
+
+  '@hono/node-server@1.14.1(hono@4.7.7)':
+    dependencies:
+      hono: 4.7.7
+
+  '@hono/node-ws@1.1.1(@hono/node-server@1.14.1(hono@4.7.7))(hono@4.7.7)':
+    dependencies:
+      '@hono/node-server': 1.14.1(hono@4.7.7)
+      hono: 4.7.7
+      ws: 8.17.1
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   '@inquirer/checkbox@4.1.4(@types/node@22.13.8)':
     dependencies:
@@ -15531,6 +15633,8 @@ snapshots:
   homedir-polyfill@1.0.3:
     dependencies:
       parse-passwd: 1.0.0
+
+  hono@4.7.7: {}
 
   hosted-git-info@2.8.9: {}
 

@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { app } from "electron";
 
 type NestedKeyOf<T> = T extends object
   ? {
@@ -24,6 +23,7 @@ type ValueOfNestedKey<T, K extends string> = K extends `${infer P}.${infer Rest}
 
 export namespace AppStore {
   export type StoreConfig<TStore> = {
+    storePath: string;
     storeFileName: `${string}.json`;
     defaultData?: TStore;
     interceptorGet?: CanIntercept;
@@ -31,7 +31,7 @@ export namespace AppStore {
   };
 
   export interface CanIntercept {
-    intercept(key: string, value: any): any;
+    intercept(key: string, value: any): Promise<any> | any;
   }
 }
 
@@ -42,8 +42,7 @@ export class AppStore<TStore> {
   private interceptorSet?: AppStore.CanIntercept;
 
   constructor(config: AppStore.StoreConfig<TStore>) {
-    const userDataPath = app.getPath("userData");
-    this.storePath = path.join(userDataPath, config.storeFileName);
+    this.storePath = path.join(config.storePath, config.storeFileName);
     this.storeData = this.loadData(config.defaultData ?? ({} as TStore));
     this.interceptorGet = config.interceptorGet;
     this.interceptorSet = config.interceptorSet;
@@ -74,7 +73,8 @@ export class AppStore<TStore> {
 
   public get<TKey extends NestedKeyOf<TStore>>(key: TKey): ValueOfNestedKey<TStore, TKey> | undefined {
     let value = getNestedProperty<ValueOfNestedKey<TStore, TKey>>(this.storeData, key);
-    if (value === undefined) {
+
+    if (value === undefined || value === null) {
       return undefined;
     }
     if (this.interceptorGet) {
@@ -85,15 +85,15 @@ export class AppStore<TStore> {
 
   public getOrThrow<TKey extends NestedKeyOf<TStore>>(key: TKey): ValueOfNestedKey<TStore, TKey> {
     const value = this.get<TKey>(key);
-    if (value === undefined) {
+    if (value === undefined || value === null) {
       throw new Error(`Config value not found for key: ${key}`);
     }
     return value;
   }
 
-  public set<TKey extends NestedKeyOf<TStore>>(key: TKey, value: ValueOfNestedKey<TStore, TKey>): void {
+  public async set<TKey extends NestedKeyOf<TStore>>(key: TKey, value: ValueOfNestedKey<TStore, TKey>): Promise<void> {
     if (this.interceptorSet) {
-      value = this.interceptorSet.intercept(key, value);
+      value = await this.interceptorSet.intercept(key, value);
     }
     setNestedProperty(this.storeData, key, value);
     this.saveData();

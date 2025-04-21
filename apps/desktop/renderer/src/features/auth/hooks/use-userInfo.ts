@@ -1,4 +1,4 @@
-import { useAuthCtx } from "../contexts/auth-context";
+import { useAuthCtx } from "./use-auth-ctx";
 
 export function useUserInfo() {
   const ctx = useAuthCtx();

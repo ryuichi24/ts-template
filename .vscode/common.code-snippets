@@ -8,30 +8,6 @@
     "description": "Log output to console",
     "scope": "javascript,typescript,typescriptreact,javascriptreact"
   },
-  "e33template for React Function Component": {
-    "prefix": "rf",
-    "body": [
-      "import React from \"react\";",
-      "",
-      "export namespace ${TM_FILENAME_BASE} {",
-      "  export type Props = {$1};",
-      "}",
-      "",
-      "export const ${TM_FILENAME_BASE}: React.FC<${TM_FILENAME_BASE}.Props> = (props) => {",
-      "\tconst {} = props;",
-      "\treturn (<>${TM_FILENAME_BASE}</>);",
-      "}"
-    ],
-    "description": "Typescript React Function Component",
-    "scope": "typescriptreact"
-  },
-  "template for useState": {
-    "prefix": "us",
-    "body": [
-      "const [$1, set${1/(.)/${1:/upcase}/}] = useState<$2>($3);"
-    ],
-    "scope": "typescriptreact"
-  },
   "template for export all": {
     "prefix": "ex",
     "description": "export statement to export all items from module",
@@ -41,36 +17,15 @@
     ],
     "scope": "typescriptreact,javascriptreact,javascript,typescript"
   },
-  "react context template": {
-    "prefix": "rctx",
-    "description": "react context template",
+  "template for IModule": {
+    "prefix": "im",
+    "description": "template for IModule",
     "body": [
-      "import { createContext } from \"react\";",
+      "import { IModule } from \"../utils/app-server-factory.js\";",
       "",
-      "export namespace $1Ctx {",
-      "  export type State = { dispatch: React.Dispatch<ReducerAction> } & ReducerState;",
-      "",
-      "  export type PublicState = Omit<$1Ctx.State, \"dispatch\" | keyof ReducerState>;",
-      "",
-      "  export type ReducerState = {};",
-      "",
-      "  export type ReducerAction = { type: \"\" };",
-      "}",
-      "",
-      "export const $1Ctx = createContext<$1Ctx.State>({ dispatch: () => {} }) as React.Context<$1Ctx.State> & { reducer: typeof reducer };",
-      "",
-      "function reducer(state: $1Ctx.ReducerState, action: $1Ctx.ReducerAction): $1Ctx.ReducerState {",
-      "  const { type } = action;",
-      "",
-      "  switch (type) {",
-      "    default: {",
-      "      return state;",
-      "    }",
-      "  }",
-      "}",
-      "",
-      "$1Ctx.reducer = reducer;"
+      "export class ${1:${TM_FILENAME/(.*)\\.module\\.ts/${1:/pascalcase}/}}Module implements IModule {}"
     ],
-    "scope": "typescriptreact,typescript"
+    "scope": "javascript,typescript"
   }
+ 
 }

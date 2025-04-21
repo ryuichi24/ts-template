@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth, useUserInfo } from "./features/auth";
+import { useWebSocket } from "./features/web-socket";
+import { config } from "./features/config/config";
 
 export namespace App {
   export type Props = {};
@@ -17,37 +19,48 @@ export const App: React.FC<App.Props> = (props) => {
   const { userInfo } = useUserInfo();
 
   const handleUpdaterChannelChange = async (channel: string) => {
-    await window.IPC.onUpdaterChannelChanged(channel);
+    await window.EXPOSED.IPC.onUpdaterChannelChanged(channel);
     setUpdaterChannel(channel);
   };
 
   useEffect(() => {
-    window.IPC.onAppVersionRequested().then(({ appVersion, appVersionFromAutoUpdater }) => {
+    window.EXPOSED.IPC.onAppVersionRequested().then(({ appVersion, appVersionFromAutoUpdater }) => {
       setAppVersion(appVersion);
       setAppVersionAutoUpdater(appVersionFromAutoUpdater.version);
       setPrereleases(appVersionFromAutoUpdater.prerelease);
     });
 
-    window.IPC.onUpdaterChannelRequested().then(({ channel }) => {
+    window.EXPOSED.IPC.onUpdaterChannelRequested().then(({ channel }) => {
       setUpdaterChannel(channel);
     });
   }, []);
 
   const handleUpdateCheckRequested = async () => {
-    await window.IPC.onUpdateCheckRequested();
+    await window.EXPOSED.IPC.onUpdateCheckRequested();
+  };
+
+  const bgServerWSUrl = config.backgroundServer.getWsUrl();
+  const ws = useWebSocket(bgServerWSUrl);
+
+  const handleLoginButtonClick = () => {
+    ws.emit("on-open-in-browser-request", { url: "http://localhost:3000/api/oauth/login/desktop/google" });
+  };
+
+  const handleLogoutButtonClick = () => {
+    ws.emit("on-logout-requested");
   };
 
   return (
     <div className="bg-gray-950 text-gray-200 min-h-screen p-6">
       <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">App Header</h1>
+        <h1 className="text-2xl font-bold">NayaFlow Login</h1>
         <div className="w-10 h-10 rounded-full overflow-hidden">
           {userInfo.avatarUrl ? (
             <img src={userInfo.avatarUrl} alt="User Avatar" className="w-full h-full object-cover" />
           ) : null}
         </div>
       </header>
-      <div className="mb-4 text-lg font-semibold">App version: {appVersion}</div>
+      {/* <div className="mb-4 text-lg font-semibold">App version: {appVersion}</div>
       <div className="mb-4 text-lg font-semibold">App version (auto updater): {appVersionAutoUpdater}</div>
       <div className="mb-4">
         <ul className="list-disc list-inside">
@@ -97,21 +110,20 @@ export const App: React.FC<App.Props> = (props) => {
         <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded" onClick={handleUpdateCheckRequested}>
           Check for updates
         </button>
-      </div>
+      </div> */}
 
       <div className="mb-4">
         {isAuthenticated ? (
           <div>
             <div className="text-lg font-semibold">You are logged in.</div>
             <div>
-              <button onClick={() => window.IPC.onLogoutRequested()}>Logout</button>
+              <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded" onClick={handleLogoutButtonClick}>
+                Logout
+              </button>
             </div>
           </div>
         ) : (
-          <button
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-            onClick={() => window.IPC.onOpenInBrowserRequested("http://localhost:3000/api/oauth/login/desktop/google")}
-          >
+          <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded" onClick={handleLoginButtonClick}>
             Login with Google
           </button>
         )}
@@ -125,6 +137,7 @@ export const App: React.FC<App.Props> = (props) => {
           </ul>
         )}
       </div>
+      {/* <div>{window.EXPOSED.webSocketPort}</div> */}
     </div>
   );
 };

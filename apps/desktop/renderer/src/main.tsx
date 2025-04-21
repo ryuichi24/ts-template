@@ -4,17 +4,18 @@ import { logger } from "./util/logger";
 import { AuthProvider } from "./features/auth";
 import { WebSocketProvider } from "./features/web-socket";
 import "./style.css";
+import { config } from "./features/config/config";
+import { WebSocketChannel } from "./features/web-socket/utils/web-socket-channel";
 
 logger.info("Starting renderer process");
 
-const bgServerPort = window.EXPOSED.webSocketPort ?? 8080;
-const bgServerWSUrl = `ws://localhost:${bgServerPort}/ws`;
-const bgServerWebSocketConnection = new WebSocket(bgServerWSUrl);
+const bgServerWSUrl = config.backgroundServer.getWsUrl();
+const bgServerWebSocketConnection = new WebSocketChannel(bgServerWSUrl);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <AuthProvider>
-    <WebSocketProvider channels={[{ id: bgServerWSUrl, ws: bgServerWebSocketConnection }]}>
+  <WebSocketProvider channels={[{ id: bgServerWSUrl, wsChannel: bgServerWebSocketConnection }]}>
+    <AuthProvider>
       <App />
-    </WebSocketProvider>
-  </AuthProvider>,
+    </AuthProvider>
+  </WebSocketProvider>,
 );
