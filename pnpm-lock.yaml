@@ -292,6 +292,9 @@ importers:
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/configs/tsconfig
+      '@ts-template/type-util':
+        specifier: workspace:*
+        version: link:../../../packages/libs/type-util
       '@types/node':
         specifier: ^22.13.8
         version: 22.13.8

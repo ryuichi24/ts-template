@@ -1,9 +1,9 @@
 import Electron from "electron";
 import { BackgroundWorkerManager } from "../util/background-worker-manager.js";
-import { AppContext, IModule } from "../util/ElectronFactory.js";
+import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
-export class HandleOSLevelEncryptionModule implements IModule {
-  onReady(appCtx: AppContext): void {
+export class HandleOSLevelEncryptionModule implements OnReady {
+  onReady(evt: OnReadyEvent, appCtx: AppContext): void | Promise<void> {
     const bgServer = BackgroundWorkerManager.getOrThrow("background-server");
 
     bgServer.on("on-encrypt-request", (payload) => {

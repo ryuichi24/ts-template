@@ -1,11 +1,11 @@
 import Electron from "electron";
 import { autoUpdater } from "electron-updater";
-import { AppContext, IModule } from "../util/ElectronFactory.js";
 import { AppWindowManager } from "../util/AppWindowManager.js";
 import { configStore } from "../store/config-store.js";
+import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
-export class SetupAutoUpdaterModule implements IModule {
-  onReady(appCtx: AppContext): void {
+export class SetupAutoUpdaterModule implements OnReady {
+  onReady(evt: OnReadyEvent, appCtx: AppContext): void | Promise<void> {
     const updateChannel = configStore.get("update.channel") ?? "latest";
     autoUpdater.allowPrerelease = updateChannel !== "latest";
     autoUpdater.autoInstallOnAppQuit = false;

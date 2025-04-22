@@ -1,10 +1,10 @@
 import Electron from "electron";
-import { AppContext, IModule } from "../util/ElectronFactory.js";
 import { logger } from "../util/logger.js";
 import { BackgroundWorkerManager } from "../util/background-worker-manager.js";
+import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
-export class OpenInBrowserModule implements IModule {
-  onReady(appCtx: AppContext): void {
+export class OpenInBrowserModule implements OnReady {
+  onReady(evt: OnReadyEvent, appCtx: AppContext): void | Promise<void> {
     const bgServer = BackgroundWorkerManager.getOrThrow("background-server");
     bgServer.on("on-open-in-browser-requested", (payload) => {
       const url = payload.url;

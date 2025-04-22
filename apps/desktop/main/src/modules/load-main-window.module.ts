@@ -1,10 +1,10 @@
 import path from "path";
 import { NodeJSCtx } from "@ts-template/node-js-ctx";
-import { AppContext, IModule } from "../util/ElectronFactory.js";
 import { AppWindowManager } from "../util/AppWindowManager.js";
+import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
-export class LoadMainWindowModule implements IModule {
-  onReady(appCtx: AppContext): void {
+export class LoadMainWindowModule implements OnReady {
+  onReady(evt: OnReadyEvent, appCtx: AppContext): void | Promise<void> {
     // NOTE: while the main module type is ESM but `require` can be used since esbuild adds a script making a custom `require`
     const rendererFilePath = NodeJSCtx.isDebug
       ? require.resolve("@ts-template/desktop-renderer/dist/index.html")

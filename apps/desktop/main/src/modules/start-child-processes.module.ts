@@ -1,13 +1,13 @@
 import path from "path";
 import { fork } from "child_process";
 import { NodeJSCtx } from "@ts-template/node-js-ctx";
-import { AppContext, IModule } from "../util/ElectronFactory.js";
 import { BackgroundServerProcessEventHandler } from "../util/background-server-process-event-handler.js";
 import { AppWindowManager } from "../util/AppWindowManager.js";
 import { BackgroundWorkerManager } from "../util/background-worker-manager.js";
+import { AppContext, OnBootstrap, OnBootstrapEvent } from "../util/lifecycle-events.js";
 
-export class StartChildProcessesModule implements IModule {
-  async onBootstrap(appCtx: AppContext): Promise<void> {
+export class StartChildProcessesModule implements OnBootstrap {
+  async onBootstrap(evt: OnBootstrapEvent, appCtx: AppContext): Promise<void> {
     const runningPort = await new Promise<number>((res, rej) => {
       // bg server start
       const serverFilePath =

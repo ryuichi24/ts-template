@@ -9,3 +9,4 @@ export * from "./NonNullableProps.js";
 export * from "./NestedPartial.js";
 export * from "./ValueOf.js";
 export * from "./isKeyOfObj.js";
+export * from "./can-construct.js";

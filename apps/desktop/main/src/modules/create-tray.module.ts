@@ -1,13 +1,13 @@
 import path from "path";
-import { AppContext, IModule } from "../util/ElectronFactory.js";
 import { TrayManager } from "../util/TrayManager.js";
 import { NodeJSCtx } from "@ts-template/node-js-ctx";
 import Electron from "electron";
 import { fileExist } from "@ts-template/file-system";
 import { logger } from "../util/logger.js";
+import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
-export class CreateTrayModule implements IModule {
-  onReady(appCtx: AppContext): void {
+export class CreateTrayModule implements OnReady {
+  onReady(evt: OnReadyEvent, appCtx: AppContext): void | Promise<void> {
     const theme = Electron.nativeTheme.shouldUseDarkColors === true ? "white" : "black";
     const trayIconPath = this._buildTrayIconPath(theme, appCtx.osSpecificAssetPath);
     const trayIconExists = fileExist(trayIconPath);

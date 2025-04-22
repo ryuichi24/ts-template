@@ -12,6 +12,7 @@
   },
   "type": "module",
   "devDependencies": {
+    "@ts-template/type-util": "workspace:*",
     "@ts-template/desktop-background-server": "workspace:*",
     "@ts-template/electron-app-protocol": "workspace:*",
     "@ts-template/process-event-emitter": "workspace:*",
