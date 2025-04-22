@@ -5,6 +5,7 @@ import { logger as _logger } from "./logger.js";
 import { ILogger } from "@ts-template/logger";
 import { MainProcessEventHandler } from "./main-process-event-handler.js";
 import {
+  CanConstructModule,
   hasOnServerDidClose,
   hasOnServerDidStart,
   hasOnServerWillStart,
@@ -13,11 +14,10 @@ import {
   hasOnWSServerDidReceiveEvent,
   hasOnWSServerDidReceiveMessage,
   IModule,
-  IModuleConstructor,
 } from "./lifecycle-events.js";
 
 export class AppServerFactory {
-  static create(moduleContainer: IModuleConstructor[]) {
+  static create(moduleContainer: CanConstructModule[]) {
     const modules = moduleContainer.map((module) => new module());
     return new AppServer(modules);
   }
@@ -99,25 +99,22 @@ export class AppServer implements IAppServer {
         upgradeWebSocket((c) => {
           // https://hono.dev/helpers/websocket
           return {
-            onMessage: (evt, _ws) => {
-              let data = evt.data;
+            onMessage: ($evt, _ws) => {
+              let data = $evt.data;
 
               // Try to parse the data as JSON
               // If it fails, keep the original data
               try {
-                data = JSON.parse(evt.data.toString());
+                data = JSON.parse($evt.data.toString());
               } catch (error) {}
 
               for (const module of this._modules) {
                 if (hasOnWSServerDidReceiveMessage(module)) {
                   module.onWSServerDidReceiveMessage?.(
                     {
-                      port: this._runningPort,
-                      wsPath: this._wsPath,
-                      evtType: evt.type,
                       ws: _ws,
-                      data,
-                      $event: evt,
+                      $evt,
+                      message: data.toString(),
                     },
                     appCtx,
                   );
@@ -127,27 +124,22 @@ export class AppServer implements IAppServer {
                 if (hasOnWSServerDidReceiveEvent(module) && hasEventData(data) && data.event === module.event) {
                   module.onWSServerDidReceiveEvent?.(
                     {
-                      port: this._runningPort,
-                      wsPath: this._wsPath,
-                      evtType: evt.type,
                       ws: _ws,
                       data,
-                      $event: evt,
+                      $evt,
                     },
                     appCtx,
                   );
                 }
               }
             },
-            onClose: (evt, _ws) => {
+            onClose: ($evt, _ws) => {
               for (const module of this._modules) {
                 if (hasOnWSServerDidClose(module)) {
                   module.onWSServerDidClose?.(
                     {
-                      port: this._runningPort,
-                      wsPath: this._wsPath,
-                      evtType: evt.type,
                       ws: _ws,
+                      $evt,
                     },
                     appCtx,
                   );
@@ -156,15 +148,12 @@ export class AppServer implements IAppServer {
 
               console.log("Connection closed");
             },
-            onOpen: (evt, _ws) => {
+            onOpen: ($evt, _ws) => {
               console.log("Connection opened");
               for (const module of this._modules) {
                 if (hasOnWSServerDidOpen(module)) {
                   module.onWSServerDidOpen?.(
                     {
-                      port: this._runningPort,
-                      wsPath: this._wsPath,
-                      evtType: evt.type,
                       ws: _ws,
                     },
                     appCtx,
@@ -172,7 +161,7 @@ export class AppServer implements IAppServer {
                 }
               }
             },
-            onError: (evt, _ws) => {
+            onError: ($evt, _ws) => {
               console.log("Error occurred");
             },
           };
@@ -196,7 +185,6 @@ export class AppServer implements IAppServer {
             module.onServerDidStart?.(
               {
                 port: this._runningPort,
-                wsPath: this._wsPath,
               },
               appCtx,
             );

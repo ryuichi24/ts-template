@@ -1,11 +1,17 @@
-import { AppContext, OnWSServerDidClose, OnWSServerDidOpen, WSServerModuleEvent } from "../utils/lifecycle-events.js";
+import {
+  AppContext,
+  OnWSServerDidClose,
+  OnWSServerDidCloseEvent,
+  OnWSServerDidOpen,
+  OnWSServerDidOpenEvent,
+} from "../utils/lifecycle-events.js";
 import { credentialStore } from "../stores/credential-store.js";
 import { apiClient } from "../clients/api-client.js";
 
 export class HandleOauthLoginSuccessRedirectModule implements OnWSServerDidOpen, OnWSServerDidClose {
   private _abortCtrl = new AbortController();
 
-  async onWSServerDidOpen(evt: WSServerModuleEvent, appCtx: AppContext): Promise<void> {
+  async onWSServerDidOpen(evt: OnWSServerDidOpenEvent, appCtx: AppContext): Promise<void> {
     appCtx.mainProcessEventHandler?.on(
       "on-oauth-login-success-redirect",
       async (payload) => {
@@ -45,7 +51,7 @@ export class HandleOauthLoginSuccessRedirectModule implements OnWSServerDidOpen,
     );
   }
 
-  async onWSServerDidClose(evt: WSServerModuleEvent, appCtx: AppContext): Promise<void> {
+  async onWSServerDidClose(evt: OnWSServerDidCloseEvent, appCtx: AppContext): Promise<void> {
     this._abortCtrl.abort();
   }
 }

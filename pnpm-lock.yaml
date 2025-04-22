@@ -206,12 +206,18 @@ importers:
       '@ts-template/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/configs/tsconfig
+      '@ts-template/type-util':
+        specifier: workspace:*
+        version: link:../../../packages/libs/type-util
       '@types/better-sqlite3':
         specifier: ^7.6.12
         version: 7.6.12
       '@types/node':
         specifier: ^22.13.8
         version: 22.13.8
+      '@types/ws':
+        specifier: ^8.18.1
+        version: 8.18.1
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -9150,6 +9156,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.18.1:
+    resolution: {integrity: sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   xdg-app-paths@8.3.0:
     resolution: {integrity: sha512-mgxlWVZw0TNWHoGmXq+NC3uhCIc55dDpAlDkMQUaIAcQzysb0kxctwv//fvuW61/nAAeUBJMQ8mnZjMmuYwOcQ==}
     engines: {node: '>= 4.0'}
@@ -10127,7 +10145,7 @@ snapshots:
     dependencies:
       '@hono/node-server': 1.14.1(hono@4.7.7)
       hono: 4.7.7
-      ws: 8.17.1
+      ws: 8.18.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -19437,6 +19455,8 @@ snapshots:
   ws@7.5.10: {}
 
   ws@8.17.1: {}
+
+  ws@8.18.1: {}
 
   xdg-app-paths@8.3.0:
     dependencies:

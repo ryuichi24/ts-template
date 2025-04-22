@@ -1,10 +1,10 @@
 import { apiClient } from "../clients/api-client.js";
 import { credentialStore } from "../stores/credential-store.js";
-import { AppContext, OnWSServerDidReceiveEvent, WSServerMessageEvent } from "../utils/lifecycle-events.js";
+import { AppContext, OnWSServerDidReceiveEvent, OnWSServerDidReceiveEventEvent } from "../utils/lifecycle-events.js";
 
 export class HandleLogoutRequestModule implements OnWSServerDidReceiveEvent {
   event: string = "on-logout-requested";
-  async onWSServerDidReceiveEvent(evt: WSServerMessageEvent, appCtx: AppContext): Promise<void> {
+  async onWSServerDidReceiveEvent(evt: OnWSServerDidReceiveEventEvent, appCtx: AppContext): Promise<void> {
     const refreshToken = credentialStore.get("refreshToken.value");
     await apiClient.post("/auth/logout", {
       refreshToken,
