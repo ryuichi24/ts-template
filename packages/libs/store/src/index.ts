@@ -21,7 +21,7 @@ type ValueOfNestedKey<T, K extends string> = K extends `${infer P}.${infer Rest}
     ? T[K]
     : never;
 
-export namespace AppStore {
+export namespace Store {
   export type StoreConfig<TStore> = {
     storePath: string;
     storeFileName: `${string}.json`;
@@ -35,13 +35,13 @@ export namespace AppStore {
   }
 }
 
-export class AppStore<TStore> {
+export class Store<TStore> {
   private storePath: string;
   private storeData: TStore;
-  private interceptorGet?: AppStore.CanIntercept;
-  private interceptorSet?: AppStore.CanIntercept;
+  private interceptorGet?: Store.CanIntercept;
+  private interceptorSet?: Store.CanIntercept;
 
-  constructor(config: AppStore.StoreConfig<TStore>) {
+  constructor(config: Store.StoreConfig<TStore>) {
     this.storePath = path.join(config.storePath, config.storeFileName);
     this.storeData = this.loadData(config.defaultData ?? ({} as TStore));
     this.interceptorGet = config.interceptorGet;

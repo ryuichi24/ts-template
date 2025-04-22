@@ -10,6 +10,7 @@
   "type": "module",
   "devDependencies": {
     "@ts-template/logger": "workspace:*",
+    "@ts-template/store": "workspace:*",
     "@ts-template/tsconfig": "workspace:*",
     "@ts-template/type-util": "workspace:*",
     "@types/better-sqlite3": "^7.6.12",

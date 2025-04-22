@@ -1,9 +1,9 @@
-import { AppStore } from "../utils/app-store.js";
+import { Store } from "@ts-template/store";
 import { MainProcessEventHandler } from "../utils/main-process-event-handler.js";
 
 const mainProcess = new MainProcessEventHandler();
 
-class InterceptorGet implements AppStore.CanIntercept {
+class InterceptorGet implements Store.CanIntercept {
   async intercept(key: string, value: any) {
     if (key === "refreshToken.value" || key === "accessToken.value") {
       return await this._decrypt(key, value);
@@ -27,7 +27,7 @@ class InterceptorGet implements AppStore.CanIntercept {
   }
 }
 
-class InterceptorSet implements AppStore.CanIntercept {
+class InterceptorSet implements Store.CanIntercept {
   async intercept(key: string, value: any) {
     if (key === "refreshToken.value" || key === "accessToken.value") {
       return await this._encrypt(key, value);
@@ -51,7 +51,7 @@ class InterceptorSet implements AppStore.CanIntercept {
   }
 }
 
-export const credentialStore = new AppStore<{
+export const credentialStore = new Store<{
   refreshToken: {
     value: string;
     expiresAt: string;

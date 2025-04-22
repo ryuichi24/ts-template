@@ -1,7 +1,7 @@
 import Electron from "electron";
-import { AppStore } from "../util/app-store.js";
+import { Store } from "@ts-template/store";
 
-export const configStore = new AppStore<{
+export const configStore = new Store<{
   update: {
     channel: string;
   };
