@@ -6,4 +6,7 @@ export const config = {
       return `ws://${this.host}:${this.port}/ws`;
     },
   },
+  oauth: {
+    baseUrl: "http://localhost:3000/api/oauth/login/desktop",
+  },
 };

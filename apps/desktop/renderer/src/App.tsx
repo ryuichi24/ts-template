@@ -43,7 +43,7 @@ export const App: React.FC<App.Props> = (props) => {
   const ws = useWebSocket(bgServerWSUrl);
 
   const handleLoginButtonClick = () => {
-    ws.emit("on-open-in-browser-request", { url: "http://localhost:3000/api/oauth/login/desktop/google" });
+    ws.emit("on-open-in-browser-request", { url: `${config.oauth.baseUrl}/google` });
   };
 
   const handleLogoutButtonClick = () => {
