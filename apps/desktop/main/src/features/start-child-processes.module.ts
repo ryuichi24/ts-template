@@ -2,7 +2,7 @@ import path from "path";
 import { fork } from "child_process";
 import { NodeJSCtx } from "@ts-template/node-js-ctx";
 import { BackgroundServerProcessEventHandler } from "../util/background-server-process-event-handler.js";
-import { AppWindowManager } from "../util/AppWindowManager.js";
+import { AppWindowManager } from "../util/app-window-manager.js";
 import { BackgroundWorkerManager } from "../util/background-worker-manager.js";
 import { AppContext, OnBootstrap, OnBootstrapEvent } from "../util/lifecycle-events.js";
 

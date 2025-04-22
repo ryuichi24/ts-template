@@ -1,6 +1,6 @@
 import path from "path";
 import { NodeJSCtx } from "@ts-template/node-js-ctx";
-import { AppWindowManager } from "../util/AppWindowManager.js";
+import { AppWindowManager } from "../util/app-window-manager.js";
 import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
 export class LoadMainWindowModule implements OnReady {

@@ -1,5 +1,5 @@
 import path from "path";
-import { TrayManager } from "../util/TrayManager.js";
+import { TrayManager } from "../util/tray-manager.js";
 import { NodeJSCtx } from "@ts-template/node-js-ctx";
 import Electron from "electron";
 import { fileExist } from "@ts-template/file-system";

@@ -1,6 +1,6 @@
 import Electron from "electron";
 import { autoUpdater } from "electron-updater";
-import { AppWindowManager } from "../util/AppWindowManager.js";
+import { AppWindowManager } from "../util/app-window-manager.js";
 import { configStore } from "../store/config-store.js";
 import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 

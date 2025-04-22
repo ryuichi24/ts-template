@@ -1,6 +1,6 @@
 import path from "path";
 import Electron from "electron";
-import { ElectronFactory } from "./util/ElectronFactory.js";
+import { ElectronFactory } from "./util/electron-factory.js";
 import { LoadMainWindowModule } from "./features/load-main-window.module.js";
 import { CreateTrayModule } from "./features/create-tray.module.js";
 import { OpenInBrowserModule } from "./features/open-in-browser.module.js";

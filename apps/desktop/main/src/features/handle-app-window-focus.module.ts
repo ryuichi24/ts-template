@@ -1,4 +1,4 @@
-import { AppWindowManager } from "../util/AppWindowManager.js";
+import { AppWindowManager } from "../util/app-window-manager.js";
 import { BackgroundWorkerManager } from "../util/background-worker-manager.js";
 import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
