@@ -34,7 +34,7 @@ export class HandleOauthLoginSuccessRedirectModule implements OnWSServerDidOpen,
           credentialStore.set("refreshToken.expiresAt", refreshTokenExpiresAt),
         ]);
 
-        const res = await apiClient.get("http://localhost:3000/api/auth/me");
+        const res = await apiClient.get("/auth/me");
 
         evt.ws.send(
           JSON.stringify({
