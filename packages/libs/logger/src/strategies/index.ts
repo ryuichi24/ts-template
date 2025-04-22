@@ -1,1 +1,1 @@
-export * from "./ConsoleLogStrategy.js";
+export * from "./console-log-strategy.js";

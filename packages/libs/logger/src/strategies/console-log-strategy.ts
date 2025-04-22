@@ -1,4 +1,4 @@
-import { Logger } from "../Logger.js";
+import { Logger } from "../logger.js";
 
 export class ConsoleLogStrategy extends Logger.BaseLogStrategy {
   log({ level, message, loggerName, logPrefix }: Logger.LogPayload): void {
