@@ -9,8 +9,8 @@ export function useWebSocket(channelId: string) {
     channel?.wsChannel.emit(event, payload);
   };
 
-  const on = (event: string, handler: (evt: any) => void) => {
-    channel?.wsChannel.on(event, handler);
+  const on = (event: string, handler: (evt: any) => void, options: { signal?: AbortSignal } = {}) => {
+    channel?.wsChannel.on(event, handler, options);
   };
 
   return { emit, on };

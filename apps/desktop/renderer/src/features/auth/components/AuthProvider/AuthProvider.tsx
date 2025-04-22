@@ -22,25 +22,35 @@ export const AuthProvider: React.FC<AuthProvider.Props> = (props) => {
   const ws = useWebSocket(bgServerWSUrl);
 
   useEffect(() => {
-    ws.on("on-authenticated", (evt) => {
-      const data = evt.data;
-      const payload = data.payload;
-      dispatch({
-        type: "ON_AUTHENTICATED",
-        payload: {
-          userInfo: payload.userInfo,
-        },
-      });
-    });
+    const ctrl = new AbortController();
 
-    ws.on("on-logout-success", () => {
-      dispatch({
-        type: "ON_LOGOUT",
-      });
-    });
+    ws.on(
+      "on-authenticated",
+      (evt) => {
+        const data = evt.data;
+        const payload = data.payload;
+        dispatch({
+          type: "ON_AUTHENTICATED",
+          payload: {
+            userInfo: payload.userInfo,
+          },
+        });
+      },
+      { signal: ctrl.signal },
+    );
+
+    ws.on(
+      "on-logout-success",
+      () => {
+        dispatch({
+          type: "ON_LOGOUT",
+        });
+      },
+      { signal: ctrl.signal },
+    );
 
     return () => {
-      // Cleanup if needed
+      ctrl.abort();
     };
   }, []);
 
