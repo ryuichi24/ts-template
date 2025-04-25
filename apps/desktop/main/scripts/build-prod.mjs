@@ -17,7 +17,7 @@ await esbuild.build({
   sourcemap: process.env.NODE_ENV === "debug" ? true : false,
   minify: process.env.NODE_ENV === "production",
   define: {
-    TST_RELEASE_APP_NAME: appName,
+    TST_ELECTRON_APP_NAME: appName,
     // TEMP: for testing auto-updater
     TST_AUTO_UPDATER_RELEASE_CHANNEL: autoUpdaterReleaseChannel,
   },
