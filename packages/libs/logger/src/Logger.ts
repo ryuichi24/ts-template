@@ -6,6 +6,8 @@ export interface ILogger {
   fatal(message: string | object | undefined | null): void;
 }
 
+type LogItem = string | number | object | null | undefined;
+
 export class Logger implements ILogger {
   private _strategies: Logger.LogStrategy[] = [];
   private _name: string;
@@ -24,46 +26,42 @@ export class Logger implements ILogger {
     return this;
   }
 
-  private log(level: Logger.LogLevel, message?: string | object | null): void {
-    message = this._stringify(message);
-    const logPrefix = this._buildPrefix(level);
-    this._strategies.forEach((strategy) => strategy.log({ level, message, loggerName: this._name, logPrefix }));
+  private log(level: Logger.LogLevel, messages: LogItem[]): void {
+    const now = new Date();
+    const timePrefix = `[${now.toUTCString()}]`;
+    const loggerNamePrefix = `[${this._name}]`;
+    const levelPrefix = `[${Logger.LogLevel[level].toUpperCase()}]`;
+    this._strategies.forEach((strategy) =>
+      strategy.log({
+        messages,
+        loggerName: this._name,
+        level,
+        nowDate: now,
+        prefixes: [timePrefix, loggerNamePrefix, levelPrefix],
+        timePrefix,
+        loggerNamePrefix,
+        levelPrefix,
+      }),
+    );
   }
 
-  private _buildPrefix(level: Logger.LogLevel): string {
-    return `[${new Date().toUTCString()}][${Logger.LogLevel[level].toUpperCase()}][${this._name}]`;
-  }
-
-  private _stringify(message: string | object | undefined | null): string {
-    if (typeof message === "object") {
-      return JSON.stringify(message, null, 2);
-    }
-    if (message === undefined) {
-      return "undefined";
-    }
-    if (message === null) {
-      return "null";
-    }
-    return message;
-  }
-
-  public debug(message: string | object | undefined | null): void {
+  public debug(...message: LogItem[]): void {
     this.log(Logger.LogLevel.DEBUG, message);
   }
 
-  public info(message: string | object | undefined | null): void {
+  public info(...message: LogItem[]): void {
     this.log(Logger.LogLevel.INFO, message);
   }
 
-  public warn(message: string | object | undefined | null): void {
+  public warn(...message: LogItem[]): void {
     this.log(Logger.LogLevel.WARN, message);
   }
 
-  public error(message: string | object | undefined | null): void {
+  public error(...message: LogItem[]): void {
     this.log(Logger.LogLevel.ERROR, message);
   }
 
-  public fatal(message: string | object | undefined | null): void {
+  public fatal(...message: LogItem[]): void {
     this.log(Logger.LogLevel.FATAL, message);
   }
 }
@@ -78,7 +76,23 @@ export namespace Logger {
     FATAL,
   }
 
-  export type LogPayload = { level: Logger.LogLevel; message: string; loggerName: string; logPrefix: string };
+  export type LogPayload = {
+    messages: LogItem[];
+    loggerName: string;
+    loggerNamePrefix: string;
+    nowDate: Date;
+    timePrefix: string;
+    level: Logger.LogLevel;
+    levelPrefix: string;
+    /**
+     * [timePrefix, levelPrefix, loggerNamePrefix]
+     * 
+     *  0 => timePrefix
+     *  1 => levelPrefix
+     *  2 => loggerNamePrefix
+     */
+    prefixes: [string, string, string];
+  };
 
   export interface LogStrategy {
     log(payload: Logger.LogPayload): void;
