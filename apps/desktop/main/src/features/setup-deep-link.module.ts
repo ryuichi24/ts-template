@@ -1,6 +1,6 @@
 import path from "path";
 import Electron from "electron";
-import { registerProtocol } from "@ts-template/electron-app-protocol";
+// import { registerProtocol } from "@ts-template/electron-app-protocol";
 import { BackgroundWorkerManager } from "../util/background-worker-manager.js";
 import { AppContext, OnOpenUrl, OnOpenUrlEvent, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
@@ -12,7 +12,7 @@ export class SetupDeepLinkModule implements OnReady, OnOpenUrl {
 
     // register a custom protocol for dev mode since in dev mode, the deep link will not work
     if (!appCtx.isPackaged) {
-      registerProtocol(protocol);
+      // registerProtocol(protocol);
     }
 
     if (process.defaultApp) {
@@ -25,13 +25,15 @@ export class SetupDeepLinkModule implements OnReady, OnOpenUrl {
   }
 
   onOpenUrl(evt: OnOpenUrlEvent, appCtx: AppContext): void | Promise<void> {
-    const redirectUrl = evt.url;
-    const bgServer = BackgroundWorkerManager.getOrThrow("background-server");
-
-    console.log("SetupDeepLinkModule onOpenUrl", redirectUrl);
-
-    bgServer.emit("on-oauth-login-success-redirect", {
-      redirectUrl,
-    });
+    try {
+      const redirectUrl = evt.url;
+      const bgServer = BackgroundWorkerManager.getOrThrow("background-server");
+      bgServer.emit("on-oauth-login-success-redirect", {
+        redirectUrl,
+      });
+    } catch (error) {
+      // NOTE: this is a workaround for the case when the user tries to open the app with a deep link before the app is ready
+      // and the background server is not started yet
+    }
   }
 }
