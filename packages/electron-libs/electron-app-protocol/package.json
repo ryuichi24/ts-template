@@ -7,7 +7,7 @@
   "scripts": {
     "build": "pnpm build:ts && pnpm build:cc",
     "build:cc": "cmake-js compile",
-    "build:ts": "pnpm build:esm && pnpm build:cjs",
+    "build:ts": "pnpm build:esm",
     "build:esm": "tsb tsconfig.json -t esm",
     "build:cjs": "tsb tsconfig.cjs.json -t cjs",
     "dev": "pnpm build && node dist/esm/index.js"

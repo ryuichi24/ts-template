@@ -1,11 +1,14 @@
 import path from "path";
 import fs, { existsSync } from "fs";
 import bindings from "bindings";
+import _url from "url";
+const __dirname = _url.fileURLToPath(new URL(".", import.meta.url));
 
 const addon = bindings({
-  module_root: path.resolve("node_modules", "@ts-template/electron-app-protocol"),
+  module_root: path.resolve(__dirname, "..", ".."),
   bindings: "electron_app_protocol_configurator.node",
 });
+
 
 interface ProtocolConfigurator {
   configure(): void;
