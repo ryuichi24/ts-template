@@ -60,7 +60,7 @@ submodules.forEach(subModule => {
 makeFile(path.join(appDir, "package.json"), { content: appPackageJson.toJson() });
 
 // Install dependencies for some native modules
-execSync("npm install --workspaces=false", {
+execSync("pnpm --ignore-workspace install", {
     cwd: appDir,
     stdio: "inherit",
 });
