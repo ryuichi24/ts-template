@@ -21,7 +21,7 @@ if (require("electron-squirrel-startup")) Electron.app.quit();
  */
 global.systemQuitState = "NOT_PENDING";
 
-const APP_NAME = process.env.TST_ELECTRON_APP_NAME ?? "ts-template";
+const APP_NAME = TST_ELECTRON_APP_NAME ?? "ts-template";
 
 async function bootstrap() {
   const app = ElectronFactory.create([
