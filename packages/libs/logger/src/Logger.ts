@@ -37,7 +37,7 @@ export class Logger implements ILogger {
         loggerName: this._name,
         level,
         nowDate: now,
-        prefixes: [timePrefix, loggerNamePrefix, levelPrefix],
+        prefixes: [timePrefix, levelPrefix, loggerNamePrefix],
         timePrefix,
         loggerNamePrefix,
         levelPrefix,
@@ -86,7 +86,7 @@ export namespace Logger {
     levelPrefix: string;
     /**
      * [timePrefix, levelPrefix, loggerNamePrefix]
-     * 
+     *
      *  0 => timePrefix
      *  1 => levelPrefix
      *  2 => loggerNamePrefix

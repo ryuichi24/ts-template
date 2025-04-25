@@ -37,19 +37,10 @@ const colors = {
 };
 
 export class ConsoleLogStrategy extends Logger.BaseLogStrategy {
-  log({
-    messages,
-    loggerName,
-    loggerNamePrefix,
-    level,
-    levelPrefix,
-    nowDate,
-    timePrefix,
-    prefixes,
-  }: Logger.LogPayload): void {
+  log({ messages, level, prefixes }: Logger.LogPayload): void {
     if (this.shouldLog(level)) {
       console.log(
-        `${this._getTimePrefixColor()}${prefixes[0]}${this._getLevelPrefixColor(level)}${prefixes[2]}${this._getLoggerNamePrefixColor()}${prefixes[2]}${this._getMessageColor(level)}`,
+        `${this._getTimePrefixColor()}${prefixes[0]}${this._getLevelPrefixColor(level)}${prefixes[1]}${this._getLoggerNamePrefixColor()}${prefixes[2]}${this._getMessageColor(level)}`,
         ...messages,
         colors.reset,
       );
