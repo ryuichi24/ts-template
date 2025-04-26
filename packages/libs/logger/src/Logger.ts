@@ -1,9 +1,9 @@
 export interface ILogger {
-  debug(message: string | object | undefined | null): void;
-  info(message: string | object | undefined | null): void;
-  warn(message: string | object | undefined | null): void;
-  error(message: string | object | undefined | null): void;
-  fatal(message: string | object | undefined | null): void;
+  debug(...message: LogItem[]): void;
+  info(...message: LogItem[]): void;
+  warn(...message: LogItem[]): void;
+  error(...message: LogItem[]): void;
+  fatal(...message: LogItem[]): void;
 }
 
 type LogItem = string | number | object | null | undefined;
