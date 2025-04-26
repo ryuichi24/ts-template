@@ -12,6 +12,7 @@ export class SetupDeepLinkModule implements OnReady, OnOpenUrl {
 
     // register a custom protocol for dev mode since in dev mode, the deep link will not work
     if (!appCtx.isPackaged) {
+      // appCtx.logger.debug("Registering custom protocol for dev mode: ", protocol);
       // registerProtocol(protocol);
     }
 

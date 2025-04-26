@@ -1,6 +1,6 @@
 import * as esbuild from "esbuild";
 
-const appName = process.env.TST_RELEASE_APP_NAME ? `"${process.env.TST_RELEASE_APP_NAME}"` : `"TSTemplate"`
+const appName = process.env.TST_ELECTRON_APP_NAME ? `"${process.env.TST_ELECTRON_APP_NAME}"` : `"ts-template"`
 const autoUpdaterReleaseChannel = process.env.TST_AUTO_UPDATER_RELEASE_CHANNEL ? `"${process.env.TST_AUTO_UPDATER_RELEASE_CHANNEL}"` : `"latest"`
 
 await esbuild.build({

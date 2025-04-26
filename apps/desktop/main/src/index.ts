@@ -5,10 +5,6 @@ import { LoadMainWindowModule } from "./features/load-main-window.module.js";
 import { CreateTrayModule } from "./features/create-tray.module.js";
 import { OpenInBrowserModule } from "./features/open-in-browser.module.js";
 import { StartChildProcessesModule } from "./features/start-child-processes.module.js";
-import { CheckCurrentUpdateChannelModule } from "./features/check-current-update-channel.module.js";
-import { ChangeUpdateChannelModule } from "./features/change-update-channel.module.js";
-import { CheckAppVersionModule } from "./features/check-app-version.module.js";
-import { checkForUpdatesModule } from "./features/check-for-update.module.js";
 import { SetupAutoUpdaterModule } from "./features/setup-auto-updater.module.js";
 import { SetupDeepLinkModule } from "./features/setup-deep-link.module.js";
 import { HandleAppWindowFocusModule } from "./features/handle-app-window-focus.module.js";
@@ -31,10 +27,6 @@ async function bootstrap() {
     HandleOSLevelEncryptionModule,
     CreateTrayModule,
     OpenInBrowserModule,
-    CheckCurrentUpdateChannelModule,
-    ChangeUpdateChannelModule,
-    CheckAppVersionModule,
-    checkForUpdatesModule,
     SetupAutoUpdaterModule,
     SetupDeepLinkModule,
   ]);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useAuth, useUserInfo } from "./features/auth";
 import { useWebSocket } from "./features/web-socket";
 import { config } from "./features/config/config";
@@ -9,35 +9,9 @@ export namespace App {
 
 export const App: React.FC<App.Props> = (props) => {
   const {} = props;
-  const [appVersion, setAppVersion] = useState<string>();
-  const [appVersionAutoUpdater, setAppVersionAutoUpdater] = useState<string>();
-  const [prereleases, setPrereleases] = useState<string[]>([]);
-  const [updaterChannel, setUpdaterChannel] = useState<string>();
-  const [customChannel, setCustomChannel] = useState<string>();
 
   const { isAuthenticated } = useAuth();
   const { userInfo } = useUserInfo();
-
-  const handleUpdaterChannelChange = async (channel: string) => {
-    await window.EXPOSED.IPC.onUpdaterChannelChanged(channel);
-    setUpdaterChannel(channel);
-  };
-
-  useEffect(() => {
-    window.EXPOSED.IPC.onAppVersionRequested().then(({ appVersion, appVersionFromAutoUpdater }) => {
-      setAppVersion(appVersion);
-      setAppVersionAutoUpdater(appVersionFromAutoUpdater.version);
-      setPrereleases(appVersionFromAutoUpdater.prerelease);
-    });
-
-    window.EXPOSED.IPC.onUpdaterChannelRequested().then(({ channel }) => {
-      setUpdaterChannel(channel);
-    });
-  }, []);
-
-  const handleUpdateCheckRequested = async () => {
-    await window.EXPOSED.IPC.onUpdateCheckRequested();
-  };
 
   const bgServerWSUrl = config.backgroundServer.getWsUrl();
   const ws = useWebSocket(bgServerWSUrl);
@@ -60,57 +34,6 @@ export const App: React.FC<App.Props> = (props) => {
           ) : null}
         </div>
       </header>
-      {/* <div className="mb-4 text-lg font-semibold">App version: {appVersion}</div>
-      <div className="mb-4 text-lg font-semibold">App version (auto updater): {appVersionAutoUpdater}</div>
-      <div className="mb-4">
-        <ul className="list-disc list-inside">
-          {prereleases.map((prerelease, index) => (
-            <li key={index}>{prerelease}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="mb-4 text-lg font-semibold">Updater channel: {updaterChannel}</div>
-      <div className="mb-4 space-x-2">
-        <button
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-          onClick={() => handleUpdaterChannelChange("latest")}
-        >
-          Change to latest
-        </button>
-        <button
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-          onClick={() => handleUpdaterChannelChange("beta")}
-        >
-          Change to beta
-        </button>
-        <button
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-          onClick={() => handleUpdaterChannelChange("alpha")}
-        >
-          Change to alpha
-        </button>
-        <input
-          type="text"
-          placeholder="Enter custom channel"
-          className="px-4 py-2 bg-gray-900 border border-gray-700 rounded text-gray-200"
-          onChange={(evt) => setCustomChannel(evt.target.value)}
-        />
-        <button
-          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-          onClick={() => {
-            if (!customChannel) return;
-            handleUpdaterChannelChange(customChannel);
-            setCustomChannel("");
-          }}
-        >
-          Change to custom
-        </button>
-      </div>
-      <div className="mb-4">
-        <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded" onClick={handleUpdateCheckRequested}>
-          Check for updates
-        </button>
-      </div> */}
 
       <div className="mb-4">
         {isAuthenticated ? (
@@ -137,7 +60,6 @@ export const App: React.FC<App.Props> = (props) => {
           </ul>
         )}
       </div>
-      {/* <div>{window.EXPOSED.webSocketPort}</div> */}
     </div>
   );
 };
