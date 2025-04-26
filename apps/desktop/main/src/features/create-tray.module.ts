@@ -3,7 +3,6 @@ import { TrayManager } from "../util/tray-manager.js";
 import { NodeJSCtx } from "@ts-template/node-js-ctx";
 import Electron from "electron";
 import { fileExist } from "@ts-template/file-system";
-import { logger } from "../util/logger.js";
 import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 
 export class CreateTrayModule implements OnReady {
@@ -12,7 +11,7 @@ export class CreateTrayModule implements OnReady {
     const trayIconPath = this._buildTrayIconPath(theme, appCtx.osSpecificAssetPath);
     const trayIconExists = fileExist(trayIconPath);
     if (!trayIconExists) {
-      logger.debug(`Tray is not loaded. Tray icon does not exist: ${trayIconPath}`);
+      appCtx.logger.debug(`Tray is not loaded. Tray icon does not exist: ${trayIconPath}`);
       return;
     }
     TrayManager.createTray(trayIconPath);

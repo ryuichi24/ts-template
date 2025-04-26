@@ -174,8 +174,8 @@ export class AppServer implements IAppServer {
           port: options.port,
         },
         (info) => {
-          logger.info(`Background server is running on port ${info.port}`);
-          logger.info(`WebSocket server is running on http://localhost:${info.port}/ws`);
+          logger.info(`Background server is running on port http://${"localhost"}:${info.port}`);
+          logger.info(`WebSocket server is running on ws://${"localhost"}:${info.port}/ws`);
           this._runningPort = info.port;
           for (const module of this._modules) {
             if (!hasOnServerDidStart(module)) {

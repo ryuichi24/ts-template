@@ -1,5 +1,4 @@
 import Electron from "electron";
-import { logger } from "../util/logger.js";
 import { configStore } from "../store/config-store.js";
 import { AppContext, OnReady, OnReadyEvent } from "../util/lifecycle-events.js";
 

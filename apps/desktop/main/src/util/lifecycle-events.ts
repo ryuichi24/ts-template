@@ -1,3 +1,4 @@
+import { ILogger } from "@ts-template/logger";
 import { CanConstruct } from "@ts-template/type-util";
 
 export type AppContext = {
@@ -9,6 +10,7 @@ export type AppContext = {
   osSpecificAssetPath: string;
   userDataPath: string;
   rootDir: string;
+  logger: ILogger;
 };
 
 export interface CanConstructModule extends CanConstruct<IModule> {}

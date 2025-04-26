@@ -15,12 +15,18 @@ import {
   hasOnWindowAllClosed,
   IModule,
 } from "./lifecycle-events.js";
+import { ILogger } from "@ts-template/logger";
+import { logger } from "./logger.js";
 
 type AppOptions = {
   appName: string;
   assetPath: string;
   devAssetPath: string;
   rootDir: string;
+  /**
+   *
+   */
+  logger?: ILogger;
 };
 
 interface IElectronApp {
@@ -92,6 +98,7 @@ class ElectronApp implements IElectronApp {
       assetPath,
       osSpecificAssetPath: path.join(assetPath, osName),
       userDataPath: Electron.app.getPath("userData"),
+      logger: options.logger ?? logger,
     };
   }
 
