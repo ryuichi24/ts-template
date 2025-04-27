@@ -18,7 +18,7 @@ export class DrizzleBetterSqlite3Service<TSchema extends DrizzleSchema> implemen
 
     const { filename, options } = config.clientConfig;
     const db = new Database(filename || "sqlite.db", options);
-    const drizzleClient = drizzle(db, config.drizzleConfig);
+    const drizzleClient = drizzle<TSchema>(db, config.drizzleConfig);
     this._drizzleClient = drizzleClient;
 
     try {

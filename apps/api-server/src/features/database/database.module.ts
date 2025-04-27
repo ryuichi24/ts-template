@@ -26,6 +26,25 @@ import * as libsqlDrizzleSchema from "./drizzle-schema/libsql/index.js";
     }),
 
     // DrizzleModule.register({
+    //   tag: "POSTGRES:DRIZZLE",
+    //   isGlobal: true,
+    //   dbConfig: {
+    //     drizzleConfig: {
+    //       schema: {
+    //         caches: {},
+    //       },
+    //     },
+    //     clientType: "node-postgres",
+    //     clientConfig: {
+    //       connectionString: "postgres://user:password@localhost:5432/mydb",
+    //       ssl: {
+    //         rejectUnauthorized: false,
+    //       },
+    //     },
+    //   },
+    // }),
+
+    // DrizzleModule.register({
     //   tag: "DB_CLIENT:DRIZZLE",
     //   isGlobal: true,
     //   dbConfig: {

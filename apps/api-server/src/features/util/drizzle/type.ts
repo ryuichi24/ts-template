@@ -2,6 +2,7 @@ import Database from "better-sqlite3";
 import { DrizzleConfig } from "drizzle-orm";
 import { MySql2DrizzleConfig } from "drizzle-orm/mysql2";
 import { Config as LibsqlConfig } from "@libsql/client";
+import { PoolConfig } from "pg";
 import {
   CommonOptionsBase,
   CanBuildConfig,
@@ -14,6 +15,7 @@ export type DrizzleSchema = Record<string, any>;
 export const databaseClientTypes = {
   BETTER_SQLITE3: "better-sqlite3",
   LIBSQL: "libsql",
+  NODE_POSTGRES: "node-postgres",
   POSTGRES_JS: "postgres-js",
   MYSQL2: "mysql2",
 } as const;
@@ -35,7 +37,13 @@ type LibSqlConfig<TSchema extends DrizzleSchema> = {
   drizzleConfig: DrizzleConfig<TSchema>;
 };
 
-type PostgresConfig<TSchema extends DrizzleSchema> = {
+type NodePostgresConfig<TSchema extends DrizzleSchema> = {
+  clientType: DatabaseClientTypes["NODE_POSTGRES"];
+  clientConfig: PoolConfig;
+  drizzleConfig: DrizzleConfig<TSchema>;
+};
+
+type PostgresJSConfig<TSchema extends DrizzleSchema> = {
   clientType: DatabaseClientTypes["POSTGRES_JS"];
   // TODO: Add Postgres config options as we need
   clientConfig: {};
@@ -52,7 +60,8 @@ type Mysql2Config<TSchema extends DrizzleSchema> = {
 export type DatabaseConfig<TSchema extends DrizzleSchema> = {} & (
   | SqliteConfig<TSchema>
   | LibSqlConfig<TSchema>
-  | PostgresConfig<TSchema>
+  | NodePostgresConfig<TSchema>
+  | PostgresJSConfig<TSchema>
   | Mysql2Config<TSchema>
 );
 

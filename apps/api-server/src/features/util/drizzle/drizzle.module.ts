@@ -10,6 +10,7 @@ import {
   DrizzleConfigFactory,
 } from "./type";
 import { DrizzleLibsqlService } from "./drizzle-libsql/drizzle-libsql.service";
+import { DrizzleNodePostgresService } from "./drizzle-node-postgres/drizzle-node-postgres.service";
 
 @Module({})
 export class DrizzleModule {
@@ -83,6 +84,9 @@ export class DrizzleModule {
         break;
       case databaseClientTypes.LIBSQL:
         drizzleClient = new DrizzleLibsqlService(config);
+        break;
+      case databaseClientTypes.NODE_POSTGRES:
+        drizzleClient = new DrizzleNodePostgresService(config);
         break;
       case databaseClientTypes.POSTGRES_JS:
         drizzleClient = new DrizzlePostgresJsService(config);
