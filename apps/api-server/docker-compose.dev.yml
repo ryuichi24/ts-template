@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  postgres_srv:
+    container_name: ${PROJECT_NAME:-default}-postgres
+    image: postgres:10
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-dev}
+    volumes:
+      - ./.docker/postgres:/var/lib/postgresql/data/
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432
+    restart: unless-stopped
+
+  # http://localhost:8888/login
+  pgadmin4_srv:
+    container_name: ${PROJECT_NAME:-default}-pgadmin
+    restart: always
+    image: dpage/pgadmin4:9.2.0
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-password}
+    volumes:
+      - ./.docker/pgamin4_data:/var/lib/pgadmin
+    ports:
+      - 8888:80
+    depends_on:
+      - postgres_srv

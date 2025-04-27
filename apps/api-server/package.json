@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "nest start --watch --env-file='.env.local'",
     "build": "nest build",
+    "dev:db:pg": "docker-compose --file='docker-compose.dev.yml' --env-file='.env.local' up",
     "gen:mdl": "nest generate module --",
     "gen:ctrl": "nest generate controller --",
     "gen:srvs": "nest generate service --",
