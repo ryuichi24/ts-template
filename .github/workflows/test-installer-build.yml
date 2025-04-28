@@ -122,7 +122,7 @@ jobs:
         with:
           name: windows-installer
           path: |
-            apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}\ Setup\ ${{ env.TST_ELECTRON_RELEASE_VERSION }}.exe
+            "apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }} Setup ${{ env.TST_ELECTRON_RELEASE_VERSION }}.exe"
 
       - name: Upload Ubuntu installer
         if: ${{ matrix.os == 'ubuntu-latest' }}
