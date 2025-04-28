@@ -133,14 +133,6 @@ jobs:
           path: |
             apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}-${{ env.TST_ELECTRON_RELEASE_VERSION }}.AppImage
 
-      - name: Check uploaded artifact urls
-        id: check-artifact-urls
-        run: |
-          echo here is the download link to arm mac installers!!!! "${{ toJSON(steps.upload-arm-mac-installer.outputs) }}"
-          echo here is the download link to mac installers!!!! "${{ toJSON(steps.upload-mac-installer.outputs) }}"
-          echo here is the download link to windows installer!!!! "${{ toJSON(steps.upload-windows-installer.outputs) }}"
-          echo here is the download link to linux installer!!!! "${{ toJSON(steps.upload-linux-installer.outputs) }}"
-
   make-pr-comment:
     needs: build-installer
     permissions:
@@ -157,8 +149,21 @@ jobs:
           script: |
             const pr = context.payload.pull_request;
             const commentBody = `
-              Hello @${pr.user.login}, thanks for your pull request titled "${pr.title}". Here's a summary of your PR:\n\n${pr.body}
-             urls: ${{ toJSON(needs.build-installer.outputs) }}
+              
+
+            | Platform | Link                                                         |
+            | -------- | ------------------------------------------------------------ |
+            | Mac      | ${{ needs.build-installer.outputs.mac-installer-url }}       |
+            | Mac (ARM)| ${{ needs.build-installer.outputs.arm-mac-installer-url }}   |
+            | Windows  | ${{ needs.build-installer.outputs.windows-installer-url }}   |
+            | Linux    | ${{ needs.build-installer.outputs.linux-installer-url }}     |
+
+            workflow history: ${{ toJSON(github.event.workflow_run) }}
+
+            log: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}"
+
+            head ref: ${{ github.head_ref }}
+            commit sha: ${{ github.sha }}
             `;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
