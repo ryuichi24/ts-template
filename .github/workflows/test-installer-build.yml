@@ -111,6 +111,7 @@ jobs:
           echo here is the download link!!!! "${{ steps.upload-artifacts.outputs.artifact_urls }}"
 
   make-pr-comment:
+    runs-on: ubuntu-latest
     steps:
       - name: Post comment on PR
         uses: actions/github-script@v6
@@ -123,4 +124,4 @@ jobs:
               repo: context.repo.repo,
               issue_number: pr.number,
               body: commentBody
-            });
+            })
