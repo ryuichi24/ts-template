@@ -164,6 +164,19 @@ jobs:
 
             head ref: ${{ github.head_ref }}
             commit sha: ${{ github.sha }}
+
+            github: ${{ toJson(github) }}
+
+            job: ${{ toJson(job) }}
+
+            steps: ${{ toJson(steps) }}
+
+            runner: ${{ toJson(runner) }}
+
+            strategy: ${{ toJson(strategy) }}
+
+            matrix: ${{ toJson(matrix) }}
+
             `;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
