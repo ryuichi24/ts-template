@@ -26,10 +26,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     outputs:
-      arm-mac-installer-url: ${{ steps.upload-arm-mac-installer.outputs }}
-      mac-installer-url: ${{ steps.upload-mac-installer.outputs }}
-      windows-installer-url: ${{ steps.upload-windows-installer.outputs }}
-      linux-installer-url: ${{ steps.upload-linux-installer.outputs }}
+      arm-mac-installer-url: ${{ steps.upload-arm-mac-installer.outputs.artifact-url }}
+      mac-installer-url: ${{ steps.upload-mac-installer.outputs.artifact-url }}
+      windows-installer-url: ${{ steps.upload-windows-installer.outputs.artifact-url }}
+      linux-installer-url: ${{ steps.upload-linux-installer.outputs.artifact-url }}
 
     steps:
       - name: Checkout
@@ -136,10 +136,10 @@ jobs:
       - name: Check uploaded artifact urls
         id: check-artifact-urls
         run: |
-          echo here is the download link to arm mac installers!!!! "${{ steps.upload-arm-mac-installer.outputs }}"
-          echo here is the download link to mac installers!!!! "${{ steps.upload-mac-installer.outputs }}"
-          echo here is the download link to windows installer!!!! "${{ steps.upload-windows-installer.outputs }}"
-          echo here is the download link to linux installer!!!! "${{ steps.upload-linux-installer.outputs }}"
+          echo here is the download link to arm mac installers!!!! "${{ toJSON(steps.upload-arm-mac-installer.outputs) }}"
+          echo here is the download link to mac installers!!!! "${{ toJSON(steps.upload-mac-installer.outputs) }}"
+          echo here is the download link to windows installer!!!! "${{ toJSON(steps.upload-windows-installer.outputs) }}"
+          echo here is the download link to linux installer!!!! "${{ toJSON(steps.upload-linux-installer.outputs) }}"
 
   make-pr-comment:
     needs: build-installer
