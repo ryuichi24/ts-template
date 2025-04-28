@@ -109,3 +109,18 @@ jobs:
         id: check-artifact-urls
         run: |
           echo here is the download link!!!! "${{ steps.upload-artifacts.outputs.artifact_urls }}"
+
+  make-pr-comment:
+    steps:
+      - name: Post comment on PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const commentBody = `Hello @${pr.user.login}, thanks for your pull request titled "${pr.title}". Here's a summary of your PR:\n\n${pr.body}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: commentBody
+            });
