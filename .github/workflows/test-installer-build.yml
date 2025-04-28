@@ -19,7 +19,7 @@ env:
   GITHUB_RELEASE_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
 
 jobs:
-  build-artifacts:
+  build-installer:
     strategy:
       matrix:
         os: [macos-14, windows-latest, ubuntu-latest]
@@ -92,7 +92,7 @@ jobs:
           pnpm release:desktop
 
       - name: Upload installed artifacts
-        id: upload-artifacts
+        id: upload-installer
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-${{ matrix.os }}
@@ -105,6 +105,7 @@ jobs:
           echo here is the download link!!!! "${{ steps.upload-artifacts.outputs.artifact_urls }}"
 
   make-pr-comment:
+    needs: build-installer
     permissions:
       contents: write
       pull-requests: write
@@ -118,7 +119,10 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            const commentBody = `Hello @${pr.user.login}, thanks for your pull request titled "${pr.title}". Here's a summary of your PR:\n\n${pr.body}`;
+            const commentBody = `
+              Hello @${pr.user.login}, thanks for your pull request titled "${pr.title}". Here's a summary of your PR:\n\n${pr.body}
+             urls: {{ needs.build-artifacts.outputs.artifact_urls }}}
+            `;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
