@@ -26,7 +26,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     outputs:
-      mac-installer-urls: ${{ steps.upload-mac-installers.outputs }}
+      arm-mac-installer-url: ${{ steps.upload-arm-mac-installer.outputs }}
+      mac-installer-url: ${{ steps.upload-mac-installer.outputs }}
       windows-installer-url: ${{ steps.upload-windows-installer.outputs }}
       linux-installer-url: ${{ steps.upload-linux-installer.outputs }}
 
@@ -96,14 +97,20 @@ jobs:
         run: |
           pnpm release:desktop
 
-      - name: Upload mac installers
+      - name: Upload arm mac installer
         if: ${{ matrix.os == 'macos-14' }}
-        id: upload-mac-installers
+        id: upload-arm-mac-installer
         uses: actions/upload-artifact@v4
         with:
           name: arm64-mac-installer
           path: |
             apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}-${{ env.TST_ELECTRON_RELEASE_VERSION }}-arm64.dmg
+
+      - name: Upload mac installer
+        if: ${{ matrix.os == 'macos-14' }}
+        id: upload-mac-installer
+        uses: actions/upload-artifact@v4
+        with:
           name: mac-installer
           path: |
             apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}-${{ env.TST_ELECTRON_RELEASE_VERSION }}.dmg
@@ -129,7 +136,8 @@ jobs:
       - name: Check uploaded artifact urls
         id: check-artifact-urls
         run: |
-          echo here is the download link to mac installers!!!! "${{ steps.upload-mac-installers.outputs }}"
+          echo here is the download link to arm mac installers!!!! "${{ steps.upload-arm-mac-installer.outputs }}"
+          echo here is the download link to mac installers!!!! "${{ steps.upload-mac-installer.outputs }}"
           echo here is the download link to windows installer!!!! "${{ steps.upload-windows-installer.outputs }}"
           echo here is the download link to linux installer!!!! "${{ steps.upload-linux-installer.outputs }}"
 
