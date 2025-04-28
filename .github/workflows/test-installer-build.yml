@@ -1,0 +1,83 @@
+name: Test Installer Build
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  TST_COMPANY_DOMAIN: tst.tech
+  TST_ELECTRON_APP_NAME: TSTemplate
+  TST_ELECTRON_GH_RELEASE_REPO_OWNER: ryuichi24
+  TST_ELECTRON_GH_RELEASE_REPO_NAME: ts-template
+  TST_ELECTRON_PUBLISH: 1
+  TST_ELECTRON_GH_RELEASE_CHANNEL: latest
+  # temp
+  TST_AUTO_UPDATER_RELEASE_CHANNEL: latest
+  TST_ELECTRON_RELEASE_VERSION: 0.0.0
+  # see: https://github.com/AndrewEQ/electron-builder/commit/abea7ed7f32dc64bd5a6cda826685fde0832b489
+  # write access token just to use to publish the installers to GitHub Releases
+  GITHUB_RELEASE_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+
+jobs:
+  build-artifacts:
+    strategy:
+      matrix:
+        os: [macos-14, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3 # docs https://pnpm.io/continuous-integration#github-actions
+        with:
+          version: 9.12.3
+
+      # NOTE: necessary for rebuilding native modules, see https://github.com/actions/runner/issues/2958
+      - name: Install setuptools
+        if: ${{ matrix.os != 'windows-latest' && matrix.os != 'macos-14' }}
+        run: |
+          sudo -H pip install setuptools
+
+      # NOTE: installing "setuptools" will not fix the issue in "macos-14" runner, downgrade the python version which has "distutils" by default
+      - uses: actions/setup-python@v5
+        if: ${{ matrix.os == 'macos-14' }}
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pnpm install
+
+      - name: Aggregate Artifacts
+        run: |
+          pnpm --filter=@naya-suite/desktop-builder aggregate-artifacts
+
+      - name: Upload installed artifacts
+        id: upload-artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.os }}
+          path: |
+            apps/desktop/builder
+
+  build-installers:
+    needs: build-artifacts
+    strategy:
+      matrix:
+        os: [macos-14, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts-${{ matrix.os }}
+      - name: Test Artifacts
+        run: |
+          ls -R
