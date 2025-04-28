@@ -158,7 +158,7 @@ jobs:
             const pr = context.payload.pull_request;
             const commentBody = `
               Hello @${pr.user.login}, thanks for your pull request titled "${pr.title}". Here's a summary of your PR:\n\n${pr.body}
-             urls: ${{ toJSON(needs.build-installer.outputs }}
+             urls: ${{ toJSON(needs.build-installer.outputs) }}
             `;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
