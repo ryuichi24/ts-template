@@ -102,7 +102,7 @@ jobs:
       - name: Check uploaded artifact urls
         id: check-artifact-urls
         run: |
-          echo here is the download link!!!! "${{ steps.upload-installer.outputs.artifact_urls }}"
+          echo here is the download link!!!! "${{ toJSON(steps.upload-installer.outputs) }}"
 
   make-pr-comment:
     needs: build-installer
@@ -121,7 +121,7 @@ jobs:
             const pr = context.payload.pull_request;
             const commentBody = `
               Hello @${pr.user.login}, thanks for your pull request titled "${pr.title}". Here's a summary of your PR:\n\n${pr.body}
-             urls: ${{ needs.build-installer.steps.upload-installer.outputs.artifact_urls }}
+             urls: ${{ toJSON(needs.build-installer.outputs) }}
             `;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
