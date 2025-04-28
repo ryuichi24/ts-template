@@ -25,6 +25,11 @@ jobs:
         os: [macos-14, windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
 
+    outputs:
+      mac-installer-urls: ${{ steps.upload-mac-installers.outputs }}
+      windows-installer-url: ${{ steps.upload-windows-installer.outputs }}
+      linux-installer-url: ${{ steps.upload-linux-installer.outputs }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -91,18 +96,42 @@ jobs:
         run: |
           pnpm release:desktop
 
-      - name: Upload installed artifacts
-        id: upload-installer
+      - name: Upload mac installers
+        if: ${{ matrix.os == 'macos-14' }}
+        id: upload-mac-installers
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts-${{ matrix.os }}
+          name: arm64-mac-installer
           path: |
-            apps/desktop/builder/release/out
+            apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}-${{ env.TST_ELECTRON_RELEASE_VERSION }}-arm64.dmg
+          name: mac-installer
+          path: |
+            apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}-${{ env.TST_ELECTRON_RELEASE_VERSION }}.dmg
+
+      - name: Upload Windows installer
+        if: ${{ matrix.os == 'windows-latest' }}
+        id: upload-windows-installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: |
+            apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}\ Setup\ ${{ env.TST_ELECTRON_RELEASE_VERSION }}.exe
+
+      - name: Upload Ubuntu installer
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        id: upload-linux-installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-installer
+          path: |
+            apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}-${{ env.TST_ELECTRON_RELEASE_VERSION }}.AppImage
 
       - name: Check uploaded artifact urls
         id: check-artifact-urls
         run: |
-          echo here is the download link!!!! "${{ toJSON(steps.upload-installer.outputs) }}"
+          echo here is the download link to mac installers!!!! "${{ steps.upload-mac-installers.outputs }}"
+          echo here is the download link to windows installer!!!! "${{ steps.upload-windows-installer.outputs }}"
+          echo here is the download link to linux installer!!!! "${{ steps.upload-linux-installer.outputs }}"
 
   make-pr-comment:
     needs: build-installer
@@ -121,7 +150,7 @@ jobs:
             const pr = context.payload.pull_request;
             const commentBody = `
               Hello @${pr.user.login}, thanks for your pull request titled "${pr.title}". Here's a summary of your PR:\n\n${pr.body}
-             urls: ${{ toJSON(needs.build-installer.outputs) }}
+             urls: ${{ toJSON(needs.build-installer.outputs }}
             `;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
