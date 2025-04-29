@@ -149,9 +149,10 @@ jobs:
           script: |
             const pr = context.payload.pull_request;
             const commentBody = `
-
             ## 🚀 **Installers are ready for download!**
 
+            Installers have been successfully built and are ready for download. You can find them below:
+            
             ### 🛠️ Installers
 
             | Platform    | Link                                                         |
@@ -161,9 +162,9 @@ jobs:
             | Windows     | ${{ needs.build_installer.outputs.windows-installer-url }}   |
             | Linux       | ${{ needs.build_installer.outputs.linux-installer-url }}     |
 
-            This build includes new changes from a commit: ${{ github.event.pull_request.head.sha }} authored by @${{ github.event.pull_request.head.user.login }}.
-
-            🔗 [View pipeline logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            ### 📝 Notes
+            - This build includes new changes from a commit: ${{ github.event.pull_request.head.sha }} authored by @${{ github.event.pull_request.head.user.login }}.
+            - You can view 🔗 [pipeline logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
 
             `;
             await github.rest.issues.createComment({
@@ -172,10 +173,9 @@ jobs:
               issue_number: pr.number,
               body: commentBody
             })
-  
+
   clean_artifacts:
     needs: commenting_build_results
-
     # if: ${{ github.event.pull_request.merged == true }}
   
     runs-on: ubuntu-latest
@@ -244,7 +244,7 @@ jobs:
 
             if (deletedArtifacts.length > 0) {
               deletedArtifacts.forEach(artifact => {
-                commentBody += `- [${artifact.name (artifact.id)}](${artifact.url})\n`;
+                commentBody += `- [${artifact.name} (${artifact.id})](${artifact.url})\n`;
               });
             } else {
               commentBody += `No artifacts were found for this PR.`;
@@ -257,3 +257,4 @@ jobs:
               issue_number: prNumber,
               body: commentBody,
             });
+
