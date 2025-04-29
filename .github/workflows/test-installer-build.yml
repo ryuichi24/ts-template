@@ -161,9 +161,9 @@ jobs:
             | Windows  | ${{ needs.build-installer.outputs.windows-installer-url }}   |
             | Linux    | ${{ needs.build-installer.outputs.linux-installer-url }}     |
 
-            This build include new changes from a commit: ${{ github.event.pull_request.head.sha }} made by ${{ github.event.pull_request.head.user.login }}.
+            This build include new changes from a commit: ${{ github.event.pull_request.head.sha }} made by @${{ github.event.pull_request.head.user.login }}.
 
-            Pipeline logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/
+            Pipeline logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
             `;
             await github.rest.issues.createComment({
