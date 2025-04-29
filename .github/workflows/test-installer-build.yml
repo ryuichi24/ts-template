@@ -151,6 +151,10 @@ jobs:
             const commentBody = `
 
             🚀 **Installers are ready for download!**
+
+            [![Build Status](https://img.shields.io/github/actions/workflow/status/${{ github.repository }}/ci.yml?branch=${{ github.head_ref }}&label=Build)](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [![Commit](https://img.shields.io/badge/commit-${{ github.event.pull_request.head.sha.slice(0, 7) }}-blue)](https://github.com/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }})
+            [![Author](https://img.shields.io/badge/author-${{ github.event.pull_request.head.user.login }}-green)](https://github.com/${{ github.event.pull_request.head.user.login }})
               
             ## 🛠️ Installers
 
