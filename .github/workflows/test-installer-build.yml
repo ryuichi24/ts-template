@@ -2,7 +2,7 @@ name: Test Installer Build
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 env:
   TST_COMPANY_DOMAIN: tst.tech
@@ -20,6 +20,7 @@ env:
 
 jobs:
   build_installer:
+    if: ${{ github.event.pull_request.draft == false }}
     strategy:
       matrix:
         os: [macos-14, windows-latest, ubuntu-latest]
@@ -73,7 +74,7 @@ jobs:
           pnpm install
 
       - name: Publish release for mac
-        if: matrix.os == 'macos-14'
+        if: ${{ matrix.os == 'macos-14' }}
         env:
           NODE_ENV: production
           # auto updates signing for mac app
@@ -134,6 +135,7 @@ jobs:
             apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}-${{ env.TST_ELECTRON_RELEASE_VERSION }}.AppImage
 
   commenting_build_results:
+    if: ${{ github.event.pull_request.draft == false }}
     needs: build_installer
     permissions:
       pull-requests: write
@@ -160,7 +162,7 @@ jobs:
             | Linux       | ${{ needs.build_installer.outputs.linux-installer-url }}     |
 
             ### 📝 Notes
-            - This build includes new changes from a commit: ${{ github.event.pull_request.head.sha }} authored by @${{ github.event.pull_request.head.user.login }}.
+            - This build includes new changes from a commit: ${{ github.event.pull_request.head.sha }} authored by @${{ github.event.sender.login }}.
             - You can view 🔗 [pipeline logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
 
             `;
@@ -170,87 +172,3 @@ jobs:
               issue_number: pr.number,
               body: commentBody
             })
-
-  clean_artifacts:
-    needs: commenting_build_results
-    # if: ${{ github.event.pull_request.merged == true }}
-    runs-on: ubuntu-latest
-
-    permissions:
-      pull-requests: write
-      actions: write
-      # contents: write
-      # repository-projects: write
-      # id-token: write
-
-    steps:
-      - name: Clean up artifacts
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pr = context.payload.pull_request;
-            const prNumber = pr.number;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-
-            let deletedArtifacts = [];
-
-            const workflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
-              owner,
-              repo,
-              event: 'pull_request',
-              per_page: 100,
-            });
-
-            for (const run of workflowRuns.data.workflow_runs) {
-              if (run.pull_requests.some(pr => pr.number === prNumber)) {
-                const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-                  owner,
-                  repo,
-                  run_id: run.id,
-                });
-
-                for (const artifact of artifacts.data.artifacts) {
-                  // Construct the artifact URL before deletion
-                  const artifactUrl = `https://github.com/${owner}/${repo}/actions/runs/${run.id}/artifacts/${artifact.id}`;
-                  
-                  // Delete the artifact
-                  await github.rest.actions.deleteArtifact({
-                    owner,
-                    repo,
-                    artifact_id: artifact.id,
-                  });
-
-                  // Store the artifact name and URL
-                  deletedArtifacts.push({
-                    id: artifact.id,
-                    name: artifact.name,
-                    url: artifactUrl,
-                  });
-                }
-
-                console.log(`Cleaned up artifacts for run ID: ${run.id}`);
-              }
-            }
-
-            // Construct the PR comment with the list of deleted artifacts
-            let commentBody = `
-            ## 🧹 Build Artifacts Are Cleaned!\n\n
-            The following artifacts were deleted after the PR was closed:\n\n`;
-
-            if (deletedArtifacts.length > 0) {
-              deletedArtifacts.forEach(artifact => {
-                commentBody += `- [${artifact.name} (${artifact.id})](${artifact.url})\n`;
-              });
-            } else {
-              commentBody += `No artifacts were found for this PR.`;
-            }
-
-            // Post the comment to the PR
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: prNumber,
-              body: commentBody,
-            });
-
