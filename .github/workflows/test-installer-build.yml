@@ -176,7 +176,7 @@ jobs:
   clean_artifacts:
     needs: commenting_build_results
 
-    if: ${{ github.event.pull_request.merged == true }}
+    # if: ${{ github.event.pull_request.merged == true }}
   
     runs-on: ubuntu-latest
 
