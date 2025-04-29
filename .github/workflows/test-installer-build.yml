@@ -136,10 +136,7 @@ jobs:
   commenting_build_results:
     needs: build_installer
     permissions:
-      pull-requests: write
-      # contents: write
-      # repository-projects: write
-      # id-token: write
+      # pull-requests: write
 
     runs-on: ubuntu-latest
     steps:
