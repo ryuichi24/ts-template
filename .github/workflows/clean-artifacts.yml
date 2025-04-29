@@ -7,8 +7,7 @@ on:
 
 jobs:
   clean_artifacts:
-    # if: ${{ github.event.pull_request.merged == true }}
-  
+    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -58,6 +57,7 @@ jobs:
 
                   // Store the artifact name and URL
                   deletedArtifacts.push({
+                    id: artifact.id,
                     name: artifact.name,
                     url: artifactUrl,
                   });
@@ -68,11 +68,13 @@ jobs:
             }
 
             // Construct the PR comment with the list of deleted artifacts
-            let commentBody = `## 🧹 Build Artifacts Cleaned\n\nThe following artifacts were deleted after the PR was closed:\n\n`;
+            let commentBody = `
+            ## 🧹 Build Artifacts Are Cleaned!\n\n
+            The following artifacts were deleted after the PR was closed:\n\n`;
 
             if (deletedArtifacts.length > 0) {
               deletedArtifacts.forEach(artifact => {
-                commentBody += `- [${artifact.name}](${artifact.url})\n`;
+                commentBody += `- [${artifact.name} (${artifact.id})](${artifact.url})\n`;
               });
             } else {
               commentBody += `No artifacts were found for this PR.`;
