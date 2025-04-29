@@ -19,7 +19,7 @@ env:
   GITHUB_RELEASE_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
 
 jobs:
-  build-installer:
+  build_installer:
     strategy:
       matrix:
         os: [macos-14, windows-latest, ubuntu-latest]
@@ -133,8 +133,8 @@ jobs:
           path: |
             apps/desktop/builder/release/out/${{ env.TST_ELECTRON_APP_NAME }}-${{ env.TST_ELECTRON_RELEASE_VERSION }}.AppImage
 
-  commenting-build-results:
-    needs: build-installer
+  commenting_build_results:
+    needs: build_installer
     permissions:
       contents: write
       pull-requests: write
@@ -150,16 +150,16 @@ jobs:
             const pr = context.payload.pull_request;
             const commentBody = `
 
-            🚀 **Installers are ready for download!**
+            ## 🚀 **Installers are ready for download!**
 
-            ## 🛠️ Installers
+            ### 🛠️ Installers
 
             | Platform    | Link                                                         |
             | ----------- | ------------------------------------------------------------ |
-            | Mac (ARM)   | ${{ needs.build-installer.outputs.arm-mac-installer-url }}   |
-            | Mac (Intel) | ${{ needs.build-installer.outputs.mac-installer-url }}       |
-            | Windows     | ${{ needs.build-installer.outputs.windows-installer-url }}   |
-            | Linux       | ${{ needs.build-installer.outputs.linux-installer-url }}     |
+            | Mac (ARM)   | ${{ needs.build_installer.outputs.arm-mac-installer-url }}   |
+            | Mac (Intel) | ${{ needs.build_installer.outputs.mac-installer-url }}       |
+            | Windows     | ${{ needs.build_installer.outputs.windows-installer-url }}   |
+            | Linux       | ${{ needs.build_installer.outputs.linux-installer-url }}     |
 
             This build includes new changes from a commit: ${{ github.event.pull_request.head.sha }} authored by @${{ github.event.pull_request.head.user.login }}.
 
@@ -172,10 +172,11 @@ jobs:
               issue_number: pr.number,
               body: commentBody
             })
-
+  
   clean_artifacts:
-    needs: commenting-build-results
-    # if: ${{ github.event.pull_request.merged == true }}
+    needs: commenting_build_results
+
+    if: ${{ github.event.pull_request.merged == true }}
   
     runs-on: ubuntu-latest
 
@@ -226,6 +227,7 @@ jobs:
 
                   // Store the artifact name and URL
                   deletedArtifacts.push({
+                    id: artifact.id,
                     name: artifact.name,
                     url: artifactUrl,
                   });
@@ -236,11 +238,13 @@ jobs:
             }
 
             // Construct the PR comment with the list of deleted artifacts
-            let commentBody = `## 🧹 Build Artifacts Cleaned\n\nThe following artifacts were deleted after the PR was closed:\n\n`;
+            let commentBody = `
+            ## 🧹 Build Artifacts Cleaned\n\n
+            The following artifacts were deleted after the PR was closed:\n\n`;
 
             if (deletedArtifacts.length > 0) {
               deletedArtifacts.forEach(artifact => {
-                commentBody += `- [${artifact.name}](${artifact.url})\n`;
+                commentBody += `- [${artifact.name (artifact.id)}](${artifact.url})\n`;
               });
             } else {
               commentBody += `No artifacts were found for this PR.`;
