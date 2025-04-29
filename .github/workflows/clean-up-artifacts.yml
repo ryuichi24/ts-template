@@ -1,0 +1,90 @@
+name: Clean Up Artifacts on PR Resolution
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  clean_up_artifacts:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      actions: write
+
+    steps:
+      - name: Clean up artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const prNumber = pr.number;
+            const prBranch = pr.head.ref;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            console.log(`Cleaning up artifacts for PR #${prNumber} (${prBranch})`);
+
+            const listWorkflowRunsForRepoResponse = await github.rest.actions.listWorkflowRunsForRepo({
+                owner,
+                repo,
+                event: 'pull_request',
+                per_page: 100,
+                branch: prBranch,
+            });
+
+            const workflowRuns = listWorkflowRunsForRepoResponse.data.workflow_runs;
+            const workflowRunTotalCount = listWorkflowRunsForRepoResponse.data.total_count;
+
+            console.log(`Found ${workflowRunTotalCount} workflow runs for PR #${prNumber}`);
+            const listWorkflowRunArtifactsRequests = workflowRuns.map(run => (async () => {
+                console.log(`Fetching artifacts for workflow run ${run.id} (${run.name})`);
+                const res = await github.rest.actions.listWorkflowRunArtifacts({
+                    owner,
+                    repo,
+                    run_id: run.id,
+                })
+                console.log(`Found ${res.data.total_count} artifacts for workflow run ${run.id} (${run.name})`);
+                return res;
+            })())
+
+            const listWorkflowRunArtifactsResponseList = await Promise.all(listWorkflowRunArtifactsRequests);
+
+            const artifacts = listWorkflowRunArtifactsResponseList.reduce((artifacts, res, index) => {
+                return artifacts.concat(res.data.artifacts.map(artifact => ({
+                    ...artifact,
+                    runId: workflowRuns[index].id,
+                })));
+            }, []);
+
+
+            await Promise.all(artifacts.map(artifact => (async () => {
+                console.log(`Deleting artifact ${artifact.name} (${artifact.id}) for workflow run ${artifact.runId}`);
+                await github.rest.actions.deleteArtifact({
+                    owner,
+                    repo,
+                    artifact_id: artifact.id,
+                })
+                console.log(`Deleted artifact ${artifact.name} (${artifact.id}) for workflow run ${artifact.runId}`);
+            })()))
+
+
+            let commentBody = `## 🧹 Build Artifacts Are Cleaned!\n\n`;
+
+            if (artifacts.length > 0) {
+                commentBody += `The following artifacts were deleted after the PR was merged:\n\n`;
+                artifacts.forEach(artifact => {
+                    commentBody += `- [${artifact.name} (${artifact.id})](${artifact.url})\n`;
+                });
+            } else {
+                commentBody += `No artifacts were found for this PR.`;
+            }
+
+            await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: commentBody,
+            });
