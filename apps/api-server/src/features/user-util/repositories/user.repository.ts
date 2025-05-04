@@ -3,13 +3,13 @@ export namespace UserRepository {
     id: string;
     username: string;
     email: string;
-    password_hash?: string;
+    passwordHash: string | null;
     isEmailVerified: boolean;
+    avatarUrl: string | null;
     isDeleted: boolean;
-    deletedAt?: Date;
+    deletedAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
-    avatarUrl?: string;
   };
 
   export type CreateCommand = {

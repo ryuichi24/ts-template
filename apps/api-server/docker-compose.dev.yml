@@ -5,6 +5,7 @@ services:
     container_name: ${PROJECT_NAME:-default}-postgres
     image: postgres:10
     environment:
+      # https://orm.drizzle.team/docs/connect-overview#database-connection-url
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-dev}

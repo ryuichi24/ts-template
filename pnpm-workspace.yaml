@@ -1,4 +1,4 @@
 packages:
   - "packages/**/*"
   - "apps/**/*"
-  - "!packages/electron-libs/electron-app-protocol/*"
+  # - "!packages/electron-libs/electron-app-protocol/*"

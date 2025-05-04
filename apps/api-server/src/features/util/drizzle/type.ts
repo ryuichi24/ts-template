@@ -67,19 +67,18 @@ export type DatabaseConfig<TSchema extends DrizzleSchema> = {} & (
 
 export type DrizzleServiceSyncConfig = {};
 
-export type DrizzleServiceAsyncConfig = {};
-
-type DrizzleCommonOptions = CommonOptionsBase & {
-  tag: `${string}:DRIZZLE` | symbol;
+export type DrizzleServiceAsyncConfig = {
   dbConfig: DatabaseConfig<any>;
 };
 
-export type SyncRegisterDrizzleOptions = SyncRegisterOptionsBase<DrizzleServiceSyncConfig, DrizzleCommonOptions>;
+type DrizzleCommonOptions = CommonOptionsBase & {
+  tag: `${string}:DRIZZLE` | symbol;
+};
+
+export type SyncRegisterDrizzleOptions = SyncRegisterOptionsBase<DrizzleServiceSyncConfig, DrizzleCommonOptions> & {
+  dbConfig: DatabaseConfig<any>;
+};
 
 export type AsyncRegisterDrizzleOptions = AsyncRegisterOptionsBase<DrizzleServiceAsyncConfig, DrizzleCommonOptions>;
 
-export class DrizzleConfigFactory implements CanBuildConfig<DrizzleServiceAsyncConfig> {
-  buildConfig(): DrizzleServiceAsyncConfig | Promise<DrizzleServiceAsyncConfig> {
-    return {};
-  }
-}
+export interface IConfigBuilder extends CanBuildConfig<DrizzleServiceAsyncConfig> {}

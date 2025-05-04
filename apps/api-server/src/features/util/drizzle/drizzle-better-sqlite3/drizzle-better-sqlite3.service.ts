@@ -1,12 +1,12 @@
+import path from "path";
 import Database from "better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import { Injectable, OnModuleInit } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { BetterSQLite3Database, drizzle } from "drizzle-orm/better-sqlite3";
 import { databaseClientTypes, DatabaseConfig, DrizzleSchema } from "../type";
-import path from "path";
 
 @Injectable()
-export class DrizzleBetterSqlite3Service<TSchema extends DrizzleSchema> implements OnModuleInit {
+export class DrizzleBetterSqlite3Service<TSchema extends DrizzleSchema> {
   private _drizzleClient: BetterSQLite3Database<TSchema> & {
     $client: Database.Database;
   };
@@ -22,24 +22,17 @@ export class DrizzleBetterSqlite3Service<TSchema extends DrizzleSchema> implemen
     this._drizzleClient = drizzleClient;
 
     try {
-      db.exec("PRAGMA foreign_keys = OFF;");
       migrate(drizzleClient, {
-        migrationsFolder: path.join("db-migrations"),
+        migrationsFolder: path.join("db-migrations/sqlite"),
       });
+      console.log("Database migrations completed");
     } catch (error) {
       if (error instanceof Error) console.log(error.message);
     } finally {
-      console.log("Database migrations completed");
-      
-      db.exec("PRAGMA foreign_keys = ON;");
     }
   }
 
   get drizzleClient() {
     return this._drizzleClient;
-  }
-
-  onModuleInit() {
-    console.log("DrizzleBetterSqlite3Service initialized");
   }
 }

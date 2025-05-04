@@ -8,17 +8,20 @@ import { OauthAccountStrapiRepository } from "./repositories/oauth-account-strap
 import { OauthAccountRepository } from "./repositories/oauth-account.repository";
 import { OauthTokenRepository } from "./repositories/oauth-token.repository";
 import { OauthTokenCacheRepository } from "./repositories/oauth-token-cache.repository";
-import { OauthAccountInMemoryRepository } from "./repositories/oauth-account-in-memory.repository";
 import { CacheModule } from "../util/cache/cache.module";
-import { BetterSqlite3DbStore } from "../cache-util/stores/better-sqlite3-drizzle-db-store";
 import { OauthTokenCache } from "./cache/oauth-token-cache";
+import { OauthAccountInMemoryRepository } from "./repositories/oauth-account-in-memory.repository";
+import { BetterSqlite3DbStore } from "../cache-util/stores/better-sqlite3-drizzle-db-store";
+import { NodePostgresDrizzleDbStore } from "../cache-util/stores/node-postgres-drizzle-db-store";
+import { OauthAccountInDbRepository } from "./repositories/oauth-account-in-db.repository";
 
 @Module({
   imports: [
     StrapiModule,
     CacheModule.register({
       tag: OauthTokenCache,
-      store: BetterSqlite3DbStore,
+      // store: BetterSqlite3DbStore,
+      store: NodePostgresDrizzleDbStore,
     }),
   ],
   exports: [
@@ -36,15 +39,20 @@ import { OauthTokenCache } from "./cache/oauth-token-cache";
     // https://docs.nestjs.com/fundamentals/custom-providers#class-providers-useclass
     {
       provide: OauthAccountRepository,
-      useFactory: async (strapiClient: StrapiClient) => {
-        const isStrapiRunning = await strapiClient.isRunning();
-        if (isStrapiRunning) {
-          return new OauthAccountStrapiRepository(strapiClient);
-        }
-        return new OauthAccountInMemoryRepository();
-      },
-      inject: [StrapiClient],
+      useClass: OauthAccountInDbRepository,
     },
+    // {
+    //   provide: OauthAccountRepository,
+    //   useFactory: async (strapiClient: StrapiClient) => {
+    //     const isStrapiRunning = await strapiClient.isRunning();
+    //     if (isStrapiRunning) {
+    //       return new OauthAccountStrapiRepository(strapiClient);
+    //     }
+    //     // return new OauthAccountInMemoryRepository();
+    //     return new OauthAccountInDbRepository();
+    //   },
+    //   inject: [StrapiClient],
+    // },
     {
       provide: OauthTokenRepository,
       useClass: OauthTokenCacheRepository,

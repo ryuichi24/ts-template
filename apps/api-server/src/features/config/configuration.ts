@@ -62,4 +62,20 @@ export const configFactory: ConfigFactory = (): Config => ({
       token: process.env.STRAPI_TOKEN ?? "",
     },
   },
+  db: {
+    main: {
+      postgres: {
+        host: process.env.POSTGRES_HOST ?? "localhost",
+        port: parseInt(process.env.POSTGRES_PORT ?? "5432", 10),
+        username: process.env.POSTGRES_USER ?? "postgres",
+        password: process.env.POSTGRES_PASSWORD ?? "",
+        database: process.env.POSTGRES_DB ?? "postgres",
+      },
+    },
+    cache: {
+      sqlite: {
+        filename: process.env.DB_CACHE_SQLITE_DATABASE ?? "./cache.db",
+      },
+    },
+  },
 });

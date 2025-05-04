@@ -7,7 +7,8 @@ import {
   AsyncRegisterDrizzleOptions,
   databaseClientTypes,
   DatabaseConfig,
-  DrizzleConfigFactory,
+  IConfigBuilder,
+  DrizzleServiceAsyncConfig,
 } from "./type";
 import { DrizzleLibsqlService } from "./drizzle-libsql/drizzle-libsql.service";
 import { DrizzleNodePostgresService } from "./drizzle-node-postgres/drizzle-node-postgres.service";
@@ -41,7 +42,7 @@ export class DrizzleModule {
     if ("useClass" in options) {
       const configProvider = {
         provide: dbConfigToken,
-        useFactory: async (factory: DrizzleConfigFactory) => await factory.buildConfig(),
+        useFactory: async (factory: IConfigBuilder) => await factory.buildConfig(),
         inject: [options.useClass],
       };
       providers.push(configProvider);
@@ -64,8 +65,8 @@ export class DrizzleModule {
         ...providers,
         {
           provide: options.tag,
-          useFactory: async (dbConfig: DatabaseConfig<any>) => {
-            const client = this._createDbClient(dbConfig);
+          useFactory: async (config: DrizzleServiceAsyncConfig) => {
+            const client = this._createDbClient(config.dbConfig);
             return client;
           },
           inject: [dbConfigToken],
