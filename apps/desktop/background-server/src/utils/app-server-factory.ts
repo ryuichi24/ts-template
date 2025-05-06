@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { createNodeWebSocket } from "@hono/node-ws";
-import { logger as _logger } from "./logger.js";
+import { logger as _logger } from "../logger/logger.js";
 import { ILogger } from "@ts-template/logger";
 import { MainProcessEventHandler } from "./main-process-event-handler.js";
 import {

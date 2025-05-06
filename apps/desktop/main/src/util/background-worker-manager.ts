@@ -1,5 +1,5 @@
 import { ProcessEventEmitter } from "@ts-template/process-event-emitter";
-import { logger } from "../../../background-server/src/utils/logger.js";
+import { logger } from "../util/logger.js";
 
 export class BackgroundWorkerManager {
   private static workers: Map<string, ProcessEventEmitter> = new Map();

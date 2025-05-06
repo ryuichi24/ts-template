@@ -29,6 +29,8 @@ import { NodePostgresDrizzleClientProvider } from "./providers/node-postgres-dri
               schema: {
                 ...betterSqlite3DrizzleSchema,
               },
+              // https://orm.drizzle.team/docs/sql-schema-declaration#camel-and-snake-casing
+              casing: "snake_case",
             },
           },
         };
@@ -53,6 +55,7 @@ import { NodePostgresDrizzleClientProvider } from "./providers/node-postgres-dri
             },
             drizzleConfig: {
               schema: { ...PgMainSchema },
+              casing: "snake_case",
             },
           },
         };

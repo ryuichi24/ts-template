@@ -5,7 +5,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "node scripts/build-prod.mjs"
+    "build": "node scripts/build-prod.mjs",
+    "gen:db:migrate": "NODE_OPTIONS='--import tsx' drizzle-kit generate --config=drizzle/drizzle.config.ts --name"
   },
   "type": "module",
   "devDependencies": {
@@ -17,15 +18,19 @@
     "@types/node": "^22.13.8",
     "@types/ws": "^8.18.1",
     "cross-env": "^7.0.3",
+    "drizzle-kit": "^0.31.0",
     "esbuild": "^0.25.0",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.2"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.1",
     "@hono/node-ws": "^1.1.1",
+    "@ts-template/uuid-util": "workspace:*",
     "@ts-template/process-event-emitter": "workspace:*",
     "axios": "^1.8.4",
-    "better-sqlite3": "^11.8.1",
+    "better-sqlite3": "^11.9.1",
+    "drizzle-orm": "^0.43.1",
     "hono": "^4.7.7"
   }
 }

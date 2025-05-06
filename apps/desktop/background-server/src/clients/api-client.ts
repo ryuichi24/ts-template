@@ -1,6 +1,6 @@
 import { credentialStore } from "../stores/credential-store.js";
 import { HTTPClient } from "../utils/http-client.js";
-import { logger } from "../utils/logger.js";
+import { logger } from "../logger/logger.js";
 
 const API_BASE_URL = process.env.CLOUD_SERVER_BASE_URL ?? "http://localhost:3000/api";
 const REFRESH_TOKEN_URL = `${API_BASE_URL}/auth/refresh-token`;

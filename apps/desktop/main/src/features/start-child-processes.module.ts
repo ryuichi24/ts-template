@@ -21,7 +21,7 @@ export class StartChildProcessesModule implements OnBootstrap {
           ELECTRON_USER_DATA_PATH: appCtx.userDataPath,
           ELECTRON_USER_RESOURCES_PATH: process.resourcesPath,
           ELECTRON_APP_CONTENTS_PATH: path.resolve(process.resourcesPath, ".."),
-          NODE_ENV: process.env.NODE_ENV,
+          NODE_ENV: appCtx.isPackaged ? "production" : "development",
           PATH: process.env.PATH,
         },
         stdio: "inherit",

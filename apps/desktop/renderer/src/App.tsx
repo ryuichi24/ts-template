@@ -2,6 +2,8 @@ import React from "react";
 import { useAuth, useUserInfo } from "./features/auth";
 import { useWebSocket } from "./features/web-socket";
 import { config } from "./features/config/config";
+import { useBootstrap } from "./hooks/use-bootstrap";
+import { DevDashboard } from "./features/dev-mode";
 
 export namespace App {
   export type Props = {};
@@ -9,6 +11,8 @@ export namespace App {
 
 export const App: React.FC<App.Props> = (props) => {
   const {} = props;
+
+  useBootstrap();
 
   const { isAuthenticated } = useAuth();
   const { userInfo } = useUserInfo();
@@ -59,6 +63,10 @@ export const App: React.FC<App.Props> = (props) => {
             <li>Email: {userInfo.email}</li>
           </ul>
         )}
+      </div>
+
+      <div>
+        <DevDashboard />
       </div>
     </div>
   );

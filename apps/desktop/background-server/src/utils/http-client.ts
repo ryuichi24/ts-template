@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
-import { logger } from "./logger.js";
+import { logger } from "../logger/logger.js";
 
 export namespace HTTPClient {
   export type Config = {
