@@ -196,6 +196,9 @@ importers:
       '@hono/node-ws':
         specifier: ^1.1.1
         version: 1.1.1(@hono/node-server@1.14.1(hono@4.7.7))(hono@4.7.7)
+      '@ts-template/drizzle-util':
+        specifier: workspace:*
+        version: link:../../../packages/libs/drizzle-util
       '@ts-template/process-event-emitter':
         specifier: workspace:*
         version: link:../../../packages/libs/process-event-emitter
@@ -485,6 +488,35 @@ importers:
   packages/libs/date-util/dist/cjs: {}
 
   packages/libs/date-util/dist/esm: {}
+
+  packages/libs/drizzle-util:
+    dependencies:
+      glob:
+        specifier: ^11.0.0
+        version: 11.0.1
+    devDependencies:
+      '@ts-template/tsbuild':
+        specifier: workspace:*
+        version: link:../../tools/tsbuild
+      '@ts-template/tsconfig':
+        specifier: workspace:*
+        version: link:../../configs/tsconfig
+      '@ts-template/type-util':
+        specifier: workspace:*
+        version: link:../type-util
+      '@types/glob':
+        specifier: ^8.1.0
+        version: 8.1.0
+      '@types/node':
+        specifier: ^20.11.20
+        version: 20.17.22
+      typescript:
+        specifier: ^5.4.5
+        version: 5.8.2
+
+  packages/libs/drizzle-util/dist/cjs: {}
+
+  packages/libs/drizzle-util/dist/esm: {}
 
   packages/libs/file-system:
     dependencies:
