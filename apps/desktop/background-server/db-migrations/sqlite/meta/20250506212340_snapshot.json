@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "e66cfdd9-667c-4dd5-b578-30a5c2dd5c9d",
+  "id": "5b63c588-5964-4855-baaf-8f0abde209e3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "logs": {
@@ -41,7 +41,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "(current_timestamp)"
+          "default": "(datetime('subsec'))"
         }
       },
       "indexes": {},

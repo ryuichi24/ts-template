@@ -3,7 +3,7 @@ CREATE TABLE `logs` (
 	`name` text NOT NULL,
 	`level` integer NOT NULL,
 	`message` text NOT NULL,
-	`logged_at` TEXT DEFAULT (current_timestamp) NOT NULL
+	`logged_at` TEXT DEFAULT (datetime('subsec')) NOT NULL
 );
 --> statement-breakpoint
 CREATE VIEW `logs_view` AS 

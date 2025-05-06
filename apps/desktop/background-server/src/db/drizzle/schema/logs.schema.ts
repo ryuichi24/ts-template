@@ -10,7 +10,7 @@ export const logs = sqliteTable("logs", {
   content: text("message").notNull(),
   loggedAt: c_timestamp("logged_at")
     .notNull()
-    .default(sql`(current_timestamp)`),
+    .default(sql`(datetime('subsec'))`),
 });
 
 // https://orm.drizzle.team/docs/views#declaring-views-with-raw-sql
