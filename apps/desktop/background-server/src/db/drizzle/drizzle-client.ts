@@ -3,8 +3,9 @@ import { DBClient } from "../db-client.js";
 import * as schema from "./schema/index.js";
 import { logger } from "../../logger/logger.js";
 import { Logger as IDrizzleLogger } from "drizzle-orm";
+import { config } from "../../config/config.js";
 
-const conn = DBClient.instance.getConn("main");
+const conn = DBClient.instance.getConn(config.db.main.path);
 
 class DrizzleLogger implements IDrizzleLogger {
   logQuery(query: string, params: unknown[]): void {
